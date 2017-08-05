@@ -91,7 +91,7 @@
       },
 
       hideBoxMessageByTime() {
-        if (this.message.type === 'success') {
+        if (this.message.type === 'info') {
           setTimeout(() => {
             store.commit('UPDATE_MESSAGE', false);
           }, 3000);

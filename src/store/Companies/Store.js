@@ -17,7 +17,7 @@ const store = new Vuex.Store({
     },
     message: {
       id: 'alert1',
-      type: 'success',
+      type: 'info',
       text: 'Operation was executed successfully',
       show: false,
     },
