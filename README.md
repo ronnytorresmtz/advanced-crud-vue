@@ -1,4 +1,4 @@
-# Advance CRUD VUE Example
+# Advance CRUD (Vue-Larevel with CORS) Example
 
 1. CRUD with a Table and Form.
 2. Colum Table are sorteable.
