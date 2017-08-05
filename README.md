@@ -1,7 +1,7 @@
-# An Advance SPA CRUD Example (
+# An Advance SPA CRUD Example
     
-    >With Vue, Vuex, VueRouter, Larevel, Axios, CORS, Bootstrap, Animate
-    
+>With Vue, Vuex, VueRouter, Larevel, Axios, CORS, Bootstrap, Animate
+
 1. CRUD with a Table and Form.
 2. Colum Table are sorteable.
 3. Reactive Search Box.
