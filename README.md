@@ -5,7 +5,7 @@
 3. Reactive Search Box.
 4. Use Vuex for State.
 5. Message Popup via my component vue 
-6. Handle Languagues via my component vue coded
+6. Handle Languagues via my component vue
 
 ##TODO
 1. Make an Api in Laravel
