@@ -16,6 +16,7 @@ Implement CORS between client and server
 6. CORS and configure 
 7. Integrate axios to request the api
 8. Test spec's
+9. Review security 
 
 ## Build Setup
 
