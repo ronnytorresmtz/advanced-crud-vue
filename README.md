@@ -8,6 +8,7 @@
 4. Use Vuex for State.
 5. Message Popup via my component vue 
 6. Handle Languagues via my component vue
+7. Use Bootstrap
 ## TODO
 Implement CORS between client and server 
 1. Alocate the client in a client directory for all vue and javascript code
