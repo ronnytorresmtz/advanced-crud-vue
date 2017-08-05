@@ -14,7 +14,7 @@ Implement CORS between client and server
 4. Make a database and configure it in MySQL.
 5. Code an Api in Laravel
 6. CORS and configure 
-7. Integrate axios to request the api
+7. Integrate axios requests the Laravel api
 8. Test spec's
 9. Review security 
 
