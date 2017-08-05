@@ -1,4 +1,4 @@
-# Basic CRUD VUE Example
+# Advance CRUD VUE Example
 
 1. CRUD with a Table and Form.
 2. Colum Table are sorteable.
