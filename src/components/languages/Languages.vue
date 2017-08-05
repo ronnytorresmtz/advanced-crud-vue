@@ -14,7 +14,6 @@ export default {
     };
   },
 
-
   methods: {
     getLang() {
       return MyLang[this.locale];
