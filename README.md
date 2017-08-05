@@ -6,12 +6,16 @@
 4. Use Vuex for State.
 5. Message Popup via my component vue 
 6. Handle Languagues via my component vue
-
-##TODO
-1. Make an Api in Laravel
-2. Implement CORS
-3. Integrate axios to request the api
-
+## TODO
+Implement CORS between client and server 
+1. Alocate the client in a client directory for all vue and javascript code
+2. Alocate the server/api in a server directory for all laravel code
+3. Install Laravel in th server directory
+4. Make a database and configure it in MySQL.
+5. Code an Api in Laravel
+6. CORS and configure 
+7. Integrate axios to request the api
+8. Test spec's
 
 ## Build Setup
 
