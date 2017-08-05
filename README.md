@@ -1,16 +1,16 @@
 # Basic CRUD VUE Example
 
-> CRUD with a Table and Form.
-> Colum Table are sorteable.
-> Reactive Search Box.
-> Use Vuex for State.
-> Message Popup via my component vue 
-> Handle Languagues via my component vue coded
+1. CRUD with a Table and Form.
+2. Colum Table are sorteable.
+3. Reactive Search Box.
+4. Use Vuex for State.
+5. Message Popup via my component vue 
+6. Handle Languagues via my component vue coded
 
-#TODO
->Make an Api in Laravel
->Implement CORS
->Integrate axios to request the api
+##TODO
+1. Make an Api in Laravel
+2. Implement CORS
+3. Integrate axios to request the api
 
 
 ## Build Setup
