@@ -1,0 +1,12 @@
+{
+  "env": {
+    "jquery": true,
+  },
+  "rules": {
+    "no-console": 0,
+    "no-alert": 0
+  },
+  "globals": {
+    "_": true
+  },
+}
