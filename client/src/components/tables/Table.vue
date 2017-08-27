@@ -15,11 +15,13 @@
     height: 370px;
   }
 
+  .btn-width {
+    width: 60px;
+  }
+
 </style>
 
 <template>
-
- 
 
   <div  class="table-responsive table-hscroll table-height">
     <table id="table1" class="table table-condensed table-hover">
@@ -31,10 +33,10 @@
           <td  v-for="(value, key) in row" @click.prevent="itemSelected(row)">
             <span v-if="key=='deleted_at'" >
               <span v-if="value==null">
-                  <span class="btn btn-xs btn-success button-width-lg"> {{ ts['active'] }} </span>
+                  <span class="btn btn-xs btn-success btn-width"> {{ ts['active'] }} </span>
               </span>
               <span v-else>
-                  <span class="btn btn-xs btn-danger button-width-lg"> {{ ts['inactive'] }} </span>
+                  <span class="btn btn-xs btn-danger btn-width"> {{ ts['inactive'] }} </span>
               </span>
             </span>
             <span v-else >
