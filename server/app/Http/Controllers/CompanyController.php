@@ -114,8 +114,7 @@ class CompanyController extends Controller
   */
   public function search(Request $request) 
 	{
-
-		$companies = $this->companyRepository->search($request->searchText, $this->itemsByPage);
+		$companies = $this->companyRepository->search($request, $this->itemsByPage);
 		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
 
 		return response()->json($companies);
