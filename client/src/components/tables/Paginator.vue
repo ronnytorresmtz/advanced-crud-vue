@@ -80,17 +80,20 @@
       searchText() {
         return this.$store.getters.getSearchText;
       },
+      optionSelected() {
+        return this.$store.getters.getOptionSelected;
+      },
     },
 
     methods: {
       setStartPageUrl() {
-        const pageUrl = `${this.pagination.path}?searchText=${this.searchText}`;
+        const pageUrl = `${this.pagination.path}?searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
         this.getData(pageUrl);
       },
       setPrevPageUrl() {
         let pageUrl = '';
         if (this.pagination.prev_page_url) {
-          pageUrl = `${this.pagination.prev_page_url}&searchText=${this.searchText}`;
+          pageUrl = `${this.pagination.prev_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
         } else {
           pageUrl = null;
         }
@@ -99,14 +102,14 @@
       setNextPageUrl() {
         let pageUrl = '';
         if (this.pagination.next_page_url) {
-          pageUrl = `${this.pagination.next_page_url}&searchText=${this.searchText}`;
+          pageUrl = `${this.pagination.next_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
         } else {
           pageUrl = null;
         }
         this.getData(pageUrl);
       },
       setEndPageUrl() {
-        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&searchText=${this.searchText}`;
+        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
         this.getData(pageUrl);
       },
       getData(pageUrl) {
