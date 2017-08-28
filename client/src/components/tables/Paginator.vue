@@ -33,13 +33,13 @@
     <div class="col-sm-6">
       <div align="right">
         <a class="btn btn-sm btn-primary button-width" 
-        @click.prevent="getData(url)"> {{ ts['start'] }} </a>
+        @click.prevent="setStartPageUrl"> {{ ts['start'] }} </a>
         <a class="btn btn-sm btn-primary button-width" 
-        @click.prevent="getData(pagination.prev_page_url)"> {{ ts['prev'] }} </a>
+        @click.prevent="setPrevPageUrl"> {{ ts['prev'] }} </a>
         <a class="btn btn-sm btn-primary button-width"
-        @click.prevent="getData(pagination.next_page_url)"> {{ ts['next'] }} </a>
+        @click.prevent="setNextPageUrl"> {{ ts['next'] }} </a>
         <a class="btn btn-sm btn-primary button-width" 
-        @click.prevent="getData(url + '?page=' + pagination.last_page)"> {{ ts['end'] }} </a>
+        @click.prevent="setEndPageUrl"> {{ ts['end'] }} </a>
         <br/> <br/>
       </div>
     </div>
@@ -59,11 +59,10 @@
 
     mixins: [MyLang],
 
-    props: ['url', 'searchText', 'filter', 'fieldToOrder', 'order'],
+    props: ['url', 'filter', 'fieldToOrder', 'order'],
 
     data() {
       return {
-        // pagination: {},
         noMorePages: false,
         perPagesList: ['5', '10', '25', '50', '100'],
         perPage: '10',
@@ -71,16 +70,45 @@
     },
 
     created() {
-      this.getData();
+      this.getData(this.pagination.path);
     },
 
     computed: {
       pagination() {
         return this.$store.getters.getPagination;
       },
+      searchText() {
+        return this.$store.getters.getSearchText;
+      },
     },
 
     methods: {
+      setStartPageUrl() {
+        const pageUrl = `${this.pagination.path}?searchText=${this.searchText}`;
+        this.getData(pageUrl);
+      },
+      setPrevPageUrl() {
+        let pageUrl = '';
+        if (this.pagination.prev_page_url) {
+          pageUrl = `${this.pagination.prev_page_url}&searchText=${this.searchText}`;
+        } else {
+          pageUrl = null;
+        }
+        this.getData(pageUrl);
+      },
+      setNextPageUrl() {
+        let pageUrl = '';
+        if (this.pagination.next_page_url) {
+          pageUrl = `${this.pagination.next_page_url}&searchText=${this.searchText}`;
+        } else {
+          pageUrl = null;
+        }
+        this.getData(pageUrl);
+      },
+      setEndPageUrl() {
+        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&searchText=${this.searchText}`;
+        this.getData(pageUrl);
+      },
       getData(pageUrl) {
         store.commit('UPDATE_LOADING', true);
         this.noMorePages = false;
@@ -91,36 +119,14 @@
             store.commit('UPDATE_LOADING', false);
           })
           .catch(() => {
-            store.commit('SHOW_MESSAGE', 'Error');
+            alert('Unexpected Error (Pagination Component - method getData)');
             store.commit('UPDATE_LOADING', false);
           });
-          // const self = this;
-          // Axios.get(newPageUrl, { params: { per_pages: self.perPage } })
-          // .then((response) => {
-          //   self.setPagination(response.data);
-          //   store.commit('UPDATE_PAGEDATA', response.data.data);
-          //   store.commit('UPDATE_LOADING', false);
-          // });
         } else {
           this.noMorePages = true;
           store.commit('UPDATE_LOADING', false);
         }
       },
-      // setPagination(data) {
-      //   const pagination = {
-      //     current_page: data.current_page,
-      //     from: data.from,
-      //     last_page: data.last_page,
-      //     next_page_url: data.next_page_url,
-      //     path: data.path,
-      //     per_page: data.per_page,
-      //     prev_page_url: data.prev_page_url,
-      //     to: data.to,
-      //     total: data.total,
-      //   };
-      //   store.commit('UPDATE_PAGINATION', pagination);
-      //   this.pagination = pagination;
-      // },
     },
   };
 </script>
