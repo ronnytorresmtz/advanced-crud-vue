@@ -59,10 +59,9 @@
                 class="form-control"
                 v-model="searchText"
                 :placeholder="ts['typeForSearch']"
-                @keyup = "applySortAndFiltersToData()"
           >
           </input>
-          <span class="input-group-addon" >
+          <span class="input-group-addon" @click="getDataFiltered" style="cursor: pointer">
             <span :class="(!searchText) ? 'glyphicon glyphicon-search' : 'glyphicon glyphicon-filter'"></span>
           </span>
         </div>
@@ -176,7 +175,6 @@
 
       <mypaginator
           url="http://localhost:8000/api/shippers/companies"
-          searchText="searchText"
           filter="optionSelected"
           fieldToOrder="ID"
           order="asc"
@@ -313,12 +311,8 @@ export default {
       });
       return dataRows;
     },
-
-    getData() {
-      store.dispatch('getAllData').then(() => {
-        this.applySortAndFiltersToData();
-        this.resetForm();
-      });
+    getDataFiltered() {
+      store.dispatch('getDataFiltered');
     },
     addItem() {
       this.input.deleted_at = null;
@@ -453,6 +447,9 @@ export default {
       } else {
         $('#myModal').modal('hide');
       }
+    },
+    searchText() {
+      store.commit('UPDATE_SEARCH_TEXT', this.searchText);
     },
   },
 };
