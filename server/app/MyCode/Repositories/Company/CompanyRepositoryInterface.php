@@ -12,6 +12,6 @@ interface CompanyRepositoryInterface extends MyEloquentRepositoryInterface
 	public function store($request);
 	public function update($request, $id);
 	public function delete($id);
-	public function search($value, $itemsByPage);
+	public function search($request, $itemsByPage);
 	public function importFile($file);
 }
