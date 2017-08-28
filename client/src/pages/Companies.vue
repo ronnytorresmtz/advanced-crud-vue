@@ -55,12 +55,7 @@
       <div class="row">
         <div class="col-xs-3" >
         <div class="input-group">
-          <input type="text"
-                class="form-control"
-                v-model="searchText"
-                :placeholder="ts['typeForSearch']"
-          >
-          </input>
+          <input type="text" class="form-control" v-model="searchText" :placeholder="ts['typeForSearch']"></input>
           <span class="input-group-addon" @click="getDataFiltered" style="cursor: pointer">
             <span :class="(!searchText) ? 'glyphicon glyphicon-search' : 'glyphicon glyphicon-filter'"></span>
           </span>
@@ -80,11 +75,7 @@
             </label>
           </div-->
           <!--multiselect :taggable="true" v-model="optionSelected" :options="selectOptions"></multiselect-->
-          <select
-            class="form-control"
-            v-model="optionSelected"
-            @change="applySortAndFiltersToData()"
-          >
+          <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
             <option value="Apply a filter"> {{ ts['applyAFilter'] }} </option>
             <option value="null"> {{ ts['active'] }} </option>
             <option value="1"> {{ ts['inactive'] }} </option>
@@ -312,6 +303,8 @@ export default {
       return dataRows;
     },
     getDataFiltered() {
+      store.commit('UPDATE_SEARCH_TEXT', this.searchText);
+      store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
       store.dispatch('getDataFiltered');
     },
     addItem() {
