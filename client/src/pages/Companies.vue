@@ -55,8 +55,8 @@
       <div class="row">
         <div class="col-xs-3" >
         <div class="input-group">
-          <input type="text" class="form-control" v-model="searchText" :placeholder="ts['typeForSearch']"></input>
-          <span class="input-group-addon" @click="getDataFiltered" style="cursor: pointer">
+          <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
+          <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer">
             <span :class="(!searchText) ? 'glyphicon glyphicon-search' : 'glyphicon glyphicon-filter'"></span>
           </span>
         </div>
@@ -303,6 +303,7 @@ export default {
       return dataRows;
     },
     getDataFiltered() {
+      store.commit('UPDATE_LOADING', true);
       store.commit('UPDATE_SEARCH_TEXT', this.searchText);
       store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
       store.dispatch('getDataFiltered');
