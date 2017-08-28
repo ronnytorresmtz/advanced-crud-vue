@@ -10,6 +10,8 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     pageData: [],
+    searchText: '',
+    filterApplied: '',
     pagination: {},
     loading: false,
     showModal: false,
@@ -92,6 +94,12 @@ const store = new Vuex.Store({
     UPDATE_PAGINATION(state, pagination) {
       state.pagination = pagination;
     },
+    UPDATE_SEARCH_TEXT(state, text) {
+      state.searchText = text;
+    },
+    UPDATE_FILTER_APPLIED(state, value) {
+      state.filterApplied = value;
+    },
     UPDATE_LOADING(state, loading) {
       state.loading = loading;
     },
@@ -121,7 +129,6 @@ const store = new Vuex.Store({
   },
   actions: {
     getData(context, url, perPage) {
-      console.log('entre');
       return Axios.get(url, { params: perPage })
       .then((response) => {
         const pagination = {
@@ -139,13 +146,25 @@ const store = new Vuex.Store({
         store.commit('UPDATE_PAGEDATA', response.data.data);
       });
     },
+    getDataFiltered(context) {
+      const pagination = context.getters.getPagination;
+      store.dispatch(
+        'getData',
+        `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}`,
+        pagination.per_page,
+      );
+    },
     addItem(context, data) {
       store.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       return Axios.post('http://localhost:8000/api/shippers/companies', data)
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch('getData', `${pagination.path}?page=${pagination.last_page}`, pagination.per_page);
+            store.dispatch(
+              'getData',
+              `${pagination.path}?page=${pagination.last_page}&searchText=${context.getters.getSearchText}`,
+              pagination.per_page,
+            );
             // context.commit('ADD_ITEM_TO_PAGEDATA', data);
           }
           store.commit('SHOW_MESSAGE', response);
@@ -158,7 +177,11 @@ const store = new Vuex.Store({
       return Axios.put(`http://localhost:8000/api/shippers/companies/${data.id}`, data)
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch('getData', `${pagination.path}?page=${pagination.current_page}`, pagination.per_page);
+            store.dispatch(
+              'getData',
+              `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}`,
+              pagination.per_page,
+            );
             // context.commit('UPDATE_ITEM_TO_PAGEDATA', data);
           }
           store.commit('SHOW_MESSAGE', response);
@@ -171,7 +194,11 @@ const store = new Vuex.Store({
       return Axios.delete(`http://localhost:8000/api/shippers/companies/${id}`, { params: { id } })
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch('getData', `${pagination.path}?page=${pagination.current_page}`, pagination.per_page);
+            store.dispatch(
+              'getData',
+              `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}`,
+              pagination.per_page,
+            );
             // context.commit('DELETE_ITEM_FROM_PAGEDATA', id);
           }
           store.commit('SHOW_MESSAGE', response);
@@ -191,6 +218,8 @@ const store = new Vuex.Store({
     getIsAddBtnDisable: state => state.isAddBtnDisable,
     getIsUpdateBtnDisable: state => state.isUpdateBtnDisable,
     getCloseAfterAction: state => state.closeAfterAction,
+    getSearchText: state => state.searchText,
+    getfilterApplied: state => state.filterApplied,
   },
 });
 
