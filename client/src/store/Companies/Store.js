@@ -11,7 +11,7 @@ const store = new Vuex.Store({
   state: {
     pageData: [],
     searchText: '',
-    filterApplied: '',
+    optionSelected: '',
     pagination: {},
     loading: false,
     showModal: false,
@@ -97,8 +97,8 @@ const store = new Vuex.Store({
     UPDATE_SEARCH_TEXT(state, text) {
       state.searchText = text;
     },
-    UPDATE_FILTER_APPLIED(state, value) {
-      state.filterApplied = value;
+    UPDATE_OPTION_SELECT(state, value) {
+      state.optionSelected = value;
     },
     UPDATE_LOADING(state, loading) {
       state.loading = loading;
@@ -150,7 +150,7 @@ const store = new Vuex.Store({
       const pagination = context.getters.getPagination;
       store.dispatch(
         'getData',
-        `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}`,
+        `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}&optionSelected=${context.getters.getOptionSelected}`,
         pagination.per_page,
       );
     },
@@ -219,7 +219,7 @@ const store = new Vuex.Store({
     getIsUpdateBtnDisable: state => state.isUpdateBtnDisable,
     getCloseAfterAction: state => state.closeAfterAction,
     getSearchText: state => state.searchText,
-    getfilterApplied: state => state.filterApplied,
+    getOptionSelected: state => state.optionSelected,
   },
 });
 
