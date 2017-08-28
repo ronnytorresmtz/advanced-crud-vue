@@ -147,12 +147,13 @@ const store = new Vuex.Store({
       });
     },
     getDataFiltered(context) {
+      store.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       store.dispatch(
         'getData',
-        `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}&optionSelected=${context.getters.getOptionSelected}`,
+        `${pagination.path}/search?page=${pagination.current_page}&searchText=${context.getters.getSearchText}&optionSelected=${context.getters.getOptionSelected}`,
         pagination.per_page,
-      );
+      ).then(() => store.commit('UPDATE_LOADING', false));
     },
     addItem(context, data) {
       store.commit('UPDATE_LOADING', true);
