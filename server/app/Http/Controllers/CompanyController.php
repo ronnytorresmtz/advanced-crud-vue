@@ -28,9 +28,9 @@ class CompanyController extends Controller
   *
   * @return \Illuminate\Http\Response
   */
-  public function index()
+  public function index(Request $request)
   {
-    $companies = $this->companyRepository->getByPage($this->itemsByPage);
+    $companies = $this->companyRepository->getByPage($request);
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
     return response()->json($companies);
   }
@@ -106,19 +106,19 @@ class CompanyController extends Controller
 	 	return response()->json($result);
   }
 
-  /**
-  * Search the specified test in the storage.
-  *
-  * @param  \Illuminate\Http\Request  $request
-  * @return \Illuminate\Http\Response
-  */
-  public function search(Request $request) 
-	{
-		$companies = $this->companyRepository->search($request, $this->itemsByPage);
-		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
-
-		return response()->json($companies);
-	}
+  // /**
+  // * Search the specified test in the storage.
+  // *
+  // * @param  \Illuminate\Http\Request  $request
+  // * @return \Illuminate\Http\Response
+  // */
+  // public function search(Request $request) 
+	// {
+	// 	$companies = $this->companyRepository->getByPage($request);
+	// 	//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
+    
+	// 	return response()->json($companies);
+	// }
 
   /**
   * Export all moduleas to Excel
