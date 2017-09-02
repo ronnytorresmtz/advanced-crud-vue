@@ -49,6 +49,12 @@
         </div>
         <div class="col-xs-6" style="margin-top: 30px" align="right">
           <button class="btn btn-sm btn-primary" @click.prevent="showAddForm()"> {{ ts['addCompany'] }} </button>
+          <button class="btn btn-sm btn-primary" @click.prevent="exportData()"> 
+            <span class="glyphicon glyphicon-arrow-down"></span>
+          </button>
+          <button class="btn btn-sm btn-primary" @click.prevent="importData()"> 
+            <span class="glyphicon glyphicon-arrow-up"></span>
+          </button>
         </div>
       </div>
       <hr>
@@ -56,7 +62,7 @@
         <div class="col-xs-3" >
         <div class="input-group">
           <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
-          <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer">
+          <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer;">
             <span :class="(!searchText) ? 'glyphicon glyphicon-search' : 'glyphicon glyphicon-filter'"></span>
           </span>
         </div>
@@ -76,8 +82,8 @@
           </div-->
           <!--multiselect :taggable="true" v-model="optionSelected" :options="selectOptions"></multiselect-->
           <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
-            <option value="Apply a filter"> {{ ts['applyAFilter'] }} </option>
-            <option value="null"> {{ ts['active'] }} </option>
+            <option value="-1"> {{ ts['applyAFilter'] }} </option>
+            <option value="0"> {{ ts['active'] }} </option>
             <option value="1"> {{ ts['inactive'] }} </option>
           </select>
         </div>
@@ -175,6 +181,8 @@
     <hr>
     <h4>TODO</h4>
     <ul>
+      <li>Per Page no esta funcionando</li>      
+      <li>Implementar Export e Import</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
     </ul>
@@ -184,6 +192,7 @@
 <script>
 // 3er Party Component
 // import Multiselect from 'vue-multiselect';
+import Axios from 'axios';
 // vuex store
 import store from '../store/Companies/Store';
 // my components
@@ -193,6 +202,7 @@ import mytable from '../components/tables/Table';
 import mypaginator from '../components/tables/Paginator';
 // my libraries
 import createObj, { resetObjVal, compareValues } from '../lib/General';
+import exportToFile from '../lib/Download';
 
 export default {
   name: 'Companies',
@@ -226,7 +236,7 @@ export default {
       dataSortedAndFiltered: [],
       totalRows: '',
       searchText: '',
-      optionSelected: 'Apply a filter',
+      optionSelected: '-1',
       selectOptions: ['Apply A Filter', 'Active', 'Inactive'],
       lastFieldOrder: '',
       sortOrder: 'asc',
@@ -248,6 +258,10 @@ export default {
         deleted_at: '',
       },
     };
+  },
+
+  created() {
+    store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
   },
 
   computed: {
@@ -303,7 +317,6 @@ export default {
       return dataRows;
     },
     getDataFiltered() {
-      store.commit('UPDATE_LOADING', true);
       store.commit('UPDATE_SEARCH_TEXT', this.searchText);
       store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
       store.dispatch('getDataFiltered');
@@ -338,6 +351,28 @@ export default {
       }
       this.closeModal();
       this.displayPopUpMessage();
+    },
+    exportData() {
+      store.commit('UPDATE_LOADING', true);
+      const url = this.$store.getters.getPagination.path;
+      console.log('url', url);
+      Axios.get(`${url}/export`)
+      .then((response) => {
+        exportToFile(response.data, this.title, true);
+      })
+      .then((response) => {
+        console.log('entro2');
+        store.commit('SHOW_MESSAGE', response);
+        store.commit('UPDATE_LOADING', false);
+      })
+      .catch((response) => {
+        console.log('entro3');
+        store.commit('SHOW_MESSAGE', response);
+        store.commit('UPDATE_LOADING', false);
+      });
+    },
+    importData() {
+
     },
     resetForm() {
       store.commit('RESET_ITEM');
@@ -444,6 +479,9 @@ export default {
     },
     searchText() {
       store.commit('UPDATE_SEARCH_TEXT', this.searchText);
+      if (!this.searchText) {
+        this.getDataFiltered();
+      }
     },
   },
 };
