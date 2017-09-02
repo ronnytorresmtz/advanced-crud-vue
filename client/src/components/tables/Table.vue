@@ -19,6 +19,7 @@
     width: 60px;
   }
 
+
 </style>
 
 <template>
@@ -26,7 +27,10 @@
   <div  class="table-responsive table-hscroll table-height">
     <table id="table1" class="table table-condensed table-hover">
       <th v-for="col in cols">
-        <a @click.prevent="sortAndFilter($event)" style="cursor:pointer" :id="col.name">{{ ts[col.label] }}</a>
+        <a @click.prevent="sort($event)" style="cursor:pointer" :id="col.name">
+          <span :class="isOrderBy()" v-show="isFieldOrder(col.name)"></span>
+          {{ ts[col.label] }}
+        </a>
       </th>
       <tbody>
         <tr v-for="row in rows">
@@ -78,8 +82,22 @@ export default {
       store.commit('SHOW_CLOSE_AFTERACTION_DEFAULT', false);
       store.commit('SHOW_MODAL', true);
     },
-    sortAndFilter(e) {
-      console.log('sortAndFilter', e);
+    sort(e) {
+      const fieldOrderBy = e.target.id;
+      const orderBy = (this.$store.getters.getOrderBy === 'asc') ? 'desc' : 'asc';
+      store.commit('UPDATE_ORDER_BY', orderBy);
+      store.commit('UPDATE_FIELD_ORDER_BY', fieldOrderBy);
+      store.dispatch('getDataFiltered');
+    },
+    isFieldOrder(name) {
+      return (name === this.$store.getters.getFieldOrderBy);
+    },
+    isOrderBy() {
+      console.log('entro');
+      if (this.$store.getters.getOrderBy === 'asc') {
+        return 'glyphicon glyphicon-sort-by-alphabet';
+      }
+      return 'glyphicon glyphicon-sort-by-alphabet-alt';
     },
   },
 };
