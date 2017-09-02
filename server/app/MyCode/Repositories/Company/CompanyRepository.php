@@ -66,18 +66,53 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		return $companies;
 	}
 
-	public function getByPage($itemsByPage)
+	public function getByPage($request)
 	{
 		$companies = $this->model->withTrashed()
 			->select(
-				'id', 'deleted_at','company_name', 'company_contact', 'company_email', 'company_phone',
-				'company_cellular',	'company_location', 'company_address', 'company_postcode',	
-				'company_latitude',	'company_longitude', 'company_legal_name', 'company_tax_id', 'company_website'
-			)
+			'id', 'deleted_at','company_name', 'company_contact', 'company_email', 'company_phone',
+			'company_cellular',	'company_location', 'company_address', 'company_postcode',	
+			'company_latitude',	'company_longitude', 'company_legal_name', 'company_tax_id', 'company_website'
+		)
+		->where(function ($query) use ($request) {
+			if (isset($request->searchText)) {
+				$query->orwhere('id','like','%' . $request->searchText . '%')
+					->orwhere('company_name','like','%' . $request->searchText . '%')
+					->orwhere('company_contact','like','%' . $request->searchText . '%')
+					->orwhere('company_email','like','%' . $request->searchText . '%')
+					->orwhere('company_phone','like','%' . $request->searchText . '%')
+					->orwhere('company_cellular','like','%' . $request->searchText . '%')
+					->orwhere('company_location','like','%' . $request->searchText . '%')
+					->orwhere('company_address','like','%' . $request->searchText . '%')
+					->orwhere('company_postcode','like','%' . $request->searchText . '%')
+					->orwhere('company_latitude','like','%' . $request->searchText . '%')
+					->orwhere('company_longitude','like','%' . $request->searchText . '%')
+					->orwhere('company_legal_name','like','%' . $request->searchText . '%')
+					->orwhere('company_tax_id','like','%' . $request->searchText . '%')
+					->orwhere('company_website','like','%' . $request->searchText . '%');
+			}
+		})	
+
+		->where(function ($query) use ($request) {
+			if ($request->optionSelected == 0) {
+				$query->whereNull('deleted_at');
+			}
+			if ($request->optionSelected == 1) {
+				$query->whereNotNull('deleted_at');
+			}
 			
-			->paginate($itemsByPage);
+		})
+
+		->where(function ($query) use ($request) {
+			if ($request->fieldOrderBy !== '') {
+				$query->orderBy($request->fieldOrderBy, $request->orderBy);
+			}
+		})
+		
+		->paginate($request->itemsByPage);
 
 		return $companies;
+
 	}
 
   public function store($request)
@@ -164,21 +199,8 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		}	
 	}
 
-  public function search($request, $itemsByPage)
+  public function search($request)
 	{
-		switch ($request->optionSelected) {
-			case null:
-				$condition = 'deleted_at,' . '=' . ',' . null;
-				break;
-			case 1:
-				$condition = 'deleted_at,' . '!=' . ',' . null;
-				break;
-			default:
-				$condition = '1=1';
-				break;
-		}
-
-		$searchText = $request->searchText;
 
 		$companies = $this->model->withTrashed()
 			->select(
@@ -186,25 +208,36 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 			'company_cellular',	'company_location', 'company_address', 'company_postcode',	
 			'company_latitude',	'company_longitude', 'company_legal_name', 'company_tax_id', 'company_website'
 		)
-		// ->where($condition)
-		->where('id','like','%' . $searchText . '%')
-			->orwhere(function ($query) use ($searchText) {
-			  	$query->orwhere('company_name','like','%' . $searchText . '%')
-				  		->orwhere('company_contact','like','%' . $searchText . '%')
-						->orwhere('company_email','like','%' . $searchText . '%')
-						->orwhere('company_phone','like','%' . $searchText . '%')
-						->orwhere('company_cellular','like','%' . $searchText . '%')
-						->orwhere('company_location','like','%' . $searchText . '%')
-						->orwhere('company_address','like','%' . $searchText . '%')
-						->orwhere('company_postcode','like','%' . $searchText . '%')
-						->orwhere('company_latitude','like','%' . $searchText . '%')
-						->orwhere('company_longitude','like','%' . $searchText . '%')
-						->orwhere('company_legal_name','like','%' . $searchText . '%')
-						->orwhere('company_tax_id','like','%' . $searchText . '%')
-						->orwhere('company_website','like','%' . $searchText . '%');
+		->where(function ($query) use ($request) {
+			if (isset($request->searchText)) {
+				$query->orwhere('id','like','%' . $request->searchText . '%')
+					->orwhere('company_name','like','%' . $request->searchText . '%')
+					->orwhere('company_contact','like','%' . $request->searchText . '%')
+					->orwhere('company_email','like','%' . $request->searchText . '%')
+					->orwhere('company_phone','like','%' . $request->searchText . '%')
+					->orwhere('company_cellular','like','%' . $request->searchText . '%')
+					->orwhere('company_location','like','%' . $request->searchText . '%')
+					->orwhere('company_address','like','%' . $request->searchText . '%')
+					->orwhere('company_postcode','like','%' . $request->searchText . '%')
+					->orwhere('company_latitude','like','%' . $request->searchText . '%')
+					->orwhere('company_longitude','like','%' . $request->searchText . '%')
+					->orwhere('company_legal_name','like','%' . $request->searchText . '%')
+					->orwhere('company_tax_id','like','%' . $request->searchText . '%')
+					->orwhere('company_website','like','%' . $request->searchText . '%');
+			}
+		})	
+
+		->where(function ($query) use ($request) {
+			if ($request->optionSelected == 0) {
+				$query->whereNull('deleted_at');
+			}
+			if ($request->optionSelected == 1) {
+				$query->whereNotNull('deleted_at');
+			}
+			
 		})
 		
-		->paginate($itemsByPage);
+		->paginate($request->itemsByPage);
 
 		return $companies;
       	
