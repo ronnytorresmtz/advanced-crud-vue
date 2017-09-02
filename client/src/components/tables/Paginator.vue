@@ -87,13 +87,13 @@
 
     methods: {
       setStartPageUrl() {
-        const pageUrl = `${this.pagination.path}?searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
+        const pageUrl = `${this.pagination.path}?searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
         this.getData(pageUrl);
       },
       setPrevPageUrl() {
         let pageUrl = '';
         if (this.pagination.prev_page_url) {
-          pageUrl = `${this.pagination.prev_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
+          pageUrl = `${this.pagination.prev_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
         } else {
           pageUrl = null;
         }
@@ -102,14 +102,14 @@
       setNextPageUrl() {
         let pageUrl = '';
         if (this.pagination.next_page_url) {
-          pageUrl = `${this.pagination.next_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
+          pageUrl = `${this.pagination.next_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
         } else {
           pageUrl = null;
         }
         this.getData(pageUrl);
       },
       setEndPageUrl() {
-        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&searchText=${this.searchText}&optionSelected=${this.optionSelected}`;
+        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
         this.getData(pageUrl);
       },
       getData(pageUrl) {
@@ -117,7 +117,7 @@
         this.noMorePages = false;
         if (pageUrl !== null) {
           const newPageUrl = pageUrl || this.url;
-          store.dispatch('getData', newPageUrl, this.perPage)
+          store.dispatch('getData', `${newPageUrl}?searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`)
           .then(() => {
             store.commit('UPDATE_LOADING', false);
           })
