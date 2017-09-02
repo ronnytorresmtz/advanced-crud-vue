@@ -84,7 +84,11 @@ export default {
     },
     sort(e) {
       const fieldOrderBy = e.target.id;
-      const orderBy = (this.$store.getters.getOrderBy === 'asc') ? 'desc' : 'asc';
+      console.log(fieldOrderBy);
+      const orderBy = (this.$store.getters.getOrderBy === 'asc' && fieldOrderBy === this.$store.getters.getFieldOrderBy) ? 'desc' : 'asc';
+      // if (fieldOrderBy !== this.$store.getters.getFieldOrderBy) {
+      //   orderBy = 'asc';
+      // }
       store.commit('UPDATE_ORDER_BY', orderBy);
       store.commit('UPDATE_FIELD_ORDER_BY', fieldOrderBy);
       store.dispatch('getDataFiltered');
@@ -93,7 +97,6 @@ export default {
       return (name === this.$store.getters.getFieldOrderBy);
     },
     isOrderBy() {
-      console.log('entro');
       if (this.$store.getters.getOrderBy === 'asc') {
         return 'glyphicon glyphicon-sort-by-alphabet';
       }

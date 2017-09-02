@@ -68,6 +68,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 	public function getByPage($request)
 	{
+
 		$companies = $this->model->withTrashed()
 			->select(
 			'id', 'deleted_at','company_name', 'company_contact', 'company_email', 'company_phone',
@@ -102,13 +103,11 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 			}
 			
 		})
-
-		->where(function ($query) use ($request) {
-			if ($request->fieldOrderBy !== '') {
-				$query->orderBy($request->fieldOrderBy, $request->orderBy);
-			}
+		// if first parameter is true the function is executed
+		->when($request->fieldOrderBy, function ($query) use ($request) {
+			$query->orderBy($request->fieldOrderBy, $request->orderBy);
 		})
-		
+
 		->paginate($request->itemsByPage);
 
 		return $companies;

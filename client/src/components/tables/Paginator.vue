@@ -83,17 +83,23 @@
       optionSelected() {
         return this.$store.getters.getOptionSelected;
       },
+      fieldOrderBy() {
+        return this.$store.getters.getFieldOrderBy;
+      },
+      orderBy() {
+        return this.$store.getters.getOrderBy;
+      },
     },
 
     methods: {
       setStartPageUrl() {
-        const pageUrl = `${this.pagination.path}?searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
+        const pageUrl = `${this.pagination.path}?${this.getParams()}`;
         this.getData(pageUrl);
       },
       setPrevPageUrl() {
         let pageUrl = '';
         if (this.pagination.prev_page_url) {
-          pageUrl = `${this.pagination.prev_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
+          pageUrl = `${this.pagination.prev_page_url}&${this.getParams()}`;
         } else {
           pageUrl = null;
         }
@@ -102,22 +108,25 @@
       setNextPageUrl() {
         let pageUrl = '';
         if (this.pagination.next_page_url) {
-          pageUrl = `${this.pagination.next_page_url}&searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
+          pageUrl = `${this.pagination.next_page_url}&${this.getParams()}`;
         } else {
           pageUrl = null;
         }
         this.getData(pageUrl);
       },
       setEndPageUrl() {
-        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`;
+        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&${this.getParams()}`;
         this.getData(pageUrl);
+      },
+      getParams() {
+        return `searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
       },
       getData(pageUrl) {
         store.commit('UPDATE_LOADING', true);
         this.noMorePages = false;
         if (pageUrl !== null) {
           const newPageUrl = pageUrl || this.url;
-          store.dispatch('getData', `${newPageUrl}?searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}`)
+          store.dispatch('getData', `${newPageUrl}?${this.getParams()}`)
           .then(() => {
             store.commit('UPDATE_LOADING', false);
           })

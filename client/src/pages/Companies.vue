@@ -181,7 +181,7 @@
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li>Per Page no esta funcionando</li>      
+      <li>Sortear Columnas de Tabla</li>      
       <li>Implementar Export e Import</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
@@ -216,7 +216,7 @@ export default {
     return {
       title: 'Company',
       headers: [
-        { name: 'id', label: 'id', width: '5%' },
+        { name: 'id', label: 'id', width: '10%' },
         { name: 'deleted_at', label: 'companyStatus', width: '10%' },
         { name: 'company_name', label: 'companyName', width: '20%' },
         { name: 'company_contact', label: 'companyContact', width: '20%' },
