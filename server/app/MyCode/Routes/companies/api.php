@@ -2,7 +2,7 @@
 
 // Route::group(array('middleware' => 'auth'), function(){
 
-    Route::get('shippers/companies/search', 'CompanyController@search'); 
+    // Route::get('shippers/companies/search', 'CompanyController@search'); 
     
     Route::get('shippers/companies/export', 'CompanyController@export');
 
@@ -22,6 +22,7 @@
         )
     ));
 
+    
     
 
    
