@@ -12,6 +12,8 @@ const store = new Vuex.Store({
     pageData: [],
     searchText: '',
     optionSelected: '',
+    fieldOrderBy: '',
+    orderBy: 'desc',
     pagination: {},
     loading: false,
     showModal: false,
@@ -103,6 +105,12 @@ const store = new Vuex.Store({
     UPDATE_LOADING(state, loading) {
       state.loading = loading;
     },
+    UPDATE_ORDER_BY(state, orderBy) {
+      state.orderBy = orderBy;
+    },
+    UPDATE_FIELD_ORDER_BY(state, fieldOrderBy) {
+      state.fieldOrderBy = fieldOrderBy;
+    },
     SHOW_MESSAGE(state, response) {
       state.message.text = (response.data.message) ? response.data.message : 'The operation was NOT executed as expected, try again or please contact the support service';
       state.message.type = (response.data.error || !response.data.message) ? 'danger' : 'info';
@@ -128,8 +136,8 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    getData(context, url, perPage) {
-      return Axios.get(url, { params: perPage })
+    getData(context, url) {
+      return Axios.get(url)
       .then((response) => {
         const pagination = {
           current_page: response.data.current_page,
@@ -146,12 +154,19 @@ const store = new Vuex.Store({
         store.commit('UPDATE_PAGEDATA', response.data.data);
       });
     },
-    getDataFiltered(context) {
+    getDataFiltered(context, currentPage) {
       store.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
+      const search = '';// (pagination.path.search('/search') === -1) ? '/search' : '';
+      const page = (!currentPage) ? '' : `page=${currentPage}&`;
       store.dispatch(
         'getData',
-        `${pagination.path}/search?page=${pagination.current_page}&searchText=${context.getters.getSearchText}&optionSelected=${context.getters.getOptionSelected}`,
+        `${pagination.path}${search}?${page}&
+          searchText=${context.getters.getSearchText}&
+          optionSelected=${context.getters.getOptionSelected}&
+          itemsByPage=${pagination.per_page}&
+          fieldOrderBy=${context.getters.getFieldOrderBy}&
+          orderBy=${context.getters.getOrderBy}`,
         pagination.per_page,
       ).then(() => store.commit('UPDATE_LOADING', false));
     },
@@ -161,11 +176,7 @@ const store = new Vuex.Store({
       return Axios.post('http://localhost:8000/api/shippers/companies', data)
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch(
-              'getData',
-              `${pagination.path}?page=${pagination.last_page}&searchText=${context.getters.getSearchText}`,
-              pagination.per_page,
-            );
+            store.dispatch('getDataFiltered', pagination.last_page);
             // context.commit('ADD_ITEM_TO_PAGEDATA', data);
           }
           store.commit('SHOW_MESSAGE', response);
@@ -178,11 +189,7 @@ const store = new Vuex.Store({
       return Axios.put(`http://localhost:8000/api/shippers/companies/${data.id}`, data)
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch(
-              'getData',
-              `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}`,
-              pagination.per_page,
-            );
+            store.dispatch('getDataFiltered', pagination.current_page);
             // context.commit('UPDATE_ITEM_TO_PAGEDATA', data);
           }
           store.commit('SHOW_MESSAGE', response);
@@ -195,11 +202,7 @@ const store = new Vuex.Store({
       return Axios.delete(`http://localhost:8000/api/shippers/companies/${id}`, { params: { id } })
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch(
-              'getData',
-              `${pagination.path}?page=${pagination.current_page}&searchText=${context.getters.getSearchText}`,
-              pagination.per_page,
-            );
+            store.dispatch('getDataFiltered', pagination.current_page);
             // context.commit('DELETE_ITEM_FROM_PAGEDATA', id);
           }
           store.commit('SHOW_MESSAGE', response);
@@ -221,6 +224,8 @@ const store = new Vuex.Store({
     getCloseAfterAction: state => state.closeAfterAction,
     getSearchText: state => state.searchText,
     getOptionSelected: state => state.optionSelected,
+    getFieldOrderBy: state => state.fieldOrderBy,
+    getOrderBy: state => state.orderBy,
   },
 });
 
