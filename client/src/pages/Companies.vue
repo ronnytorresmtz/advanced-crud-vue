@@ -1,4 +1,3 @@
-<!--style src="vue-multiselect/dist/vue-multiselect.min.css"></style-->
 <style scoped>
   tr {
     cursor:pointer;
@@ -69,18 +68,6 @@
         </div>
         <div class="col-xs-6"></div>
         <div class="col-xs-3" align="right">
-          <!--div class="btn-group " data-toggle="buttons" @click.prevent="changeFilter">
-            <label class="btn btn-md btn-default active">
-              <input v-model="radioSelected" value="All" type="radio" label="Apply" name="options" id="option1" checked> All
-            </label>
-            <label class="btn btn-md btn-default">
-              <input v-model="radioSelected" value="Active" type="radio" label="Active" name="options" id="option2"> Active
-            </label>
-            <label class="btn btn-md btn-default">
-              <input v-model="radioSelected" value="Inactive" type="radio" label="Inactive" name="options" id="option3" > Inactive
-            </label>
-          </div-->
-          <!--multiselect :taggable="true" v-model="optionSelected" :options="selectOptions"></multiselect-->
           <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
             <option value="-1"> {{ ts['applyAFilter'] }} </option>
             <option value="0"> {{ ts['active'] }} </option>
@@ -181,7 +168,6 @@
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li>Sortear Columnas de Tabla</li>      
       <li>Implementar Export e Import</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
@@ -191,7 +177,6 @@
 
 <script>
 // 3er Party Component
-// import Multiselect from 'vue-multiselect';
 import Axios from 'axios';
 // vuex store
 import store from '../store/Companies/Store';
@@ -201,8 +186,7 @@ import mylang from '../components/languages/Languages';
 import mytable from '../components/tables/Table';
 import mypaginator from '../components/tables/Paginator';
 // my libraries
-import createObj, { resetObjVal, compareValues } from '../lib/General';
-import exportToFile from '../lib/Download';
+import createObj, { resetObjVal } from '../lib/General';
 
 export default {
   name: 'Companies',
@@ -232,14 +216,10 @@ export default {
         { name: 'company_tax_id', label: 'companyTaxId', width: '10%' },
         { name: 'company_website', label: 'companyWebsite', width: '10%' },
       ],
-      // data: [],
-      dataSortedAndFiltered: [],
       totalRows: '',
       searchText: '',
       optionSelected: '-1',
       selectOptions: ['Apply A Filter', 'Active', 'Inactive'],
-      lastFieldOrder: '',
-      sortOrder: 'asc',
       input: {
         id: 'New',
         company_name: '',
@@ -323,13 +303,7 @@ export default {
     },
     addItem() {
       this.input.deleted_at = null;
-      // store.commit('ADD_ITEM_TO_PAGEDATA', createObj(this.input));
       store.dispatch('addItem', createObj(this.input));
-      this.applySortAndFiltersToData();
-      this.lastFieldOrder = 'id';
-      this.sortOrder = 'desc';
-      this.dataSortedAndFiltered = this.dataSortedAndFiltered.sort(
-        compareValues(this.lastFieldOrder, this.sortOrder));
       this.closeModalAfterAction();
       this.resetForm();
       this.displayPopUpMessage();
@@ -337,7 +311,6 @@ export default {
     updateItem() {
       this.input.deleted_at = null;
       store.dispatch('updateItem', createObj(this.input));
-      // this.updateDataSortedAndFiltered(this.input);
       this.resetForm();
       this.closeModal();
       this.displayPopUpMessage();
@@ -345,7 +318,6 @@ export default {
     deleteItem() {
       const id = this.input.id;
       store.dispatch('deleteItem', id);
-      // this.applySortAndFiltersToData();
       if (this.input.id === id) {
         this.resetForm();
       }
@@ -355,18 +327,14 @@ export default {
     exportData() {
       store.commit('UPDATE_LOADING', true);
       const url = this.$store.getters.getPagination.path;
-      console.log('url', url);
       Axios.get(`${url}/export`)
       .then((response) => {
-        exportToFile(response.data, this.title, true);
-      })
-      .then((response) => {
-        console.log('entro2');
         store.commit('SHOW_MESSAGE', response);
+      })
+      .then(() => {
         store.commit('UPDATE_LOADING', false);
       })
       .catch((response) => {
-        console.log('entro3');
         store.commit('SHOW_MESSAGE', response);
         store.commit('UPDATE_LOADING', false);
       });
@@ -400,57 +368,6 @@ export default {
       store.commit('SHOW_BTN_ADD_DISABLE', !value);
       store.commit('SHOW_BTN_UPDATE_DISABLE', !value);
       store.commit('SHOW_CLOSE_AFTERACTION_DEFAULT', false);
-    },
-    applySortAndFiltersToData(e) {
-      let obj = [];
-      let objFiltered = [];
-      if (this.searchText) {
-        obj = this.findSearchText();
-        objFiltered = this.applyFilter(obj);
-      } else {
-        objFiltered = this.applyFilter(this.$store.getters.getPageData);
-      }
-      this.dataSortedAndFiltered = this.sortData(e, objFiltered);
-    },
-    findSearchText() {
-      const storeData = this.$store.getters.getPageData;
-      const obj = [];
-      storeData.forEach((item) => {
-        let notFound = true;
-        Object.values(item).forEach((value) => {
-          if (String(value).toLowerCase().search(
-              this.searchText.toLowerCase()) !== -1 && notFound) {
-            obj.push(item);
-            notFound = false;
-          }
-        });
-      });
-      return obj;
-    },
-    applyFilter(obj) {
-      if (this.optionSelected !== 'Apply a filter') {
-        const objFiltered = Object.values(obj).filter(item =>
-          item.deleted_at === parseInt(this.optionSelected, 0));
-        return objFiltered;
-      }
-      return obj;
-    },
-    sortData(e, obj) {
-      if (e) {
-        this.sortOrder = (this.sortOrder === 'asc') ? 'desc' : 'asc';
-        obj.sort(compareValues(e.target.id, this.sortOrder));
-        this.lastFieldOrder = e.target.id;
-      } else {
-        obj.sort(compareValues(this.lastFieldOrder, this.sortOrder));
-      }
-      return obj;
-    },
-    updateDataSortedAndFiltered(input) {
-      Object.keys(this.dataSortedAndFiltered).forEach((key) => {
-        if (this.dataSortedAndFiltered[key].id === input.id) {
-          this.dataSortedAndFiltered[key] = createObj(input);
-        }
-      });
     },
     validFieldsRequired() {
       const emptyFields = Object.keys(this.input).filter(key => this.input[key] === '');
