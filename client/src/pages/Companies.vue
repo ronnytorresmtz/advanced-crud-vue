@@ -276,26 +276,6 @@ export default {
   },
 
   methods: {
-    getDataWithHeaders(cols, rows) {
-      const dataRows = rows;
-      Object.keys(rows).forEach((key) => {
-        Object.keys(dataRows[key]).forEach((index) => {
-          let exist = false;
-          Object.keys(cols).forEach((i) => {
-            if (index === cols[i].name) {
-              exist = true;
-            }
-            if (index === 'deleted_at') {
-              exist = true;
-            }
-          });
-          if (!exist) {
-            delete dataRows[key][index];
-          }
-        });
-      });
-      return dataRows;
-    },
     getDataFiltered() {
       store.commit('UPDATE_SEARCH_TEXT', this.searchText);
       store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
