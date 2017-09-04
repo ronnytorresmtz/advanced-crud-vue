@@ -86,9 +86,6 @@ export default {
       const fieldOrderBy = e.target.id;
       console.log(fieldOrderBy);
       const orderBy = (this.$store.getters.getOrderBy === 'asc' && fieldOrderBy === this.$store.getters.getFieldOrderBy) ? 'desc' : 'asc';
-      // if (fieldOrderBy !== this.$store.getters.getFieldOrderBy) {
-      //   orderBy = 'asc';
-      // }
       store.commit('UPDATE_ORDER_BY', orderBy);
       store.commit('UPDATE_FIELD_ORDER_BY', fieldOrderBy);
       store.dispatch('getDataFiltered');
