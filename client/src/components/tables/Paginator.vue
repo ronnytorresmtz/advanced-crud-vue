@@ -59,7 +59,7 @@
 
     mixins: [MyLang],
 
-    props: ['url', 'filter', 'fieldToOrder', 'order'],
+    props: ['url'],
 
     data() {
       return {
