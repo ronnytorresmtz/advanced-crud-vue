@@ -7,8 +7,10 @@ export default {
     active: 'Active',
     inactive: 'Inactive',
     typeForSearch: 'Type for search...',
+    clearFilter: 'Clear Filter',
     applyAFilter: 'Apply a filter',
     closeAfterAction: 'Close after action',
+    ChooseAFieldToDisplay: 'Choose a Filed to Display',
     // Actions
     add: 'Add',
     edit: 'Edit',
@@ -57,8 +59,10 @@ export default {
     active: 'Activo',
     inactive: 'Inactivo',
     typeForSearch: 'Escribe para Buscar...',
+    clearFilter: 'Eliminar Filtro',
     applyAFilter: 'Aplicar Filtro',
     closeAfterAction: 'Cerrar al Agregar',
+    ChooseAFieldToDisplay: 'Selecciona un Campo para Mostrarlo',
     // Actions
     add: 'Agregar',
     edit: 'Editar',
