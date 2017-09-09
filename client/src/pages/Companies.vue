@@ -1,4 +1,5 @@
 <style scoped>
+
   tr {
     cursor:pointer;
   }
@@ -29,11 +30,12 @@
     background: white;
     color: black;
   }
-
+  
 </style>
 
 <template>
-  <div class="container-fluid" align="left">
+  <div class="container-fluid" align="left" style="margin-top: 75px">
+  
     <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
       <popup v-if="showPopUpMessage"> </popup>
     </transition>
@@ -59,30 +61,46 @@
       <hr>
       <div class="row">
         <div class="col-xs-3" >
-        <div class="input-group">
-          <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
-          <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer;">
-            <span :class="(!searchText) ? 'glyphicon glyphicon-search' : 'glyphicon glyphicon-filter'"></span>
-          </span>
-        </div>
+          <div class="col-xs-11 pull-left" style="padding: 0px">
+            <div class="input-group">
+              <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
+              <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer;">
+                <!--span :class="(!searchText) ? 'glyphicon glyphicon-search' : 'glyphicon glyphicon-filter'"></span-->
+                <span class="glyphicon glyphicon-search"></span>
+              </span>
+            </div>
+          </div>
+          <div class="col-xs-1" style="padding-left: 7px; padding-top:2px" v-if="isFilterBySearchText" @click.prevent="clearSearchTextFilter()" :title="ts['clearFilter']">
+            <button class="btn btn-sm btn-warning" @click.prevent="importData()"> 
+              <span class="glyphicon glyphicon-filter"></span>
+            </button>
+          </div>
         </div>
         <div class="col-xs-6"></div>
         <div class="col-xs-3" align="right">
-          <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
-            <option value="-1"> {{ ts['applyAFilter'] }} </option>
-            <option value="0"> {{ ts['active'] }} </option>
-            <option value="1"> {{ ts['inactive'] }} </option>
-          </select>
+          <div class="col-xs-1" style="padding-top:2px" v-show="isFilterApplied" @click.prevent="clearApplyFilter()" :title="ts['clearFilter']">
+            <button class="btn btn-sm btn-warning" @click.prevent="importData()"> 
+              <span class="glyphicon glyphicon-filter"></span>
+            </button>
+          </div>
+          <div class="col-xs-11 pull-right" style="padding-left: 20px" >
+            <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
+              <option value="-1"> {{ ts['applyAFilter'] }} </option>
+              <option value="0"> {{ ts['active'] }} </option>
+              <option value="1"> {{ ts['inactive'] }} </option>
+            </select>
+          </div>
+          
         </div>
       </div>
       <hr>
-      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <!--button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
-              </button>
+              </button-->
               <h4 class="modal-title" v-text="(isUpdateBtnShow) ? ts['editCompany'] : ts['addCompany']"></h4>
             </div>
             <div class="modal-body">
@@ -157,12 +175,7 @@
             
       <br>
 
-      <mypaginator
-          url="http://localhost:8000/api/shippers/companies"
-          filter="optionSelected"
-          fieldToOrder="ID"
-          order="asc"
-      ></mypaginator>
+      <mypaginator url="http://localhost:8000/api/shippers/companies"></mypaginator>
 
     </diV>
     <hr>
@@ -185,6 +198,7 @@ import popup from '../components/messages/Popup';
 import mylang from '../components/languages/Languages';
 import mytable from '../components/tables/Table';
 import mypaginator from '../components/tables/Paginator';
+import sidebar from '../components/layout/sidebar';
 // my libraries
 import createObj, { resetObjVal } from '../lib/General';
 
@@ -195,31 +209,34 @@ export default {
     popup,
     mytable,
     mypaginator,
+    sidebar,
   },
   data() {
     return {
       title: 'Company',
       headers: [
-        { name: 'id', label: 'id', width: '10%' },
-        { name: 'deleted_at', label: 'companyStatus', width: '10%' },
-        { name: 'company_name', label: 'companyName', width: '20%' },
-        { name: 'company_contact', label: 'companyContact', width: '20%' },
-        { name: 'company_email', label: 'companyEmail', width: '10%' },
-        { name: 'company_phone', label: 'companyPhone', width: '10%' },
-        { name: 'company_cellular', label: 'companyCellular', width: '10%' },
-        { name: 'company_location', label: 'companyLocation', width: '10%' },
-        { name: 'company_address', label: 'companyAddress', width: '10%' },
-        { name: 'company_postcode', label: 'companyPostcode', width: '10%' },
-        { name: 'company_latitude', label: 'companyLatitude', width: '10%' },
-        { name: 'company_longitude', label: 'companyLongitude', width: '10%' },
-        { name: 'company_legal_name', label: 'companyLegalName', width: '10%' },
-        { name: 'company_tax_id', label: 'companyTaxId', width: '10%' },
-        { name: 'company_website', label: 'companyWebsite', width: '10%' },
+        { name: 'id', label: 'id', display: true },
+        { name: 'deleted_at', label: 'companyStatus', display: true },
+        { name: 'company_name', label: 'companyName', display: true },
+        { name: 'company_legal_name', label: 'companyLegalName', display: false },
+        { name: 'company_tax_id', label: 'companyTaxId', display: false },
+        { name: 'company_website', label: 'companyWebsite', display: false },
+        { name: 'company_contact', label: 'companyContact', display: true },
+        { name: 'company_email', label: 'companyEmail', display: true },
+        { name: 'company_phone', label: 'companyPhone', display: true },
+        { name: 'company_cellular', label: 'companyCellular', display: true },
+        { name: 'company_location', label: 'companyLocation', display: false },
+        { name: 'company_address', label: 'companyAddress', display: false },
+        { name: 'company_postcode', label: 'companyPostcode', display: false },
+        { name: 'company_latitude', label: 'companyLatitude', display: false },
+        { name: 'company_longitude', label: 'companyLongitude', display: false },
       ],
       totalRows: '',
       searchText: '',
+      isFilterBySearchText: false,
+      isFilterApplied: false,
       optionSelected: '-1',
-      selectOptions: ['Apply A Filter', 'Active', 'Inactive'],
+      siselectOptions: ['Apply A Filter', 'Active', 'Inactive'],
       input: {
         id: 'New',
         company_name: '',
@@ -255,7 +272,7 @@ export default {
       },
     },
     loading() {
-      return this.$store.getters.getloading;
+      return this.$store.getters.getLoading;
     },
     showModal() {
       this.input = this.$store.getters.getItem;
@@ -270,8 +287,13 @@ export default {
     isUpdateBtnDisable() {
       return this.$store.getters.getIsUpdateBtnDisable;
     },
-    closeAfterAction() {
-      return this.$store.getters.getCloseAfterAction;
+    closeAfterAction: {
+      set() {
+        store.commit('SHOW_CLOSE_AFTERACTION_DEFAULT', !this.$store.getters.getCloseAfterAction);
+      },
+      get() {
+        return this.$store.getters.getCloseAfterAction;
+      },
     },
   },
 
@@ -280,12 +302,20 @@ export default {
       store.commit('UPDATE_SEARCH_TEXT', this.searchText);
       store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
       store.dispatch('getDataFiltered');
+      this.showFilterButtons();
+    },
+    showFilterButtons() {
+      this.isFilterBySearchText = (this.searchText);
+      this.isFilterApplied = (this.optionSelected !== '-1');
     },
     addItem() {
       this.input.deleted_at = null;
-      store.dispatch('addItem', createObj(this.input));
-      this.closeModalAfterAction();
-      this.resetForm();
+      store.dispatch('addItem', createObj(this.input)).then(() => {
+        if (this.$store.getters.getMessage.type !== 'danger') {
+          this.resetForm();
+          this.closeModalAfterAction();
+        }
+      });
       this.displayPopUpMessage();
     },
     updateItem() {
@@ -347,7 +377,6 @@ export default {
       store.commit('SHOW_BTN_UPDATE', value);
       store.commit('SHOW_BTN_ADD_DISABLE', !value);
       store.commit('SHOW_BTN_UPDATE_DISABLE', !value);
-      store.commit('SHOW_CLOSE_AFTERACTION_DEFAULT', false);
     },
     validFieldsRequired() {
       const emptyFields = Object.keys(this.input).filter(key => this.input[key] === '');
@@ -365,6 +394,14 @@ export default {
     showAddForm() {
       store.commit('SHOW_MODAL', true);
     },
+    clearSearchTextFilter() {
+      this.searchText = '';
+      this.isFilterBySearchText = false;
+    },
+    clearApplyFilter() {
+      this.optionSelected = '-1';
+      this.isFilterApplied = false;
+    },
   },
   watch: {
     showModal() {
@@ -378,8 +415,12 @@ export default {
       store.commit('UPDATE_SEARCH_TEXT', this.searchText);
       if (!this.searchText) {
         this.getDataFiltered();
+        this.isFilterBySearchText = false;
       }
     },
+    // closeAfterisAction() {
+    //   console.log(this.closeAfterAction);
+    // },
   },
 };
 </script>
