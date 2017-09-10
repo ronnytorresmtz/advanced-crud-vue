@@ -19,7 +19,7 @@
     * Column Sort 
     * Choose a Field to Display (store in LocalStorage)
     * Pagination Per Page 
-3. Toast Messaging Component
+3. Popup Messaging Component with Animation
 4. Language Component
 5. Topbar Component
 
