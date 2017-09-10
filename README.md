@@ -7,19 +7,20 @@
 3. Choose Field to Display in Table.
 4. Search Box and Filter Record Status
 5. Use Vuex for State.
-6. Message Popup via my component vue 
-7. Form Fields validation on Client
-8. Handle Languagues via my component vue
+6. Top Popup Messages
+7. Form's Fields Validations on Client
+8. Handle Languagues 
 9. Use Bootstrap and Animate
 10. CORS Implementation 
+11. Connected to Laravel API 5.4
 
 >Some Components created from scratch
 1. Pagination Component
-2. Table Component with the next funcionalities:
+2. Table Component 
     * Column Sort 
     * Choose a Field to Display (store in LocalStorage)
     * Pagination Per Page 
-3. Popup Messaging Component with Animation
+3. Popup Messaging Component
 4. Language Component
 5. Topbar Component
 
