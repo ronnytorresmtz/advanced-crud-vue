@@ -71,9 +71,9 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 		$companies = $this->model->withTrashed()
 			->select(
-			'id', 'deleted_at','company_name', 'company_contact', 'company_email', 'company_phone',
-			'company_cellular',	'company_location', 'company_address', 'company_postcode',	
-			'company_latitude',	'company_longitude', 'company_legal_name', 'company_tax_id', 'company_website'
+			'id', 'deleted_at', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website', 
+			'company_contact', 'company_email', 'company_phone', 'company_cellular','company_location', 
+			'company_address', 'company_postcode','company_latitude','company_longitude'
 		)
 		->where(function ($query) use ($request) {
 			if (isset($request->searchText)) {
@@ -203,9 +203,9 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 		$companies = $this->model->withTrashed()
 			->select(
-			'id', 'deleted_at','company_name', 'company_contact', 'company_email', 'company_phone',
-			'company_cellular',	'company_location', 'company_address', 'company_postcode',	
-			'company_latitude',	'company_longitude', 'company_legal_name', 'company_tax_id', 'company_website'
+			'id', 'deleted_at', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website', 
+			'company_contact', 'company_email', 'company_phone', 'company_cellular','company_location', 
+			'company_address', 'company_postcode','company_latitude','company_longitude'
 		)
 		->where(function ($query) use ($request) {
 			if (isset($request->searchText)) {
