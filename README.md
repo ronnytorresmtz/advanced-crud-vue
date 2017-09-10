@@ -11,6 +11,17 @@
 7. Handle Languagues via my component vue
 8. Use Bootstrap and Animate
 9. CORS Implementation 
+
+>Some Components created from scratch
+1. Pagination Component
+2. Table Component with the next funcionalities:
+    a. Column Sort 
+    b. Choose a Field to Display (store in LocalStorage)
+    c. Pagination Per Page 
+3. Toast Messaging Component
+4. Language Component
+
+
 ## TODO
 3. Upgrade Laravel 5.4 to 5.5
 8. Add Import and Export functionalities
