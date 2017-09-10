@@ -16,9 +16,9 @@
 >Some Components created from scratch
 1. Pagination Component
 2. Table Component with the next funcionalities:
-    a. Column Sort 
-    b. Choose a Field to Display (store in LocalStorage)
-    c. Pagination Per Page 
+    * Column Sort 
+    * Choose a Field to Display (store in LocalStorage)
+    * Pagination Per Page 
 3. Toast Messaging Component
 4. Language Component
 5. Topbar Component
