@@ -4,20 +4,15 @@
 
 1. CRUD with a Table and Form.
 2. Colum Table are sorteable.
-3. Reactive Search Box.
-4. Use Vuex for State.
-5. Message Popup via my component vue 
-6. Handle Languagues via my component vue
-7. Use Bootstrap and Animate
+3. Choose Field to Display in Table.
+4. Search Box and Filter Record Status
+5. Use Vuex for State.
+6. Message Popup via my component vue 
+7. Handle Languagues via my component vue
+8. Use Bootstrap and Animate
+9. CORS between client and server 
 ## TODO
-Implement CORS between client and server 
-1. Alocate the client in a client directory for all vue and javascript code
-2. Alocate the server/api in a server directory for all laravel code
-3. Install Laravel in th server directory
-4. Make a database and configure it in MySQL.
-5. Code an Api in Laravel
-6. CORS and configure 
-7. Integrate axios requests the Laravel api 
+3. Upgrade Laravel 5.4 to 5.5
 8. Add Import and Export functionalities
 9. Test spec's
 10. Review security 
