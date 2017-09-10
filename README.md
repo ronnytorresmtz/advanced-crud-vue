@@ -10,7 +10,7 @@
 6. Message Popup via my component vue 
 7. Handle Languagues via my component vue
 8. Use Bootstrap and Animate
-9. CORS between client and server 
+9. CORS Implementation 
 ## TODO
 3. Upgrade Laravel 5.4 to 5.5
 8. Add Import and Export functionalities
