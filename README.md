@@ -12,7 +12,7 @@
 8. Handle Languagues 
 9. Use Bootstrap and Animate
 10. CORS Implementation 
-11. Connected to Laravel API 5.4
+11. Laravel API 5.4 for CRUD Operations
 
 >Some Components created from scratch
 1. Pagination Component
