@@ -8,9 +8,10 @@
 4. Search Box and Filter Record Status
 5. Use Vuex for State.
 6. Message Popup via my component vue 
-7. Handle Languagues via my component vue
-8. Use Bootstrap and Animate
-9. CORS Implementation 
+7. Form Fields validation on Client
+8. Handle Languagues via my component vue
+9. Use Bootstrap and Animate
+10. CORS Implementation 
 
 >Some Components created from scratch
 1. Pagination Component
@@ -20,13 +21,14 @@
     c. Pagination Per Page 
 3. Toast Messaging Component
 4. Language Component
-
+5. Topbar Component
 
 ## TODO
+1. Sidebar component
+2. Add Import and Export functionalities
 3. Upgrade Laravel 5.4 to 5.5
-8. Add Import and Export functionalities
-9. Test spec's
-10. Review security 
+4. Test spec's
+5. Review CORS security and general security issues
 
 ## Build Setup
 
