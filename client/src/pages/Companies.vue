@@ -50,48 +50,56 @@
         </div>
         <div class="col-xs-6" style="margin-top: 30px" align="right">
           <button class="btn btn-sm btn-primary" @click.prevent="showAddForm()"> {{ ts['addCompany'] }} </button>
-          <button class="btn btn-sm btn-primary" @click.prevent="exportData()"> 
+
+          <a :href="getExportUrl()" class="btn btn-sm btn-primary button-size" :title="ts['export']">
             <span class="glyphicon glyphicon-arrow-down"></span>
-          </button>
-          <button class="btn btn-sm btn-primary" @click.prevent="importData()"> 
+          </a>
+
+          <button class="btn btn-sm btn-primary" @click.prevent="importData()" :title="ts['import']"> 
             <span class="glyphicon glyphicon-arrow-up"></span>
           </button>
         </div>
       </div>
       <hr>
       <div class="row">
-        <div class="col-xs-3" >
-          <div class="col-xs-11 pull-left" style="padding: 0px">
-            <div class="input-group">
-              <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
-              <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer;">
-                <!--span :class="(!searchText) ? 'glyphicon glyphicon-search' : 'glyphicon glyphicon-filter'"></span-->
-                <span class="glyphicon glyphicon-search"></span>
-              </span>
+        <!--Search Text-->
+        <div class="col-xs-3 pull-left" style="padding-right:0px">
+          <div class="input-group">
+            <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
+            <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer">
+              <span class="glyphicon glyphicon-search"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="col-xs-6">
+          <!--Button Filter for SearchText-->
+          <div class="col-xs-6 pull-left" style="padding:0px">
+            <div v-show="isFilterBySearchText" @click.prevent="clearSearchTextFilter()" :title="ts['clearFilter']">
+              <button class="btn btn-sm btn-warning" style="cursor: pointer"> 
+                <span class="glyphicon glyphicon-filter"></span>
+              </button>
             </div>
           </div>
-          <div class="col-xs-1" style="padding-left: 7px; padding-top:2px" v-if="isFilterBySearchText" @click.prevent="clearSearchTextFilter()" :title="ts['clearFilter']">
-            <button class="btn btn-sm btn-warning" @click.prevent="importData()"> 
-              <span class="glyphicon glyphicon-filter"></span>
-            </button>
+          <!--Button Filer for Apply Filter-->
+          <div class="col-xs-6 pull-right" style="padding:0px">
+            <div v-show="isFilterApplied" @click.prevent="clearApplyFilter()" :title="ts['clearFilter']" align="right" >
+              <button class="btn btn-sm btn-warning"> 
+                <span class="glyphicon glyphicon-filter"></span>
+              </button>
+            </div>
           </div>
+
+        </div>          
+        <!--Apply Filter Select-->
+        <div class="col-xs-3 pull-right" style="padding-left:0px">
+          <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
+            <option value="-1"> {{ ts['applyAFilter'] }} </option>
+            <option value="0"> {{ ts['active'] }} </option>
+            <option value="1"> {{ ts['inactive'] }} </option>
+          </select>
         </div>
-        <div class="col-xs-6"></div>
-        <div class="col-xs-3" align="right">
-          <div class="col-xs-1" style="padding-top:2px" v-show="isFilterApplied" @click.prevent="clearApplyFilter()" :title="ts['clearFilter']">
-            <button class="btn btn-sm btn-warning" @click.prevent="importData()"> 
-              <span class="glyphicon glyphicon-filter"></span>
-            </button>
-          </div>
-          <div class="col-xs-11 pull-right" style="padding-left: 20px" >
-            <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
-              <option value="-1"> {{ ts['applyAFilter'] }} </option>
-              <option value="0"> {{ ts['active'] }} </option>
-              <option value="1"> {{ ts['inactive'] }} </option>
-            </select>
-          </div>
-          
-        </div>
+
       </div>
       <hr>
       <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -181,7 +189,8 @@
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li>Implementar Export e Import</li>
+      <li> Ajustar Export File para manejar filtros aplicados a la tabla</li>
+      <li> Implmentar Import File</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
     </ul>
@@ -190,7 +199,7 @@
 
 <script>
 // 3er Party Component
-import Axios from 'axios';
+// import Axios from 'axios';
 // vuex store
 import store from '../store/Companies/Store';
 // my components
@@ -236,7 +245,7 @@ export default {
       isFilterBySearchText: false,
       isFilterApplied: false,
       optionSelected: '-1',
-      siselectOptions: ['Apply A Filter', 'Active', 'Inactive'],
+      // selectOptions: ['Apply A Filter', 'Active', 'Inactive'],
       input: {
         id: 'New',
         company_name: '',
@@ -334,20 +343,10 @@ export default {
       this.closeModal();
       this.displayPopUpMessage();
     },
-    exportData() {
-      store.commit('UPDATE_LOADING', true);
-      const url = this.$store.getters.getPagination.path;
-      Axios.get(`${url}/export`)
-      .then((response) => {
-        store.commit('SHOW_MESSAGE', response);
-      })
-      .then(() => {
-        store.commit('UPDATE_LOADING', false);
-      })
-      .catch((response) => {
-        store.commit('SHOW_MESSAGE', response);
-        store.commit('UPDATE_LOADING', false);
-      });
+    getExportUrl() {
+      return `${this.$store.getters.getPagination.path}/export?
+                searchText=${this.searchText}&
+                optionSelected=${this.optionSelected}`;
     },
     importData() {
 
