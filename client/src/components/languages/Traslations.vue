@@ -18,6 +18,8 @@ export default {
     delete: 'Delete',
     reset: 'Reset',
     close: 'Close',
+    export: 'Export',
+    import: 'Import',
     addCompany: 'Add Company',
     editCompany: 'Edit Company',
 
@@ -70,6 +72,8 @@ export default {
     delete: 'Borrar',
     reset: 'Resetear',
     close: 'Cerrar',
+    export: 'Exportar',
+    import: 'Importar',
     addCompany: 'Agregar Compañía',
     editCompany: 'Editar Compañía',
 
