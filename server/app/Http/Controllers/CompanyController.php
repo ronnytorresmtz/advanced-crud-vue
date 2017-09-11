@@ -5,17 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Events\RegisterTransactionAccessEvent;
 use MyCode\Repositories\Company\CompanyRepositoryInterface;
+use MyCode\Services\Document\DocumentServiceInterface;
 
 
 class CompanyController extends Controller
 {
   protected $companyRepository;
-  private $baseRoute = 'shipper.companies';
-  protected $itemsByPage = 10;
+  protected $documentService;
 
-  public function __construct(Request $request, CompanyRepositoryInterface $companyRepository)
+  private $baseRoute = 'shipper.companies';
+  private $itemsByPage = 10;
+
+
+  public function __construct(Request $request, 
+                              CompanyRepositoryInterface $companyRepository,
+                              DocumentServiceInterface $documentService)
   {
     $this->companyRepository = $companyRepository;
+    $this->documentService   = $documentService;
     if ($request->per_pages) {
       $this->itemsByPage = $request->per_pages;
     } else {
@@ -106,20 +113,6 @@ class CompanyController extends Controller
 	 	return response()->json($result);
   }
 
-  // /**
-  // * Search the specified test in the storage.
-  // *
-  // * @param  \Illuminate\Http\Request  $request
-  // * @return \Illuminate\Http\Response
-  // */
-  // public function search(Request $request) 
-	// {
-	// 	$companies = $this->companyRepository->getByPage($request);
-	// 	//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
-    
-	// 	return response()->json($companies);
-	// }
-
   /**
   * Export all moduleas to Excel
   *
@@ -128,11 +121,17 @@ class CompanyController extends Controller
 	public function export() 
 	{ 
 
-    $companies = $this->companyRepository->getAll();
+    $data = $this->companyRepository->getAll();
 
-		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
+		$result =$this->documentService->export($data, 'csv', 'Module');
 
-		return response()->json($companies); 
+		if (! $result['error']){
+
+			// Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
+
+		}
+
+		return response()->json($result); 
 	}
 
   public function import(Request $request) 

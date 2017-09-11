@@ -52,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
       {
         return new LocationRepository(new Location);
       });
+      //AppBind_Template Don´t Delete This Line
 
       $this->app->bind('MyCode\Services\Document\DocumentServiceInterface','MyCode\Services\Document\DocumentService');
     }
