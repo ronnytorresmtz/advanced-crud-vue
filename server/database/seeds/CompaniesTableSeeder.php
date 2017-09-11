@@ -18,7 +18,7 @@ class CompaniesTableSeeder extends Seeder
         $faker = Faker::create();
 
         
-    	foreach (range(1,5000) as $index) {
+    	foreach (range(1,100) as $index) {
             switch ($index) {
                 case 1:
                     $email = 'rtorresmtz@hotmail.com';
