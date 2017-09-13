@@ -11,6 +11,7 @@ export default {
     applyAFilter: 'Apply a filter',
     closeAfterAction: 'Close after action',
     ChooseAFieldToDisplay: 'Choose a Filed to Display',
+    importFile: 'Import File',
     // Actions
     add: 'Add',
     edit: 'Edit',
@@ -65,6 +66,7 @@ export default {
     applyAFilter: 'Aplicar Filtro',
     closeAfterAction: 'Cerrar al Agregar',
     ChooseAFieldToDisplay: 'Selecciona un Campo para Mostrarlo',
+    importFile: 'Importar Archivo',
     // Actions
     add: 'Agregar',
     edit: 'Editar',
