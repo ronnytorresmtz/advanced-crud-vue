@@ -7,6 +7,8 @@ use App\Events\RegisterTransactionAccessEvent;
 use MyCode\Repositories\Company\CompanyRepositoryInterface;
 use MyCode\Services\Document\DocumentServiceInterface;
 
+use Lang;
+
 
 class CompanyController extends Controller
 {
@@ -37,7 +39,7 @@ class CompanyController extends Controller
   */
   public function index(Request $request)
   {
-    $companies = $this->companyRepository->getByPage($request);
+    $companies = $this->companyRepository->getByPageWithFilters($request);
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
     return response()->json($companies);
   }
@@ -118,10 +120,10 @@ class CompanyController extends Controller
   *
   * @return Response
   */
-	public function export() 
+	public function export(Request $request) 
 	{ 
-
-    $data = $this->companyRepository->getAll();
+    \Log::info($request);
+    $data = $this->companyRepository->getAllWithFilters($request);
 
 		$result =$this->documentService->export($data, 'csv', 'Module');
 
@@ -134,24 +136,50 @@ class CompanyController extends Controller
 		return response()->json($result); 
 	}
 
-  public function import(Request $request) 
-	{ 
+  // public function import2(Request $request) 
+	// { 
+  //   $result = [];
+  //   \Log::info($request->data);    
+  //   $file = json_decode($request->data, true);
+  //   \Log::info($file);
+	// 	//validate the request if file is missing send an error to user
+	// 	if (! empty($file)) {
+			
+	// 		$result = $this->companyRepository->importFile($file);
+
+	// 		if (! $result['error']){
+	// 			//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
+	// 		}
+
+	// 	}
+		
+	// 	return response()->json($result);
+  // }
+  
+  
+  public function import(Request $request) {
+
     $result = [];
 
-		$file = json_decode($request->data, true);
+    $file = $request->file('fileToImport');
 		//validate the request if file is missing send an error to user
-		if (! empty($file)) {
-			
-			$result = $this->companyRepository->importFile($file);
+		if (empty($file)) {
+      $result = array('error' => true, 'message' => Lang::get('messages.error'));
+      
+      return response()->json($result);
 
-			if (! $result['error']){
-				//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
-			}
+    }
+      
+    $result = $this->companyRepository->import($file);
 
-		}
-		
-		return response()->json($result);
-	}
+    if (! $result['error']) {
+
+      // Event::fire(new RegisterTransactionAccessEvent('facilities.institutes.import'));
+
+    }
+    
+    return response()->json($result);
+  }
 
 
   public function getAllCompaniesActive() 
