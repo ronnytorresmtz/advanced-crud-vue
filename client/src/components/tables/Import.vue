@@ -131,7 +131,7 @@
         //   self.displayPopUpMessage(response);
         //   store.commit('SHOW_IMPORT_MODAL', false);
         // });
-      },
+      // },
       // convert rows/fields to json
       // convertoToJson(fields, rows) {
       //   let data = '{';
