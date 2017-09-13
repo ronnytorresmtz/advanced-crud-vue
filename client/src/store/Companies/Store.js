@@ -17,6 +17,7 @@ const store = new Vuex.Store({
     pagination: {},
     loading: false,
     showModal: false,
+    showImportModal: false,
     isUpdateBtnShow: false,
     isAddBtnDisable: true,
     isUpdateBtnDisable: true,
@@ -112,6 +113,10 @@ const store = new Vuex.Store({
     SHOW_CLOSE_AFTERACTION_DEFAULT(state, close) {
       state.closeAfterAction = close;
     },
+    SHOW_IMPORT_MODAL(state, show) {
+      // state.showImportModal = show;
+      Vue.set(state, 'showImportModal', show);
+    },
   },
   actions: {
     getData(context, url) {
@@ -202,6 +207,7 @@ const store = new Vuex.Store({
     getOptionSelected: state => state.optionSelected,
     getFieldOrderBy: state => state.fieldOrderBy,
     getOrderBy: state => state.orderBy,
+    getShowImportModal: state => state.showImportModal,
   },
 });
 
