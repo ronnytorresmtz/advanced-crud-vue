@@ -35,7 +35,7 @@
 
 <template>
   <div class="container-fluid" align="left" style="margin-top: 75px">
-  
+    <myimport url-import="http:/localhost:8000/api/shippers/companies/import"></myimport>
     <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
       <popup v-if="showPopUpMessage"> </popup>
     </transition>
@@ -102,7 +102,7 @@
 
       </div>
       <hr>
-      <div class="modal fade" id="myModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal fade" id="myModalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalFormLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -189,8 +189,9 @@
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li> Ajustar Export File para manejar filtros aplicados a la tabla</li>
-      <li> Implmentar Import File</li>
+      <li> En importar desplegar los mensajes pues no aparecen</li>
+      <li> En importar validar si existe el nombre de compania y correo si si hacer una actualizacion</li>
+      <li> Implementar el componente de location como select</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
     </ul>
@@ -206,6 +207,7 @@ import store from '../store/Companies/Store';
 import popup from '../components/messages/Popup';
 import mylang from '../components/languages/Languages';
 import mytable from '../components/tables/Table';
+import myimport from '../components/tables/Import';
 import mypaginator from '../components/tables/Paginator';
 import sidebar from '../components/layout/sidebar';
 // my libraries
@@ -217,6 +219,7 @@ export default {
   components: {
     popup,
     mytable,
+    myimport,
     mypaginator,
     sidebar,
   },
@@ -274,6 +277,9 @@ export default {
     pageData() {
       return this.$store.getters.getPageData;
     },
+    searchTextFilter() {
+      return this.$store.getters.getSearchText;
+    },
     showPopUpMessage: {
       set() { },
       get() {
@@ -314,7 +320,7 @@ export default {
       this.showFilterButtons();
     },
     showFilterButtons() {
-      this.isFilterBySearchText = (this.searchText);
+      this.isFilterBySearchText = (this.searchText !== '');
       this.isFilterApplied = (this.optionSelected !== '-1');
     },
     addItem() {
@@ -349,7 +355,7 @@ export default {
                 optionSelected=${this.optionSelected}`;
     },
     importData() {
-
+      store.commit('SHOW_IMPORT_MODAL', true);
     },
     resetForm() {
       store.commit('RESET_ITEM');
@@ -369,7 +375,7 @@ export default {
     closeModalAfterAction() {
       if (this.closeAfterAction) {
         store.commit('SHOW_MODAL', false);
-        $('#myModal').modal('hide');
+        $('#myModalForm').modal('hide');
       }
     },
     initModalButtons(value) {
@@ -395,19 +401,20 @@ export default {
     },
     clearSearchTextFilter() {
       this.searchText = '';
-      this.isFilterBySearchText = false;
     },
     clearApplyFilter() {
       this.optionSelected = '-1';
+      store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
+      this.getDataFiltered();
       this.isFilterApplied = false;
     },
   },
   watch: {
     showModal() {
       if (this.$store.getters.getShowModal) {
-        $('#myModal').modal('show');
+        $('#myModalForm').modal('show');
       } else {
-        $('#myModal').modal('hide');
+        $('#myModalForm').modal('hide');
       }
     },
     searchText() {
@@ -417,6 +424,13 @@ export default {
         this.isFilterBySearchText = false;
       }
     },
+    // optionSelected() {
+    //   store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
+    //   if (this.optionSelected === '-1') {
+    //     this.getDataFiltered();
+    //     this.isFilterApplied = false;
+    //   }
+    // },
     // closeAfterisAction() {
     //   console.log(this.closeAfterAction);
     // },
