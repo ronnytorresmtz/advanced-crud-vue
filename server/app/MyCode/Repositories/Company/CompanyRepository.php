@@ -31,6 +31,53 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		return $companies;
 	}
 
+	public function getAllWithFilters($request)
+	{
+		$companies = $this->model->withTrashed()
+		->select(
+		'id', 'deleted_at', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website', 
+		'company_contact', 'company_email', 'company_phone', 'company_cellular','company_location', 
+		'company_address', 'company_postcode','company_latitude','company_longitude'
+		)
+		->where(function ($query) use ($request) {
+			if (isset($request->searchText)) {
+				$query->orwhere('id','like','%' . $request->searchText . '%')
+					->orwhere('company_name','like','%' . $request->searchText . '%')
+					->orwhere('company_contact','like','%' . $request->searchText . '%')
+					->orwhere('company_email','like','%' . $request->searchText . '%')
+					->orwhere('company_phone','like','%' . $request->searchText . '%')
+					->orwhere('company_cellular','like','%' . $request->searchText . '%')
+					->orwhere('company_location','like','%' . $request->searchText . '%')
+					->orwhere('company_address','like','%' . $request->searchText . '%')
+					->orwhere('company_postcode','like','%' . $request->searchText . '%')
+					->orwhere('company_latitude','like','%' . $request->searchText . '%')
+					->orwhere('company_longitude','like','%' . $request->searchText . '%')
+					->orwhere('company_legal_name','like','%' . $request->searchText . '%')
+					->orwhere('company_tax_id','like','%' . $request->searchText . '%')
+					->orwhere('company_website','like','%' . $request->searchText . '%');
+			}
+		})	
+
+		->where(function ($query) use ($request) {
+			if ($request->optionSelected == 0) {
+				$query->whereNull('deleted_at');
+			}
+			if ($request->optionSelected == 1) {
+				$query->whereNotNull('deleted_at');
+			}
+			
+		})
+		// if first parameter is true the function is executed
+		->when($request->fieldOrderBy, function ($query) use ($request) {
+			$query->orderBy($request->fieldOrderBy, $request->orderBy);
+		})
+
+		->get();
+
+		return $companies;
+
+	}
+
 	public function getAllActive()
 	{
 		$companies=$this->model
@@ -66,7 +113,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		return $companies;
 	}
 
-	public function getByPage($request)
+	public function getByPageWithFilters($request)
 	{
 
 		$companies = $this->model->withTrashed()
@@ -242,95 +289,195 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
       	
 	}
 
-	public function importFile($file)
+	// public function importFile($file)
+	// {
+	// 	/*=====================	RULES TO IMPORt FILES ========================================
+	// 	1) The first row must be the fields hearder .
+	// 	2) if the row has a value in the ID Field it will be update if not will be added.
+	// 	===================================================================================*/
+	// 	// Begin a Transaction
+	// 	DB::beginTransaction();
+	// 	try {
+	// 		$addedRecords=0; // caount add records
+	// 		$updateRecords=0; // count update records
+	// 		for ($i=1; $i <=count($file) ; $i++) { 
+	// 			//validate if $id was found so UPDATE it
+	// 			if (array_key_exists('id', $file[$i])) {
+	// 				$rowId = $this->model->withTrashed()->find($file[$i]['id']);
+	// 				if (isset($rowId)){
+	// 					$rowId->company_name = $file[$i]['company_name'];
+	// 					$rowId->company_legal_name = $file[$i]['company_legal_name'];
+	// 					$rowId->company_tax_id	= $file[$i]['company_tax_id'];
+	// 					$rowId->company_website = $file[$i]['company_website'];
+	// 					$rowId->company_email = $file[$i]['company_email'];
+	// 					$rowId->company_contact = $file[$i]['company_contact'];
+	// 					$rowId->company_phone = $file[$i]['company_phone'];
+	// 					$rowId->company_cellular = $file[$i]['company_cellular'];
+	// 					$rowId->company_address = $file[$i]['company_address'];
+	// 					$rowId->company_location = $file[$i]['company_location'];
+	// 					$rowId->company_postcode = $file[$i]['company_postcode'];
+	// 					$rowId->company_latitude = $file[$i]['company_latitude'];
+	// 					$rowId->company_longitude = $file[$i]['company_longitude'];
+	// 					$rowId->deleted_at = null;
+	// 					$rowId->touch();  			//touch: update timestamps
+	// 					$rowId->save();
+	// 					$updateRecords++;
+	// 				} else {
+	// 					log::info('Error Row===>' . $rowId . ' ID:' . $file[$i]['id']);
+	// 				}
+					
+	// 			} else {
+	// 				$id = $this->model->withTrashed()->select('id')->where('company_name',"=", $file[$i]['company_name'])->get();
+	// 				$rowId = $this->model->withTrashed()->find($id);
+	// 				if (isset($rowId)) {
+	// 					$rowId->company_name = $file[$i]['company_name'];
+	// 					$rowId->company_legal_name = $file[$i]['company_legal_name'];
+	// 					$rowId->company_tax_id	= $file[$i]['company_tax_id'];
+	// 					$rowId->company_website = $file[$i]['company_website'];
+	// 					$rowId->company_email = $file[$i]['company_email'];
+	// 					$rowId->company_contact = $file[$i]['company_contact'];
+	// 					$rowId->company_phone = $file[$i]['company_phone'];
+	// 					$rowId->company_cellular = $file[$i]['company_cellular'];
+	// 					$rowId->company_address = $file[$i]['company_address'];
+	// 					$rowId->company_location = $file[$i]['company_location'];
+	// 					$rowId->company_postcode = $file[$i]['company_postcode'];
+	// 					$rowId->company_latitude = $file[$i]['company_latitude'];
+	// 					$rowId->company_longitude = $file[$i]['company_longitude'];
+	// 					$rowId->deleted_at = null;
+	// 					$rowId->touch();  			//touch: update timestamps
+	// 					$rowId->save();
+	// 					$updateRecords++;
+	// 				} else {
+	// 					$rowId = new $this->model;
+	// 					$rowId->company_name = $file[$i]['company_name'];
+	// 					$rowId->company_legal_name = $file[$i]['company_legal_name'];
+	// 					$rowId->company_tax_id	= $file[$i]['company_tax_id'];
+	// 					$rowId->company_website = $file[$i]['company_website'];
+	// 					$rowId->company_email = $file[$i]['company_email'];
+	// 					$rowId->company_contact = $file[$i]['company_contact'];
+	// 					$rowId->company_phone = $file[$i]['company_phone'];
+	// 					$rowId->company_cellular = $file[$i]['company_cellular'];
+	// 					$rowId->company_address = $file[$i]['company_address'];
+	// 					$rowId->company_location = $file[$i]['company_location'];
+	// 					$rowId->company_postcode = $file[$i]['company_postcode'];
+	// 					$rowId->company_latitude = $file[$i]['company_latitude'];
+	// 					$rowId->company_longitude = $file[$i]['company_longitude'];
+	// 					$rowId->deleted_at = null;
+	// 					$rowId->save();
+	// 					$addedRecords++;
+	// 				}
+	// 			}
+	// 		}
+	// 		if (($addedRecords+$updateRecords)==0) {
+	// 			DB::rollBack();
+	// 			return array('error' => true, 'message' => Lang::get('messages.error') . ' ' . Lang::get('messages.error_file_format'));
+	// 		} else {
+	// 			DB::commit();
+	// 			return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));
+	// 		} 
+	// 	} catch (Exception $e) {
+	// 		DB::rollBack();
+	// 		return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
+	// 	}
+	// }	
+
+
+	public function import($file)
 	{
 		/*=====================	RULES TO IMPORt FILES ========================================
 		1) The first row must be the fields hearder .
 		2) if the row has a value in the ID Field it will be update if not will be added.
 		===================================================================================*/
+		
 		// Begin a Transaction
-		DB::beginTransaction();
-		try {
-			$addedRecords=0; // caount add records
-			$updateRecords=0; // count update records
-			for ($i=1; $i <=count($file) ; $i++) { 
-				//validate if $id was found so UPDATE it
-				if (array_key_exists('id', $file[$i])) {
-					$rowId = $this->model->withTrashed()->find($file[$i]['id']);
-					if (isset($rowId)){
-						$rowId->company_name = $file[$i]['company_name'];
-						$rowId->company_legal_name = $file[$i]['company_legal_name'];
-						$rowId->company_tax_id	= $file[$i]['company_tax_id'];
-						$rowId->company_website = $file[$i]['company_website'];
-						$rowId->company_email = $file[$i]['company_email'];
-						$rowId->company_contact = $file[$i]['company_contact'];
-						$rowId->company_phone = $file[$i]['company_phone'];
-						$rowId->company_cellular = $file[$i]['company_cellular'];
-						$rowId->company_address = $file[$i]['company_address'];
-						$rowId->company_location = $file[$i]['company_location'];
-						$rowId->company_postcode = $file[$i]['company_postcode'];
-						$rowId->company_latitude = $file[$i]['company_latitude'];
-						$rowId->company_longitude = $file[$i]['company_longitude'];
-						$rowId->deleted_at = null;
-						$rowId->touch();  			//touch: update timestamps
-						$rowId->save();
-						$updateRecords++;
-					} else {
-						log::info('Error Row===>' . $rowId . ' ID:' . $file[$i]['id']);
-					}
-					
-				} else {
-					$id = $this->model->withTrashed()->select('id')->where('company_name',"=", $file[$i]['company_name'])->get();
-					$rowId = $this->model->withTrashed()->find($id);
-					if (isset($rowId)) {
-						$rowId->company_name = $file[$i]['company_name'];
-						$rowId->company_legal_name = $file[$i]['company_legal_name'];
-						$rowId->company_tax_id	= $file[$i]['company_tax_id'];
-						$rowId->company_website = $file[$i]['company_website'];
-						$rowId->company_email = $file[$i]['company_email'];
-						$rowId->company_contact = $file[$i]['company_contact'];
-						$rowId->company_phone = $file[$i]['company_phone'];
-						$rowId->company_cellular = $file[$i]['company_cellular'];
-						$rowId->company_address = $file[$i]['company_address'];
-						$rowId->company_location = $file[$i]['company_location'];
-						$rowId->company_postcode = $file[$i]['company_postcode'];
-						$rowId->company_latitude = $file[$i]['company_latitude'];
-						$rowId->company_longitude = $file[$i]['company_longitude'];
-						$rowId->deleted_at = null;
-						$rowId->touch();  			//touch: update timestamps
-						$rowId->save();
-						$updateRecords++;
-					} else {
-						$rowId = new $this->model;
-						$rowId->company_name = $file[$i]['company_name'];
-						$rowId->company_legal_name = $file[$i]['company_legal_name'];
-						$rowId->company_tax_id	= $file[$i]['company_tax_id'];
-						$rowId->company_website = $file[$i]['company_website'];
-						$rowId->company_email = $file[$i]['company_email'];
-						$rowId->company_contact = $file[$i]['company_contact'];
-						$rowId->company_phone = $file[$i]['company_phone'];
-						$rowId->company_cellular = $file[$i]['company_cellular'];
-						$rowId->company_address = $file[$i]['company_address'];
-						$rowId->company_location = $file[$i]['company_location'];
-						$rowId->company_postcode = $file[$i]['company_postcode'];
-						$rowId->company_latitude = $file[$i]['company_latitude'];
-						$rowId->company_longitude = $file[$i]['company_longitude'];
-						$rowId->deleted_at = null;
-						$rowId->save();
-						$addedRecords++;
+		// DB::beginTransaction();
+
+		// try {
+			//load the file to the database	
+			$companies = \Excel::load($file->getRealPath(), function($reader) {
+				//get the file content / data
+				$results = $reader->get();	
+				$addedRecords = 0; // caount add records
+				$updateRecords = 0; // count update records
+				foreach ($results as $key => $row) {
+					// Validate if the file uploaded has the ID field
+					if (isset($row)) {
+						// find the id to decide if it wil be an update or add process
+						$rowId = $this->model->withTrashed()->find($row->id);
+						// if (!isset($rowId)) {
+						// 	$rowId = $this->model->withTrashed()
+						// 		->where('company_name', '=', $row->company_name)
+						// 		->where('company_email', '=', $row->company_email)
+						// 		->first();
+							
+						// 	$rowId = $this->model->withTrashed()->find($rowId);
+						// }
+						// \Log::info('row-->' . $rowId);
+						//validate if $id was found so UPDATE it
+						if (isset($rowId)) {
+							\Log::info('entro update-->' . $rowId);
+							$rowId->company_name = $row->company_name;
+							$rowId->company_legal_name = $row->company_legal_name;
+							$rowId->company_tax_id	= $row->company_tax_id;
+							$rowId->company_website = $row->company_website;
+							$rowId->company_email = $row->company_email;
+							$rowId->company_contact = $row->company_contact;
+							$rowId->company_phone = $row->company_phone;
+							$rowId->company_cellular = $row->company_cellular;
+							$rowId->company_address = $row->company_address;
+							$rowId->company_location = $row->company_location;
+							$rowId->company_postcode = $row->company_postcode;
+							$rowId->company_latitude = $row->company_latitude;
+							$rowId->company_longitude = $row->company_longitude;
+							$rowId->deleted_at = null;
+							$rowId->touch();  			//touch: update timestamps
+							$rowId->save();
+							$updateRecords++;
+						}
+						// validate no found so ADD it
+						else{
+							$rowId = new $this->model;
+							$rowId->company_name = $row->company_name;
+							$rowId->company_legal_name = $row->company_legal_name;
+							$rowId->company_tax_id	= $row->company_tax_id;
+							$rowId->company_website = $row->company_website;
+							$rowId->company_email = $row->company_email;
+							$rowId->company_contact = $row->company_contact;
+							$rowId->company_phone = $row->company_phone;
+							$rowId->company_cellular = $row->company_cellular;
+							$rowId->company_address = $row->company_address;
+							$rowId->company_location = $row->company_location;
+							$rowId->company_postcode = $row->company_postcode;
+							$rowId->company_latitude = $row->company_latitude;
+							$rowId->company_longitude = $row->company_longitude;
+							$rowId->deleted_at = null;
+							$rowId->save();
+							$addedRecords++;
+						}
 					}
 				}
-			}
-			if (($addedRecords+$updateRecords)==0) {
-				DB::rollBack();
-				return array('error' => true, 'message' => Lang::get('messages.error') . ' ' . Lang::get('messages.error_file_format'));
-			} else {
-				DB::commit();
-				return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));
-			} 
-		} catch (Exception $e) {
-			DB::rollBack();
-			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
-		}
-	}	
+
+				if (($addedRecords+$updateRecords)==0) {
+
+					// DB::rollBack();
+
+					return array('error' => true, 'message' => Lang::get('messages.error') . ' ' . Lang::get('messages.error_file_format'));
+
+				} else {
+
+					// DB::commit();
+
+					return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));
+				} 
+				
+			})->get();
+
+	    // } catch (Exception $e) {
+
+		// 	DB::rollBack();
+
+		// 	return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
+		// }
+
+	}
 }
