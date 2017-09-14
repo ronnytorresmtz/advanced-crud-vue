@@ -189,8 +189,6 @@
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li> En importar desplegar los mensajes pues no aparecen</li>
-      <li> En importar validar si existe el nombre de compania y correo si si hacer una actualizacion</li>
       <li> Implementar el componente de location como select</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
