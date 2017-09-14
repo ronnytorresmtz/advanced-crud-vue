@@ -388,96 +388,95 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		1) The first row must be the fields hearder .
 		2) if the row has a value in the ID Field it will be update if not will be added.
 		===================================================================================*/
-		
-		// Begin a Transaction
-		// DB::beginTransaction();
 
-		// try {
-			//load the file to the database	
-			$companies = \Excel::load($file->getRealPath(), function($reader) {
-				//get the file content / data
-				$results = $reader->get();	
-				$addedRecords = 0; // caount add records
-				$updateRecords = 0; // count update records
-				foreach ($results as $key => $row) {
-					// Validate if the file uploaded has the ID field
-					if (isset($row)) {
-						// find the id to decide if it wil be an update or add process
-						$rowId = $this->model->withTrashed()->find($row->id);
-						// if (!isset($rowId)) {
-						// 	$rowId = $this->model->withTrashed()
-						// 		->where('company_name', '=', $row->company_name)
-						// 		->where('company_email', '=', $row->company_email)
-						// 		->first();
-							
-						// 	$rowId = $this->model->withTrashed()->find($rowId);
-						// }
-						// \Log::info('row-->' . $rowId);
-						//validate if $id was found so UPDATE it
-						if (isset($rowId)) {
-							\Log::info('entro update-->' . $rowId);
-							$rowId->company_name = $row->company_name;
-							$rowId->company_legal_name = $row->company_legal_name;
-							$rowId->company_tax_id	= $row->company_tax_id;
-							$rowId->company_website = $row->company_website;
-							$rowId->company_email = $row->company_email;
-							$rowId->company_contact = $row->company_contact;
-							$rowId->company_phone = $row->company_phone;
-							$rowId->company_cellular = $row->company_cellular;
-							$rowId->company_address = $row->company_address;
-							$rowId->company_location = $row->company_location;
-							$rowId->company_postcode = $row->company_postcode;
-							$rowId->company_latitude = $row->company_latitude;
-							$rowId->company_longitude = $row->company_longitude;
-							$rowId->deleted_at = null;
-							$rowId->touch();  			//touch: update timestamps
-							$rowId->save();
-							$updateRecords++;
-						}
-						// validate no found so ADD it
-						else{
-							$rowId = new $this->model;
-							$rowId->company_name = $row->company_name;
-							$rowId->company_legal_name = $row->company_legal_name;
-							$rowId->company_tax_id	= $row->company_tax_id;
-							$rowId->company_website = $row->company_website;
-							$rowId->company_email = $row->company_email;
-							$rowId->company_contact = $row->company_contact;
-							$rowId->company_phone = $row->company_phone;
-							$rowId->company_cellular = $row->company_cellular;
-							$rowId->company_address = $row->company_address;
-							$rowId->company_location = $row->company_location;
-							$rowId->company_postcode = $row->company_postcode;
-							$rowId->company_latitude = $row->company_latitude;
-							$rowId->company_longitude = $row->company_longitude;
-							$rowId->deleted_at = null;
-							$rowId->save();
-							$addedRecords++;
+		// Begin a Transaction
+		DB::beginTransaction();
+		try {
+			
+			$addedRecords = 0; // count add records
+			$updateRecords = 0; //count update records
+
+			$results = \Excel::load($file->getRealPath())->get();
+
+			foreach ($results as $key => $row) {
+				\Log::info($row->id);
+				if (isset($row)) {
+					// Validate if comapany name and email already exist
+					$rowId = $this->model->withTrashed()
+						->where('company_name', '=', $row->company_name)
+						->where('company_email', '=', $row->company_email)
+						->first();
+					if (empty($rowId)) {
+						// if not takes the id from the file
+						if (isset($row->id)) {
+							$rowId = $this->model->withTrashed()->find($row->id);
 						}
 					}
+					//validate if $id was found so UPDATE it
+					if (isset($rowId)) {
+						$rowId->company_name = $row->company_name;
+						$rowId->company_legal_name = $row->company_legal_name;
+						$rowId->company_tax_id	= $row->company_tax_id;
+						$rowId->company_website = $row->company_website;
+						$rowId->company_email = $row->company_email;
+						$rowId->company_contact = $row->company_contact;
+						$rowId->company_phone = $row->company_phone;
+						$rowId->company_cellular = $row->company_cellular;
+						$rowId->company_address = $row->company_address;
+						$rowId->company_location = $row->company_location;
+						$rowId->company_postcode = $row->company_postcode;
+						$rowId->company_latitude = $row->company_latitude;
+						$rowId->company_longitude = $row->company_longitude;
+						$rowId->deleted_at = null;
+						$rowId->save();
+						$updateRecords++;
+					}
+					// validate no found so ADD it
+					else{
+						$rowId = new $this->model;
+						$rowId->company_name = $row->company_name;
+						$rowId->company_legal_name = $row->company_legal_name;
+						$rowId->company_tax_id	= $row->company_tax_id;
+						$rowId->company_website = $row->company_website;
+						$rowId->company_email = $row->company_email;
+						$rowId->company_contact = $row->company_contact;
+						$rowId->company_phone = $row->company_phone;
+						$rowId->company_cellular = $row->company_cellular;
+						$rowId->company_address = $row->company_address;
+						$rowId->company_location = $row->company_location;
+						$rowId->company_postcode = $row->company_postcode;
+						$rowId->company_latitude = $row->company_latitude;
+						$rowId->company_longitude = $row->company_longitude;
+						$rowId->deleted_at = null;
+						$rowId->save();
+						$addedRecords++;
+					}
 				}
+			}
 
-				if (($addedRecords+$updateRecords)==0) {
-
-					// DB::rollBack();
-
-					return array('error' => true, 'message' => Lang::get('messages.error') . ' ' . Lang::get('messages.error_file_format'));
-
-				} else {
-
-					// DB::commit();
-
-					return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));
-				} 
+			if (($addedRecords + $updateRecords)==0) {
 				
-			})->get();
+				DB::rollBack();
 
-	    // } catch (Exception $e) {
+				return array('error' => true, 'message' => Lang::get('messages.error') . ' ' . Lang::get('messages.error_file_format'));
 
-		// 	DB::rollBack();
+			} else {
+				DB::commit();
 
-		// 	return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
-		// }
+				return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));
+
+			} 
+			
+			return $message;
+
+	    } catch (Exception $e) {
+
+			\Log::error($e);
+
+			DB::rollBack();
+
+			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
+		}
 
 	}
 }
