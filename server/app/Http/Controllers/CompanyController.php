@@ -164,6 +164,7 @@ class CompanyController extends Controller
     $file = $request->file('fileToImport');
 		//validate the request if file is missing send an error to user
 		if (empty($file)) {
+      
       $result = array('error' => true, 'message' => Lang::get('messages.error'));
       
       return response()->json($result);
@@ -171,7 +172,7 @@ class CompanyController extends Controller
     }
       
     $result = $this->companyRepository->import($file);
-
+// \Log::info('result' . $result['message']);
     if (! $result['error']) {
 
       // Event::fire(new RegisterTransactionAccessEvent('facilities.institutes.import'));
