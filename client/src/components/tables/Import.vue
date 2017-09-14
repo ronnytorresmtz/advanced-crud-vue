@@ -155,19 +155,20 @@
         Axios.post('http://localhost:8000/api/shippers/companies/import', formData)
         .then((response) => {
           if (!response.data.error) {
-            self.reloadAfterAction();
+            this.reloadAfterAction();
           }
-          store.commit('SHOW_IMPORT_MODAL', false);
-          store.commit('SHOW_MESSAGE', response);
+          this.closeModal();
+          this.displayPopUpMessage(response);
         })
         .catch((response) => {
-          store.commit('SHOW_IMPORT_MODAL', false);
-          store.commit('SHOW_MESSAGE', response);
+          this.closeModal();
+          this.displayPopUpMessage(response);
         });
       },
       reloadAfterAction() {
-        const url = this.$store.getters.getPagination.path;
-        store.dispatch('getData', url);
+        // const url = this.$store.getters.getPagination.path;
+        // store.dispatch('getData', url);
+        store.dispatch('getDataFiltered');
       },
       closeModal() {
         store.commit('SHOW_IMPORT_MODAL', false);
