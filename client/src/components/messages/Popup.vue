@@ -6,7 +6,6 @@
     border: 1px solid transparent;
     border-radius: 4px;
     width: auto ;
-    /*margin: 35px 200px auto 100px;*/
     left:0px;
     right: 0px;
     top: 0px;
@@ -15,7 +14,7 @@
     padding: 15px;
   }
 
-  .popup-info{
+  .popup-info {
     color: #31708f;
     background-color: #d9edf7;
     border-color: #bce8f1;
@@ -52,7 +51,6 @@
 
 <template>
 
-  <!--div class="container-fluid popup"-->
   <div :id="message.id" :class="'popup-position popup-' + message.type" v-show="showAlert" >
       {{message.text}}
       <span class="popup-close" v-show="showAlert" @click.prevent="hideBoxMessage"> &times; </span>
