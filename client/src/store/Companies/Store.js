@@ -190,6 +190,22 @@ const store = new Vuex.Store({
         })
         .then(() => store.commit('UPDATE_LOADING', false));
     },
+    importFile(context, file) {
+      const formData = new FormData();
+      formData.append('fileToImport', file);
+      Axios.post('http://localhost:8000/api/shippers/companies/import', formData)
+      .then((response) => {
+        if (!response.data.error) {
+          store.dispatch('getDataFiltered');
+        }
+        store.commit('SHOW_IMPORT_MODAL', false);
+        store.commit('SHOW_MESSAGE', response);
+      })
+      .catch((response) => {
+        store.commit('SHOW_IMPORT_MODAL', false);
+        store.commit('SHOW_MESSAGE', response);
+      });
+    },
   },
   getters: {
     getPagination: state => state.pagination,
