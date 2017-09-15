@@ -21,6 +21,7 @@
 <template>
   <div class="row">
     <div class="col-sm-6">
+      <!--Per Page-->
       <div align="left" class="pagination-showing">
         {{ ts['pages'] }}
         <select type="text" v-model="perPage" @change="getData(url)">
@@ -28,10 +29,10 @@
         </select>
         <span> {{ ts['showing'] }}: {{pagination.from}} {{ ts['to'] }} {{pagination.to}} {{ ts['of'] }} {{pagination.total}} {{ ts['items'] }} </span>
       </div>
-      
     </div>
     <div class="col-sm-6">
       <div align="right">
+        <!--Pagination Buttons-->
         <a class="btn btn-sm btn-primary button-width" 
         @click.prevent="setStartPageUrl"> {{ ts['start'] }} </a>
         <a class="btn btn-sm btn-primary button-width" 
@@ -43,6 +44,7 @@
         <br/> <br/>
       </div>
     </div>
+    <!--No More Pages Label-->
     <div v-if="noMorePages" class="label-nomorepages" align="right">
       {{ ts['noMorePages'] }}
     </div>
@@ -50,7 +52,7 @@
 </template>
 
 <script>
-  // import Axios from 'axios';
+  // vuex store
   import store from '../../store/Companies/Store';
   // my components
   import MyLang from '../../components/languages/Languages';
@@ -97,21 +99,13 @@
         this.getData(pageUrl);
       },
       setPrevPageUrl() {
-        let pageUrl = '';
-        if (this.pagination.prev_page_url) {
-          pageUrl = `${this.pagination.prev_page_url}&${this.getParams()}`;
-        } else {
-          pageUrl = null;
-        }
+        const prevUrl = `${this.pagination.prev_page_url}&${this.getParams()}`;
+        const pageUrl = (this.pagination.prev_page_url) ? prevUrl : null;
         this.getData(pageUrl);
       },
       setNextPageUrl() {
-        let pageUrl = '';
-        if (this.pagination.next_page_url) {
-          pageUrl = `${this.pagination.next_page_url}&${this.getParams()}`;
-        } else {
-          pageUrl = null;
-        }
+        const nextUrl = `${this.pagination.next_page_url}&${this.getParams()}`;
+        const pageUrl = (this.pagination.next_page_url) ? nextUrl : null;
         this.getData(pageUrl);
       },
       setEndPageUrl() {
@@ -131,13 +125,19 @@
             store.commit('UPDATE_LOADING', false);
           })
           .catch(() => {
-            alert('Unexpected Error (Pagination Component - method getData)');
+            store.commit('SHOW_MESSAGE', this.getUnexpectedErrorMsg());
             store.commit('UPDATE_LOADING', false);
           });
         } else {
           this.noMorePages = true;
           store.commit('UPDATE_LOADING', false);
         }
+      },
+      getUnexpectedErrorMsg() {
+        const response = { data: { error: '', message: '' } };
+        response.data.message = 'Caught an unexpected error in method getData of the Pagination Component, contact the system administrator ';
+        response.data.error = true;
+        return response;
       },
     },
   };

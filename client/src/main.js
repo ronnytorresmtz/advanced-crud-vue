@@ -7,7 +7,7 @@ import router from './router';
 import store from './store/Companies/Store';
 
 window._ = require('lodash');
-// require('bootstrap');
+
 Vue.use(VueWorker);
 
 Vue.config.productionTip = false;

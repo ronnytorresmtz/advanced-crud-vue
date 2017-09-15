@@ -1,5 +1,5 @@
 <script>
-
+// my components
 import MyLang from '../languages/Traslations';
 
 export default {

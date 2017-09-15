@@ -35,26 +35,36 @@
 
 <template>
   <div class="container-fluid" align="left" style="margin-top: 75px">
+
+    <!--Import component-->
     <myimport url-import="http:/localhost:8000/api/shippers/companies/import"></myimport>
+
+    <!--message component-->
     <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
-      <popup v-if="showPopUpMessage"> </popup>
+      <mypopup v-if="showPopUpMessage"> </mypopup>
     </transition>
+
+    <!--Panel-->
     <div class="panel panel-default panel-padding">
       <div class="row">
         <div class="col-xs-6">
+          <!--Page Title-->
           <h1> {{ ts['companyList']}}
+          <!--Spin Icon-->
           <span v-if="loading">
             <i class="fa fa-spinner fa-spin"></i>
           </span>
           </h1>
         </div>
+        
         <div class="col-xs-6" style="margin-top: 30px" align="right">
+          <!--Add button-->
           <button class="btn btn-sm btn-primary" @click.prevent="showAddForm()"> {{ ts['addCompany'] }} </button>
-
+          <!--Expot button-->
           <a :href="getExportUrl()" class="btn btn-sm btn-primary button-size" :title="ts['export']">
             <span class="glyphicon glyphicon-arrow-down"></span>
           </a>
-
+          <!--Import button-->
           <button class="btn btn-sm btn-primary" @click.prevent="importData()" :title="ts['import']"> 
             <span class="glyphicon glyphicon-arrow-up"></span>
           </button>
@@ -102,17 +112,17 @@
 
       </div>
       <hr>
+      <!--Modal Form-->
       <div class="modal fade" id="myModalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalFormLabel">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <!--button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button-->
+              <!--Modal Title-->
               <h4 class="modal-title" v-text="(isUpdateBtnShow) ? ts['editCompany'] : ts['addCompany']"></h4>
             </div>
             <div class="modal-body">
               <div class="row" align="right" style="padding-right:20px" v-if="isUpdateBtnShow">
+                <!--Modal Status-->
                 <label> {{ ts['companyStatus'] }}: </label>
                 <span v-if="(input.deleted_at===null)">
                   <button class="btn btn-xs btn-success btn-std-width" v-model="input.status"> {{ ts['active'] }} </button>
@@ -122,6 +132,7 @@
                 </span>
               </div>
               <form>
+                <!--Modal Form Fields-->
                 <div class="row">
                   <div class="col-xs-6">
                     <label> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
@@ -160,11 +171,13 @@
               <br>
               <div class="modal-footer">
                 <div class="row">
+                  <!--Check box for Close After Action-->
                   <div class="col-xs-4" align="left">
                     <div v-show="!isUpdateBtnShow">
                       <input type="checkbox" v-model="closeAfterAction"> <span style="cursor:pointer" @click.prevent="closeAfterAction = !closeAfterAction"> {{ ts['closeAfterAction'] }} </span></input>
                     </div>
                   </div>
+                  <!--Modal Footer Button-->
                   <div class="col-xs-8">
                     <button class="btn btn-sm btn-success btn-std-width" @click.prevent="addItem()" v-if="!isUpdateBtnShow" :disabled="isAddBtnDisable"> {{ ts['add'] }} </button>
                     <button class="btn btn-sm btn-success btn-std-width" @click.prevent="updateItem()" v-if="isUpdateBtnShow" :disabled="isUpdateBtnDisable"> {{ ts['update'] }} </button>
@@ -179,10 +192,12 @@
         </div>
       </div> <!--End Modal-->
 
+      <!--Table Component-->
       <mytable :cols="headers" :rows="pageData"> </mytable>
             
       <br>
 
+      <!--Paginator Component-->
       <mypaginator url="http://localhost:8000/api/shippers/companies"></mypaginator>
 
     </diV>
@@ -197,17 +212,14 @@
 </template>
 
 <script>
-// 3er Party Component
-// import Axios from 'axios';
 // vuex store
 import store from '../store/Companies/Store';
 // my components
-import popup from '../components/messages/Popup';
+import mypopup from '../components/messages/Popup';
 import mylang from '../components/languages/Languages';
 import mytable from '../components/tables/Table';
 import myimport from '../components/tables/Import';
 import mypaginator from '../components/tables/Paginator';
-import sidebar from '../components/layout/sidebar';
 // my libraries
 import createObj, { resetObjVal } from '../lib/General';
 
@@ -215,11 +227,10 @@ export default {
   name: 'Companies',
   mixins: [mylang],
   components: {
-    popup,
+    mypopup,
     mytable,
     myimport,
     mypaginator,
-    sidebar,
   },
   data() {
     return {
@@ -246,7 +257,6 @@ export default {
       isFilterBySearchText: false,
       isFilterApplied: false,
       optionSelected: '-1',
-      // selectOptions: ['Apply A Filter', 'Active', 'Inactive'],
       input: {
         id: 'New',
         company_name: '',
@@ -349,8 +359,8 @@ export default {
     },
     getExportUrl() {
       return `${this.$store.getters.getPagination.path}/export?
-                searchText=${this.searchText}&
-                optionSelected=${this.optionSelected}`;
+        searchText=${this.searchText}&
+        optionSelected=${this.optionSelected}`;
     },
     importData() {
       store.commit('SHOW_IMPORT_MODAL', true);
@@ -383,13 +393,9 @@ export default {
     },
     validFieldsRequired() {
       const emptyFields = Object.keys(this.input).filter(key => this.input[key] === '');
-      if (emptyFields.length !== 0) {
-        store.commit('SHOW_BTN_ADD_DISABLE', true);
-        store.commit('SHOW_BTN_UPDATE_DISABLE', true);
-      } else {
-        store.commit('SHOW_BTN_ADD_DISABLE', false);
-        store.commit('SHOW_BTN_UPDATE_DISABLE', false);
-      }
+      const isEmptyFields = (emptyFields.length !== 0);
+      store.commit('SHOW_BTN_ADD_DISABLE', isEmptyFields);
+      store.commit('SHOW_BTN_UPDATE_DISABLE', isEmptyFields);
     },
     displayPopUpMessage() {
       this.showPopUpMessage = this.$store.getters.getShowMessage;
@@ -409,11 +415,8 @@ export default {
   },
   watch: {
     showModal() {
-      if (this.$store.getters.getShowModal) {
-        $('#myModalForm').modal('show');
-      } else {
-        $('#myModalForm').modal('hide');
-      }
+      const hideOrShow = (this.$store.getters.getShowModal) ? 'show' : 'hide';
+      $('#myModalForm').modal(hideOrShow);
     },
     searchText() {
       store.commit('UPDATE_SEARCH_TEXT', this.searchText);
@@ -422,16 +425,6 @@ export default {
         this.isFilterBySearchText = false;
       }
     },
-    // optionSelected() {
-    //   store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
-    //   if (this.optionSelected === '-1') {
-    //     this.getDataFiltered();
-    //     this.isFilterApplied = false;
-    //   }
-    // },
-    // closeAfterisAction() {
-    //   console.log(this.closeAfterAction);
-    // },
   },
 };
 </script>

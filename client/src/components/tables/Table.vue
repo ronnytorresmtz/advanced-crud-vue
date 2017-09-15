@@ -45,11 +45,12 @@
   <div>
     <div class="row icon-cog">
       <div class="dropdown">
+        <!--Cog Icon -->
         <a class="dropdown-toggle pull-right" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <span class="glyphicon glyphicon-cog"></span>
-          <!--span class="caret"></span-->
         </a>
         <br>
+        <!--Choose field to display-->
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
           <h6 class="dropdown-header">{{ ts['ChooseAFieldToDisplay'] }}</h6>
           <li v-for="col in cols" class="dropdown-item-cog">
@@ -58,17 +59,20 @@
             </input>
          </li>
         </ul>
-      </div>
+      </div> 
     </div>
-    <div  class="table-responsive table-hscroll table-height"> <!-- v-if="!loading"-->
+    <!--Table-->
+    <div  class="table-responsive table-hscroll table-height">
       <table id="table1" class="table table-hover">
+        <!--Table Header-->
         <th v-for="(col, key) in cols" :class="`table-cell-${hideOrShowCell(col.name)}`">
-          <a @click.prevent="sort($event)" style="cursor:pointer" :id="col.name"> <!--v-if="col.display"-->
+          <a @click.prevent="sort($event)" style="cursor:pointer" :id="col.name"> 
             <span :class="isOrderBy()" v-show="isFieldOrder(col.name)"></span>
             {{ ts[col.label] }} 
           </a>
         </th>
         <tbody>
+          <!--Table Rows-->
           <tr v-for="row in rows">
             <td v-for="(value, key) in row" @click.prevent="itemSelected(row)" :id="key" :class="`table-cell-${hideOrShowCell(key)}`" >
               <span v-if="key=='deleted_at'" >
@@ -92,6 +96,7 @@
 </template>
 
 <script>
+// vues store
 import store from '../../store/Companies/Store';
 // my components
 import MyLang from '../../components/languages/Languages';
