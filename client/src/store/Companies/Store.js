@@ -2,19 +2,25 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import Axios from 'axios';
-// import mockData from '../../store/Companies/MockData';
+
+import { storeInLocalStorage } from '../../lib/General';
+// import mockData from '../../store/Companies/FakeData';
 
 Vue.use(Vuex);
 // Vue.prototype.$http = Axios;
 
 const store = new Vuex.Store({
   state: {
+    moduleName: 'companies',
+    baseURL: 'http://localhost:8000/api/shippers/companies',
     pageData: [],
     searchText: '',
     optionSelected: '',
+    colsHeaders: [],
     fieldOrderBy: 'company_name',
     orderBy: 'asc',
     pagination: {},
+    perPage: 10,
     loading: false,
     showModal: false,
     showImportModal: false,
@@ -45,8 +51,24 @@ const store = new Vuex.Store({
       text: '',
       show: false,
     },
+    tableDefaults: {
+      optionSelected: -1,
+      fieldOrderBy: 'company_name',
+      orderBy: 'asc',
+      perPage: '10',
+    },
+    tableParams: {
+      optionSelected: '',
+      fieldOrderBy: '',
+      orderBy: '',
+      perPage: '',
+    },
   },
   mutations: {
+    UPDATE_COLS_HEADERS(state, colsHeaders) {
+      state.colsHeaders = colsHeaders;
+      storeInLocalStorage(`${state.moduleName}/colsHeaders`, JSON.stringify(colsHeaders));
+    },
     UPDATE_PAGEDATA(state, data) {
       state.pageData = data;
     },
@@ -75,20 +97,31 @@ const store = new Vuex.Store({
     UPDATE_PAGINATION(state, pagination) {
       state.pagination = pagination;
     },
+    UPDATE_PER_PAGE(state, perPage) {
+      state.perPage = perPage;
+      state.tableParams.perPage = perPage;
+      storeInLocalStorage(`${state.moduleName}/tableParams`, JSON.stringify(state.tableParams));
+    },
     UPDATE_SEARCH_TEXT(state, text) {
       state.searchText = text;
     },
     UPDATE_OPTION_SELECT(state, value) {
       state.optionSelected = value;
+      state.tableParams.optionSelected = value;
+      storeInLocalStorage(`${state.moduleName}/tableParams`, JSON.stringify(state.tableParams));
     },
     UPDATE_LOADING(state, loading) {
       state.loading = loading;
     },
-    UPDATE_ORDER_BY(state, orderBy) {
-      state.orderBy = orderBy;
-    },
     UPDATE_FIELD_ORDER_BY(state, fieldOrderBy) {
       state.fieldOrderBy = fieldOrderBy;
+      state.tableParams.fieldOrderBy = fieldOrderBy;
+      storeInLocalStorage(`${state.moduleName}/tableParams`, JSON.stringify(state.tableParams));
+    },
+    UPDATE_ORDER_BY(state, orderBy) {
+      state.orderBy = orderBy;
+      state.tableParams.orderBy = orderBy;
+      storeInLocalStorage(`${state.moduleName}/tableParams`, JSON.stringify(state.tableParams));
     },
     SHOW_MESSAGE(state, response) {
       state.message.text = (response.data.message) ? response.data.message : 'The operation was NOT executed as expected, try again or please contact the support service';
@@ -208,7 +241,10 @@ const store = new Vuex.Store({
     },
   },
   getters: {
+    getModuleName: state => state.moduleName,
+    getBaseURL: state => state.baseURL,
     getPagination: state => state.pagination,
+    getPerPage: state => state.perPage,
     getPageData: state => state.pageData,
     getItem: state => state.item,
     getMessage: state => state.message,
@@ -224,6 +260,8 @@ const store = new Vuex.Store({
     getFieldOrderBy: state => state.fieldOrderBy,
     getOrderBy: state => state.orderBy,
     getShowImportModal: state => state.showImportModal,
+    getTableDefaults: state => state.tableDefaults,
+    getTableParams: state => state.tableParams,
   },
 });
 
