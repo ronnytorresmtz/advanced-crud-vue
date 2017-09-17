@@ -101,7 +101,7 @@ import store from '../../store/Companies/Store';
 // my components
 import MyLang from '../../components/languages/Languages';
 // my libraries
-import createObj from '../../lib/General';
+import createObj, { getValueFromLocalStorage } from '../../lib/General';
 
 export default {
 
@@ -115,10 +115,13 @@ export default {
   },
 
   updated() {
-    const colsInfo = JSON.parse(localStorage.getItem('colsInfo'));
-    Object.keys(colsInfo).forEach((key) => {
-      this.cols[key].display = colsInfo[key].display;
-    });
+    const moduleName = this.$store.getters.getModuleName;
+    if (localStorage.getItem(`${moduleName}/colsHeaders`) !== null) {
+      const colsInfo = JSON.parse(getValueFromLocalStorage(moduleName, 'colsHeaders'));
+      Object.keys(colsInfo).forEach((key) => {
+        this.cols[key].display = colsInfo[key].display;
+      });
+    }
   },
 
   methods: {
@@ -139,7 +142,7 @@ export default {
           this.cols[col].display = !this.cols[col].display;
         }
       });
-      this.storeInLocalStorage('colsInfo', this.cols);
+      store.commit('UPDATE_COLS_HEADERS', this.cols);
     },
     itemSelected(row) {
       const dataRow = this.$store.getters.getPageData.filter(item => item.id === row.id);
@@ -165,11 +168,6 @@ export default {
         return 'glyphicon glyphicon-sort-by-alphabet';
       }
       return 'glyphicon glyphicon-sort-by-alphabet-alt';
-    },
-    storeInLocalStorage(key, value) {
-      if (typeof (Storage) !== 'undefined') {
-        localStorage.setItem(key, JSON.stringify(value));
-      }
     },
   },
 };
