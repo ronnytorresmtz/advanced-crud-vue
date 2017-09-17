@@ -37,7 +37,7 @@
   <div class="container-fluid" align="left" style="margin-top: 75px">
 
     <!--Import component-->
-    <myimport url-import="http:/localhost:8000/api/shippers/companies/import"></myimport>
+    <myimport :url-import="baseURL"></myimport>
 
     <!--message component-->
     <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
@@ -198,13 +198,15 @@
       <br>
 
       <!--Paginator Component-->
-      <mypaginator url="http://localhost:8000/api/shippers/companies"></mypaginator>
+      <mypaginator :url="baseURL"></mypaginator>
 
     </diV>
     <hr>
     <h4>TODO</h4>
     <ul>
       <li> Implementar el componente de location como select</li>
+      <li> Clean Code en la Api de Laravel</li>
+      <li> Parametrizar el path de Store en cada componente pues trae Company</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
     </ul>
@@ -221,7 +223,7 @@ import mytable from '../components/tables/Table';
 import myimport from '../components/tables/Import';
 import mypaginator from '../components/tables/Paginator';
 // my libraries
-import createObj, { resetObjVal } from '../lib/General';
+import createObj, { resetObjVal, getValueFromLocalStorage } from '../lib/General';
 
 export default {
   name: 'Companies',
@@ -278,15 +280,39 @@ export default {
   },
 
   created() {
-    store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
+    const moduleName = this.$store.getters.getModuleName;
+    const tableDefaults = JSON.stringify(this.$store.getters.getTableDefaults);
+    const values = JSON.parse(getValueFromLocalStorage(moduleName, 'tableParams', tableDefaults));
+    store.commit('UPDATE_OPTION_SELECT', values.optionSelected);
+    store.commit('UPDATE_FIELD_ORDER_BY', values.fieldOrderBy);
+    store.commit('UPDATE_ORDER_BY', values.orderBy);
+    store.commit('UPDATE_PER_PAGE', values.perPage);
+    this.optionSelected = this.$store.getters.getOptionSelected;
+    this.isFilterApplied = (this.optionSelected >= 0);
+    store.dispatch('getData', `${this.baseURL}?${this.getParams()}`);
+  },
+
+  mounted() {
   },
 
   computed: {
+    baseURL() {
+      return this.$store.getters.getBaseURL;
+    },
     pageData() {
       return this.$store.getters.getPageData;
     },
+    perPage() {
+      return this.$store.getters.getPerPage;
+    },
     searchTextFilter() {
       return this.$store.getters.getSearchText;
+    },
+    fieldOrderBy() {
+      return this.$store.getters.getFieldOrderBy;
+    },
+    orderBy() {
+      return this.$store.getters.getOrderBy;
     },
     showPopUpMessage: {
       set() { },
@@ -411,6 +437,9 @@ export default {
       store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
       this.getDataFiltered();
       this.isFilterApplied = false;
+    },
+    getParams() {
+      return `searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
     },
   },
   watch: {
