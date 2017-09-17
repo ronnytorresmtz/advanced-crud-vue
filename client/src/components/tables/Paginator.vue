@@ -71,8 +71,9 @@
       };
     },
 
-    created() {
-      this.getData(this.pagination.path);
+    mounted() {
+      // this.getData(this.pagination.path);
+      this.perPage = this.$store.getters.getPerPage;
     },
 
     computed: {
@@ -113,10 +114,15 @@
         this.getData(pageUrl);
       },
       getParams() {
-        return `searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
+        return `searchText=${this.searchText}&
+          optionSelected=${this.optionSelected}&
+          itemsByPage=${this.perPage}&
+          fieldOrderBy=${this.fieldOrderBy}&
+          orderBy=${this.orderBy}`;
       },
       getData(pageUrl) {
         store.commit('UPDATE_LOADING', true);
+        store.commit('UPDATE_PER_PAGE', this.perPage);
         this.noMorePages = false;
         if (pageUrl !== null) {
           const newPageUrl = pageUrl || this.url;
