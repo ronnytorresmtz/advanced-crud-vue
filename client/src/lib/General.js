@@ -2,7 +2,6 @@
 /*
 GENERAL FUNCTION LIBRARY
 */
-
     /*
     * Create and return an Identical js object
     * received as parameter.
@@ -24,6 +23,21 @@ GENERAL FUNCTION LIBRARY
         obj[key] = '';
       });
       return obj;
+    }
+    /*
+    * Store a Key Value in the Local Storage
+    */
+    export function storeInLocalStorage(key, value) {
+      if (typeof (Storage) !== 'undefined') {
+        localStorage.setItem(key, value);
+      }
+    }
+     /*
+    * Get the value of a Module/Key from the Local Storage
+    */
+    export function getValueFromLocalStorage(moduleName, key, defaultValue) {
+      const value = localStorage.getItem(`${moduleName}/${key}`);
+      return (value === null) ? defaultValue : value;
     }
     /*
     * Compare two values receivend in the key object
