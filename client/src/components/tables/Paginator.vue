@@ -96,24 +96,24 @@
 
     methods: {
       setStartPageUrl() {
-        const pageUrl = `${this.pagination.path}?${this.getParams()}`;
+        const pageUrl = `${this.pagination.path}?${this.getUrlParams()}`;
         this.getData(pageUrl);
       },
       setPrevPageUrl() {
-        const prevUrl = `${this.pagination.prev_page_url}&${this.getParams()}`;
+        const prevUrl = `${this.pagination.prev_page_url}&${this.getUrlParams()}`;
         const pageUrl = (this.pagination.prev_page_url) ? prevUrl : null;
         this.getData(pageUrl);
       },
       setNextPageUrl() {
-        const nextUrl = `${this.pagination.next_page_url}&${this.getParams()}`;
+        const nextUrl = `${this.pagination.next_page_url}&${this.getUrlParams()}`;
         const pageUrl = (this.pagination.next_page_url) ? nextUrl : null;
         this.getData(pageUrl);
       },
       setEndPageUrl() {
-        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&${this.getParams()}`;
+        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&${this.getUrlParams()}`;
         this.getData(pageUrl);
       },
-      getParams() {
+      getUrlParams() {
         return `searchText=${this.searchText}&
           optionSelected=${this.optionSelected}&
           itemsByPage=${this.perPage}&
@@ -126,7 +126,7 @@
         this.noMorePages = false;
         if (pageUrl !== null) {
           const newPageUrl = pageUrl || this.url;
-          store.dispatch('getData', `${newPageUrl}?${this.getParams()}`)
+          store.dispatch('getData', `${newPageUrl}?${this.getUrlParams()}`)
           .then(() => {
             store.commit('UPDATE_LOADING', false);
           })
