@@ -10,7 +10,8 @@ export default {
     clearFilter: 'Clear Filter',
     applyAFilter: 'Apply a filter',
     closeAfterAction: 'Close after action',
-    ChooseAFieldToDisplay: 'Choose a Filed to Display',
+    chooseAFieldToDisplay: 'Choose a Filed to Display',
+    enterCityStateCountry: 'Enter your city, state and country',
     importFile: 'Import File',
     // Actions
     add: 'Add',
@@ -65,7 +66,8 @@ export default {
     clearFilter: 'Eliminar Filtro',
     applyAFilter: 'Aplicar Filtro',
     closeAfterAction: 'Cerrar al Agregar',
-    ChooseAFieldToDisplay: 'Selecciona un Campo para Mostrarlo',
+    chooseAFieldToDisplay: 'Selecciona un Campo para Mostrarlo',
+    enterCityStateCountry: 'Captura la ciudad, estado y país',
     importFile: 'Importar Archivo',
     // Actions
     add: 'Agregar',
