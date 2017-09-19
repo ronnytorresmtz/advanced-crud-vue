@@ -238,7 +238,7 @@ const store = new Vuex.Store({
       const formData = new FormData();
       formData.append('fileToImport', file);
       const baseUrl = context.getters.getBaseUrlCompanies;
-      Axios.post(`${baseUrl}/import`, formData)
+      return Axios.post(`${baseUrl}/import`, formData)
       .then((response) => {
         if (!response.data.error) {
           store.dispatch('getDataFiltered');
@@ -253,7 +253,7 @@ const store = new Vuex.Store({
     },
     getLocations(context) {
       const baseUrl = context.getters.getBaseUrlLocations;
-      Axios.get(`${baseUrl}/getAllLocationsActive`)
+      return Axios.get(`${baseUrl}/getAllLocationsActive`)
       .then((response) => {
         const locations = response.data.map(obj => obj.location_name);
         context.commit('SET_LOCATIONS', locations);
