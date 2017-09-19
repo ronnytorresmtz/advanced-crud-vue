@@ -37,7 +37,7 @@
   <div class="container-fluid" align="left" style="margin-top: 75px">
 
     <!--Import component-->
-    <myimport :url-import="baseURL"></myimport>
+    <myimport :url-import="baseUrlCompanies"></myimport>
 
     <!--message component-->
     <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
@@ -135,35 +135,35 @@
                 <!--Modal Form Fields-->
                 <div class="row">
                   <div class="col-xs-6">
-                    <label> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.id" @keyup="validFieldsRequired" :disabled="true"></input>
-                    <label> {{ ts['companyName'] }}: </label><span class="aster-red" v-text="!input.company_name ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyName'] }}: </label><span class="aster-red" v-text="!input.company_name ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_name" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLegalName'] }}: </label><span class="aster-red" v-text="!input.company_legal_name ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyLegalName'] }}: </label><span class="aster-red" v-text="!input.company_legal_name ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_legal_name" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyTaxId'] }}: </label><span class="aster-red" v-text="!input.company_tax_id ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyTaxId'] }}: </label><span class="aster-red" v-text="!input.company_tax_id ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_tax_id" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyWebsite'] }}: </label><span class="aster-red" v-text="!input.company_website ? ' *' : ''"></span>
+                    <label style="padding-top:11px"> {{ ts['companyWebsite'] }}: </label><span class="aster-red" v-text="!input.company_website ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_website" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyContact'] }}: </label><span class="aster-red" v-text="!input.company_contact ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyContact'] }}: </label><span class="aster-red" v-text="!input.company_contact ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_contact" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyEmail'] }}: </label><span class="aster-red" v-text="!input.company_email ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyEmail'] }}: </label><span class="aster-red" v-text="!input.company_email ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_email" @keyup="validFieldsRequired"></input>
                   </div>
                   <div class="col-xs-6">
-                    <label> {{ ts['companyPhone'] }}: </label><span class="aster-red" v-text="!input.company_phone ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyPhone'] }}: </label><span class="aster-red" v-text="!input.company_phone ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_phone" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyCellular'] }}: </label><span class="aster-red" v-text="!input.company_cellular ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyCellular'] }}: </label><span class="aster-red" v-text="!input.company_cellular ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_cellular" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_address" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_location" @keyup="validFieldsRequired"></input>
+                    <label style="padding-top:5px"> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
+                    <mylocation v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
                     <label> {{ ts['companyPostcode'] }}: </label><span class="aster-red" v-text="!input.company_postcode ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_postcode" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_latitude" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLongitude'] }}: </label><span class="aster-red" v-text="!input.company_longitude ? ' *' : ''"></span>
+                    <label style="padding-top:5px"> {{ ts['companyLongitude'] }}: </label><span class="aster-red" v-text="!input.company_longitude ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_longitude" @keyup="validFieldsRequired"></input>
                   </div>
                 </div>
@@ -198,17 +198,17 @@
       <br>
 
       <!--Paginator Component-->
-      <mypaginator :url="baseURL"></mypaginator>
+      <mypaginator :url="baseUrlCompanies"></mypaginator>
 
     </diV>
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li> Implementar el componente de location como select</li>
       <li> Clean Code en la Api de Laravel</li>
-      <li> Parametrizar el path de Store en cada componente pues trae Company</li>
+      <li> Parametrizar el path de Store en cada componente pues trae Company-->Solucion Vuex Modules</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
+      <li>Instalar admin-lte</li>
     </ul>
   </div>
 </template>
@@ -220,6 +220,7 @@ import store from '../store/Companies/Store';
 import mypopup from '../components/messages/Popup';
 import mylang from '../components/languages/Languages';
 import mytable from '../components/tables/Table';
+import mylocation from '../components/tables/Location';
 import myimport from '../components/tables/Import';
 import mypaginator from '../components/tables/Paginator';
 // my libraries
@@ -231,6 +232,7 @@ export default {
   components: {
     mypopup,
     mytable,
+    mylocation,
     myimport,
     mypaginator,
   },
@@ -280,24 +282,16 @@ export default {
   },
 
   created() {
-    const moduleName = this.$store.getters.getModuleName;
-    const tableDefaults = JSON.stringify(this.$store.getters.getTableDefaults);
-    const values = JSON.parse(getValueFromLocalStorage(moduleName, 'tableParams', tableDefaults));
-    store.commit('UPDATE_OPTION_SELECT', values.optionSelected);
-    store.commit('UPDATE_FIELD_ORDER_BY', values.fieldOrderBy);
-    store.commit('UPDATE_ORDER_BY', values.orderBy);
-    store.commit('UPDATE_PER_PAGE', values.perPage);
+    const tableParams = this.getTableParamsFromLocalStorage();
+    this.updateTableParams(tableParams);
     this.optionSelected = this.$store.getters.getOptionSelected;
     this.isFilterApplied = (this.optionSelected >= 0);
-    store.dispatch('getData', `${this.baseURL}?${this.getParams()}`);
-  },
-
-  mounted() {
+    store.dispatch('getData', `${this.baseUrlCompanies}?${this.getUrlParams()}`);
   },
 
   computed: {
-    baseURL() {
-      return this.$store.getters.getBaseURL;
+    baseUrlCompanies() {
+      return this.$store.getters.getBaseUrlCompanies;
     },
     pageData() {
       return this.$store.getters.getPageData;
@@ -438,8 +432,20 @@ export default {
       this.getDataFiltered();
       this.isFilterApplied = false;
     },
-    getParams() {
+    getUrlParams() {
       return `searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
+    },
+    getTableParamsFromLocalStorage() {
+      const moduleName = this.$store.getters.getModuleName;
+      const tableDefaults = JSON.stringify(this.$store.getters.getTableDefaults);
+      const values = JSON.parse(getValueFromLocalStorage(moduleName, 'tableParams', tableDefaults));
+      return values;
+    },
+    updateTableParams(tableParams) {
+      store.commit('UPDATE_OPTION_SELECT', tableParams.optionSelected);
+      store.commit('UPDATE_FIELD_ORDER_BY', tableParams.fieldOrderBy);
+      store.commit('UPDATE_ORDER_BY', tableParams.orderBy);
+      store.commit('UPDATE_PER_PAGE', tableParams.perPage);
     },
   },
   watch: {

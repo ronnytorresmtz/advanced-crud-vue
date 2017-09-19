@@ -12,7 +12,8 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     moduleName: 'companies',
-    baseURL: 'http://localhost:8000/api/shippers/companies',
+    baseUrlCompanies: 'http://localhost:8000/api/shippers/companies',
+    baseUrlLocations: 'http://localhost:8000/api/admin/locations',
     pageData: [],
     searchText: '',
     optionSelected: '',
@@ -28,6 +29,7 @@ const store = new Vuex.Store({
     isAddBtnDisable: true,
     isUpdateBtnDisable: true,
     closeAfterAction: false,
+    locations: [],
     item: {
       id: 'New',
       company_name: '',
@@ -150,6 +152,12 @@ const store = new Vuex.Store({
       // state.showImportModal = show;
       Vue.set(state, 'showImportModal', show);
     },
+    SET_LOCATIONS(state, locations) {
+      state.locations = locations;
+    },
+    UPDATE_LOCATION(state, location) {
+      state.item.company_location = location;
+    },
   },
   actions: {
     getData(context, url) {
@@ -188,7 +196,8 @@ const store = new Vuex.Store({
     addItem(context, data) {
       store.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
-      return Axios.post('http://localhost:8000/api/shippers/companies', data)
+      const baseUrl = context.getters.getBaseUrlCompanies;
+      return Axios.post(baseUrl, data)
         .then((response) => {
           if (!response.data.error) {
             store.commit('UPDATE_ORDER_BY', 'asc');
@@ -202,7 +211,8 @@ const store = new Vuex.Store({
     updateItem(context, data) {
       store.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
-      return Axios.put(`http://localhost:8000/api/shippers/companies/${data.id}`, data)
+      const baseUrl = context.getters.getBaseUrlCompanies;
+      return Axios.put(`${baseUrl}/${data.id}`, data)
         .then((response) => {
           if (!response.data.error) {
             store.dispatch('getDataFiltered', pagination.current_page);
@@ -214,7 +224,8 @@ const store = new Vuex.Store({
     deleteItem(context, id) {
       store.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
-      return Axios.delete(`http://localhost:8000/api/shippers/companies/${id}`, { params: { id } })
+      const baseUrl = context.getters.getBaseUrlCompanies;
+      return Axios.delete(`${baseUrl}/${id}`, { params: { id } })
         .then((response) => {
           if (!response.data.error) {
             store.dispatch('getDataFiltered', pagination.current_page);
@@ -226,7 +237,8 @@ const store = new Vuex.Store({
     importFile(context, file) {
       const formData = new FormData();
       formData.append('fileToImport', file);
-      Axios.post('http://localhost:8000/api/shippers/companies/import', formData)
+      const baseUrl = context.getters.getBaseUrlCompanies;
+      Axios.post(`${baseUrl}/import`, formData)
       .then((response) => {
         if (!response.data.error) {
           store.dispatch('getDataFiltered');
@@ -239,10 +251,21 @@ const store = new Vuex.Store({
         store.commit('SHOW_MESSAGE', response);
       });
     },
+    getLocations(context) {
+      const baseUrl = context.getters.getBaseUrlLocations;
+      Axios.get(`${baseUrl}/getAllLocationsActive`)
+      .then((response) => {
+        const locations = response.data.map(obj => obj.location_name);
+        context.commit('SET_LOCATIONS', locations);
+      })
+      .catch((response) => {
+        context.commit('SHOW_MESSAGE', response);
+      });
+    },
   },
   getters: {
     getModuleName: state => state.moduleName,
-    getBaseURL: state => state.baseURL,
+    getBaseUrlCompanies: state => state.baseUrlCompanies,
     getPagination: state => state.pagination,
     getPerPage: state => state.perPage,
     getPageData: state => state.pageData,
@@ -262,6 +285,9 @@ const store = new Vuex.Store({
     getShowImportModal: state => state.showImportModal,
     getTableDefaults: state => state.tableDefaults,
     getTableParams: state => state.tableParams,
+    getLocations: state => state.locations,
+    getLocation: state => state.item.company_location,
+    getBaseUrlLocations: state => state.baseUrlLocations,
   },
 });
 
