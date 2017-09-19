@@ -52,7 +52,7 @@
         <br>
         <!--Choose field to display-->
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
-          <h6 class="dropdown-header">{{ ts['ChooseAFieldToDisplay'] }}</h6>
+          <h6 class="dropdown-header">{{ ts['chooseAFieldToDisplay'] }}</h6>
           <li v-for="col in cols" class="dropdown-item-cog">
             <input type="checkbox":name="col.name" @change.stop.prevent="columnToDisplay($event)" :checked="col.display">
             {{ ts[col.label] }} 
