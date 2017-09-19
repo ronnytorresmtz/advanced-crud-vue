@@ -27,6 +27,7 @@ class DocumentService implements DocumentServiceInterface
 		} catch (Exception $e) {
 	    	//Set the message error to display
 			return array('error' => false, 'message' => Lang::get('messages.error_caught_exception') .'&nbsp;' . str_replace("'"," ", $e->getMessage()));
+			
 		}
 
 	}

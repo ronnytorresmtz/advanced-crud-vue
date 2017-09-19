@@ -17,23 +17,34 @@ class CompaniesTableSeeder extends Seeder
 
         $faker = Faker::create();
 
-        
     	foreach (range(1,100) as $index) {
+    
             switch ($index) {
+    
                 case 1:
+            
                     $email = 'rtorresmtz@hotmail.com';
+                
                     break;
+    
                 case 2:
+        
                     $email = 'ronnytorresmtz@gmail.com';
+            
                     break;
+    
                 default:
+    
                     $email = $faker->email;
+    
                     break;
-            }
+    
+                }
 
             $company = $faker->company;
 
 	        Company::create(array(
+
 	            'company_name' => $company . $index,
 	            'company_legal_name' => $company . $faker->randomElement(array (', Inc.',' Company',' Co.')),
                 'company_tax_id' => $faker->bothify('###-') . $faker->numberBetween(70, 88) . $faker->bothify('-####'),
@@ -47,7 +58,11 @@ class CompaniesTableSeeder extends Seeder
                 'company_postcode' => $faker->postcode,
                 'company_latitude' => $faker->latitude(-90, 90),
                 'company_longitude' => $faker->longitude(-180, 180),
-	        ));
+
+            ));
+            
         }
+
     }
+
 }
