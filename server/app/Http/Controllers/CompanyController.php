@@ -24,11 +24,17 @@ class CompanyController extends Controller
                               DocumentServiceInterface $documentService)
   {
     $this->companyRepository = $companyRepository;
+
     $this->documentService   = $documentService;
+
     if ($request->per_pages) {
+
       $this->itemsByPage = $request->per_pages;
+
     } else {
+
       $this->itemsByPage = $this->itemsByPage;
+
     }
   }
   
@@ -40,7 +46,9 @@ class CompanyController extends Controller
   public function index(Request $request)
   {
     $companies = $this->companyRepository->getByPageWithFilters($request);
+
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
+
     return response()->json($companies);
   }
 
@@ -57,7 +65,9 @@ class CompanyController extends Controller
     $result = $this->companyRepository->store($request);
 
     if  ($result['error']){
-     // Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.store'));
+
+      // Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.store'));
+
     }
 
 		return response()->json($result);
@@ -72,7 +82,9 @@ class CompanyController extends Controller
 	public function edit($id)
 	{
     $companies = $this->companyRepository->getById($id);
+
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.edit'));
+
     return response()->json($companies);
 	}
 
@@ -90,7 +102,9 @@ class CompanyController extends Controller
     $result = $this->companyRepository->update($request, $id);
 
     if (! $result['error']){
+
       //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.update'));
+
     }
 
 		return response()->json($result);
@@ -108,9 +122,12 @@ class CompanyController extends Controller
     $result = [];
  
  		$result = $this->companyRepository->delete($request->id);
-		if (! $result['error']){
-			//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
-		}
+
+     if (! $result['error']){
+
+      //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
+
+    }
 
 	 	return response()->json($result);
   }
@@ -122,7 +139,6 @@ class CompanyController extends Controller
   */
 	public function export(Request $request) 
 	{ 
-    \Log::info($request);
     $data = $this->companyRepository->getAllWithFilters($request);
 
 		$result =$this->documentService->export($data, 'csv', 'Module');
@@ -136,27 +152,7 @@ class CompanyController extends Controller
 		return response()->json($result); 
 	}
 
-  // public function import2(Request $request) 
-	// { 
-  //   $result = [];
-  //   \Log::info($request->data);    
-  //   $file = json_decode($request->data, true);
-  //   \Log::info($file);
-	// 	//validate the request if file is missing send an error to user
-	// 	if (! empty($file)) {
-			
-	// 		$result = $this->companyRepository->importFile($file);
 
-	// 		if (! $result['error']){
-	// 			//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
-	// 		}
-
-	// 	}
-		
-	// 	return response()->json($result);
-  // }
-  
-  
   public function import(Request $request) {
 
     $result = [];
@@ -172,7 +168,7 @@ class CompanyController extends Controller
     }
       
     $result = $this->companyRepository->import($file);
-// \Log::info('result' . $result['message']);
+
     if (! $result['error']) {
 
       // Event::fire(new RegisterTransactionAccessEvent('facilities.institutes.import'));

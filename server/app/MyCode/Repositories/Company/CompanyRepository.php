@@ -299,63 +299,6 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 	}
 
-	  
-	public function search($request)
-	{
-
-		$companies = $this->model->withTrashed()->select(
-
-			'id', 'deleted_at', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website', 
-			'company_contact', 'company_email', 'company_phone', 'company_cellular','company_location', 
-			'company_address', 'company_postcode','company_latitude','company_longitude'
-
-		)
-		
-		->where(function ($query) use ($request) {
-		
-			if (isset($request->searchText)) {
-		
-				$query->orwhere('id','like','%' . $request->searchText . '%')
-					->orwhere('company_name','like','%' . $request->searchText . '%')
-					->orwhere('company_contact','like','%' . $request->searchText . '%')
-					->orwhere('company_email','like','%' . $request->searchText . '%')
-					->orwhere('company_phone','like','%' . $request->searchText . '%')
-					->orwhere('company_cellular','like','%' . $request->searchText . '%')
-					->orwhere('company_location','like','%' . $request->searchText . '%')
-					->orwhere('company_address','like','%' . $request->searchText . '%')
-					->orwhere('company_postcode','like','%' . $request->searchText . '%')
-					->orwhere('company_latitude','like','%' . $request->searchText . '%')
-					->orwhere('company_longitude','like','%' . $request->searchText . '%')
-					->orwhere('company_legal_name','like','%' . $request->searchText . '%')
-					->orwhere('company_tax_id','like','%' . $request->searchText . '%')
-					->orwhere('company_website','like','%' . $request->searchText . '%');
-		
-				}
-		
-			})	
-
-		->where(function ($query) use ($request) {
-		
-			if ($request->optionSelected == 0) {
-		
-				$query->whereNull('deleted_at');
-		
-			}
-		
-			if ($request->optionSelected == 1) {
-		
-				$query->whereNotNull('deleted_at');
-		
-			}
-			
-		})
-		
-		->paginate($request->itemsByPage);
-
-		return $companies;
-      	
-	}
-
 
 	public function import($file)
 	{
