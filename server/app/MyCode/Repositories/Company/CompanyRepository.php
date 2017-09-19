@@ -7,40 +7,47 @@ use App\Exeptions\EmailAlreadyExistException;
 
 use Lang, DB, Exception, Log;
  
+
 class CompanyRepository extends MyAbstractEloquentRepository implements CompanyRepositoryInterface 
 {
  
 	protected $company;
 
+
 	public function __construct(Company $company) 
 	{
-	  $this->model = $company; 
+	  
+		$this->model = $company; 
+	
 	}
 
 
 	public function getAll()
 	{
-		$companies=$this->model->withTrashed()
-		->select(
+		$companies=$this->model->withTrashed()->select(
 			'id', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website',
 			'company_email','company_contact', 'company_phone',	'company_cellular',	'company_address',
 			'company_location', 'company_postcode',	'company_latitude',	'company_longitude','deleted_at'
-			
 		)->get();
 
 		return $companies;
 	}
 
+
 	public function getAllWithFilters($request)
 	{
-		$companies = $this->model->withTrashed()
-		->select(
+		$companies = $this->model->withTrashed()->select(
+		
 		'id', 'deleted_at', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website', 
 		'company_contact', 'company_email', 'company_phone', 'company_cellular','company_location', 
 		'company_address', 'company_postcode','company_latitude','company_longitude'
+		
 		)
+
 		->where(function ($query) use ($request) {
+		
 			if (isset($request->searchText)) {
+		
 				$query->orwhere('id','like','%' . $request->searchText . '%')
 					->orwhere('company_name','like','%' . $request->searchText . '%')
 					->orwhere('company_contact','like','%' . $request->searchText . '%')
@@ -55,21 +62,31 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 					->orwhere('company_legal_name','like','%' . $request->searchText . '%')
 					->orwhere('company_tax_id','like','%' . $request->searchText . '%')
 					->orwhere('company_website','like','%' . $request->searchText . '%');
-			}
+		
+				}
+		
 		})	
 
 		->where(function ($query) use ($request) {
+		
 			if ($request->optionSelected == 0) {
+		
 				$query->whereNull('deleted_at');
+		
 			}
+		
 			if ($request->optionSelected == 1) {
+		
 				$query->whereNotNull('deleted_at');
+		
 			}
 			
 		})
 		// if first parameter is true the function is executed
 		->when($request->fieldOrderBy, function ($query) use ($request) {
+		
 			$query->orderBy($request->fieldOrderBy, $request->orderBy);
+		
 		})
 
 		->get();
@@ -78,19 +95,23 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 	}
 
+	
 	public function getAllActive()
 	{
-		$companies=$this->model
-		->select(
+		$companies=$this->model->select(
+			
 			'id', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website',
 			'company_email','company_contact', 'company_phone',	'company_cellular',	'company_address',
 			'company_location', 'company_postcode',	'company_latitude',	'company_longitude','deleted_at'
 			
-		)->get();
+		)
+		
+		->get();
 
 		return $companies;
 	}
 
+	
 	public function getAllIdAndNameActive()
 	{
 		$companies=$this->model->select('id', 'company_name')->get();
@@ -98,16 +119,19 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		return $companies;
 	}
 
+
 	public function getById($id)
 	{
-		$companies=$this->model->withTrashed()
-		->select(
+		$companies=$this->model->withTrashed()->select(
+			
 			'id', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website',
 			'company_email','company_contact', 'company_phone',	'company_cellular',	'company_address',
 			'company_location', 'company_postcode',	'company_latitude',	'company_longitude','deleted_at'
+
 		)
 
 		->where('id','=', $id)
+
 		->get();
 
 		return $companies;
@@ -116,14 +140,18 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 	public function getByPageWithFilters($request)
 	{
 
-		$companies = $this->model->withTrashed()
-			->select(
+		$companies = $this->model->withTrashed()->select(
+			
 			'id', 'deleted_at', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website', 
 			'company_contact', 'company_email', 'company_phone', 'company_cellular','company_location', 
 			'company_address', 'company_postcode','company_latitude','company_longitude'
+
 		)
+		
 		->where(function ($query) use ($request) {
+		
 			if (isset($request->searchText)) {
+		
 				$query->orwhere('id','like','%' . $request->searchText . '%')
 					->orwhere('company_name','like','%' . $request->searchText . '%')
 					->orwhere('company_contact','like','%' . $request->searchText . '%')
@@ -138,21 +166,31 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 					->orwhere('company_legal_name','like','%' . $request->searchText . '%')
 					->orwhere('company_tax_id','like','%' . $request->searchText . '%')
 					->orwhere('company_website','like','%' . $request->searchText . '%');
-			}
+		
+				}
+		
 		})	
 
 		->where(function ($query) use ($request) {
+		
 			if ($request->optionSelected == 0) {
+		
 				$query->whereNull('deleted_at');
+		
 			}
+		
 			if ($request->optionSelected == 1) {
+		
 				$query->whereNotNull('deleted_at');
+		
 			}
 			
 		})
 		// if first parameter is true the function is executed
 		->when($request->fieldOrderBy, function ($query) use ($request) {
+		
 			$query->orderBy($request->fieldOrderBy, $request->orderBy);
+		
 		})
 
 		->paginate($request->itemsByPage);
@@ -161,7 +199,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 	}
 
-  public function store($request)
+  	public function store($request)
 	{
 		try{
 			// store the data to the database
@@ -170,7 +208,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 			$model->company_name = $request->input('company_name');
 			$model->company_legal_name = $request->input('company_legal_name');
 			$model->company_tax_id	= $request->input('company_tax_id');
-  		    $model->company_website = $request->input('company_website');
+			$model->company_website = $request->input('company_website');
 			$model->company_email = $request->input('company_email');
 			$model->company_contact = $request->input('company_contact');
 			$model->company_phone = $request->input('company_phone');
@@ -182,14 +220,18 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 			$model->company_longitude = $request->input('company_longitude');
 			
 			if (! $model->save()){
+		
 				return array('error' => true, 'message' => Lang::get('messages.error'));
+		
 			}
 
 			return array('error' => false, 'message' => Lang::get('messages.success'));
 
 		} catch (Exception $e) {
+
+			\Log::error($e);
 			
-			 return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
+				return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
 		}	
 
 	}
@@ -218,44 +260,61 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 			$model->touch();
 			
 			if (! $model->update()){
+		
 				return array('error' => true, 'message' => Lang::get('messages.error'));
+		
 			}
 
 			return array('error' => false, 'message' => Lang::get('messages.success'));
 
 		} catch (Exception $e) {
 
+			\Log::error($e);
+
 			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
 		}	
 	}
 
 
-	public function delete($id){
+	public function delete($id)
+	{
 		try{
+		
 			$model = $this->model->withTrashed()->find($id);
+		
 			if (! $model->delete()){
+		
 				return array('error' => true, 'message' => Lang::get('messages.error'));
+		
 			}
 
 			return array('error' => false, 'message' => Lang::get('messages.success'));
 
 		} catch (Exception $e) {
 
+			\Log::error($e);
+
 			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
 		}	
+
 	}
 
-  public function search($request)
+	  
+	public function search($request)
 	{
 
-		$companies = $this->model->withTrashed()
-			->select(
+		$companies = $this->model->withTrashed()->select(
+
 			'id', 'deleted_at', 'company_name', 'company_legal_name', 'company_tax_id', 'company_website', 
 			'company_contact', 'company_email', 'company_phone', 'company_cellular','company_location', 
 			'company_address', 'company_postcode','company_latitude','company_longitude'
+
 		)
+		
 		->where(function ($query) use ($request) {
+		
 			if (isset($request->searchText)) {
+		
 				$query->orwhere('id','like','%' . $request->searchText . '%')
 					->orwhere('company_name','like','%' . $request->searchText . '%')
 					->orwhere('company_contact','like','%' . $request->searchText . '%')
@@ -270,15 +329,23 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 					->orwhere('company_legal_name','like','%' . $request->searchText . '%')
 					->orwhere('company_tax_id','like','%' . $request->searchText . '%')
 					->orwhere('company_website','like','%' . $request->searchText . '%');
-			}
-		})	
+		
+				}
+		
+			})	
 
 		->where(function ($query) use ($request) {
+		
 			if ($request->optionSelected == 0) {
+		
 				$query->whereNull('deleted_at');
+		
 			}
+		
 			if ($request->optionSelected == 1) {
+		
 				$query->whereNotNull('deleted_at');
+		
 			}
 			
 		})
@@ -288,98 +355,6 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		return $companies;
       	
 	}
-
-	// public function importFile($file)
-	// {
-	// 	/*=====================	RULES TO IMPORt FILES ========================================
-	// 	1) The first row must be the fields hearder .
-	// 	2) if the row has a value in the ID Field it will be update if not will be added.
-	// 	===================================================================================*/
-	// 	// Begin a Transaction
-	// 	DB::beginTransaction();
-	// 	try {
-	// 		$addedRecords=0; // caount add records
-	// 		$updateRecords=0; // count update records
-	// 		for ($i=1; $i <=count($file) ; $i++) { 
-	// 			//validate if $id was found so UPDATE it
-	// 			if (array_key_exists('id', $file[$i])) {
-	// 				$rowId = $this->model->withTrashed()->find($file[$i]['id']);
-	// 				if (isset($rowId)){
-	// 					$rowId->company_name = $file[$i]['company_name'];
-	// 					$rowId->company_legal_name = $file[$i]['company_legal_name'];
-	// 					$rowId->company_tax_id	= $file[$i]['company_tax_id'];
-	// 					$rowId->company_website = $file[$i]['company_website'];
-	// 					$rowId->company_email = $file[$i]['company_email'];
-	// 					$rowId->company_contact = $file[$i]['company_contact'];
-	// 					$rowId->company_phone = $file[$i]['company_phone'];
-	// 					$rowId->company_cellular = $file[$i]['company_cellular'];
-	// 					$rowId->company_address = $file[$i]['company_address'];
-	// 					$rowId->company_location = $file[$i]['company_location'];
-	// 					$rowId->company_postcode = $file[$i]['company_postcode'];
-	// 					$rowId->company_latitude = $file[$i]['company_latitude'];
-	// 					$rowId->company_longitude = $file[$i]['company_longitude'];
-	// 					$rowId->deleted_at = null;
-	// 					$rowId->touch();  			//touch: update timestamps
-	// 					$rowId->save();
-	// 					$updateRecords++;
-	// 				} else {
-	// 					log::info('Error Row===>' . $rowId . ' ID:' . $file[$i]['id']);
-	// 				}
-					
-	// 			} else {
-	// 				$id = $this->model->withTrashed()->select('id')->where('company_name',"=", $file[$i]['company_name'])->get();
-	// 				$rowId = $this->model->withTrashed()->find($id);
-	// 				if (isset($rowId)) {
-	// 					$rowId->company_name = $file[$i]['company_name'];
-	// 					$rowId->company_legal_name = $file[$i]['company_legal_name'];
-	// 					$rowId->company_tax_id	= $file[$i]['company_tax_id'];
-	// 					$rowId->company_website = $file[$i]['company_website'];
-	// 					$rowId->company_email = $file[$i]['company_email'];
-	// 					$rowId->company_contact = $file[$i]['company_contact'];
-	// 					$rowId->company_phone = $file[$i]['company_phone'];
-	// 					$rowId->company_cellular = $file[$i]['company_cellular'];
-	// 					$rowId->company_address = $file[$i]['company_address'];
-	// 					$rowId->company_location = $file[$i]['company_location'];
-	// 					$rowId->company_postcode = $file[$i]['company_postcode'];
-	// 					$rowId->company_latitude = $file[$i]['company_latitude'];
-	// 					$rowId->company_longitude = $file[$i]['company_longitude'];
-	// 					$rowId->deleted_at = null;
-	// 					$rowId->touch();  			//touch: update timestamps
-	// 					$rowId->save();
-	// 					$updateRecords++;
-	// 				} else {
-	// 					$rowId = new $this->model;
-	// 					$rowId->company_name = $file[$i]['company_name'];
-	// 					$rowId->company_legal_name = $file[$i]['company_legal_name'];
-	// 					$rowId->company_tax_id	= $file[$i]['company_tax_id'];
-	// 					$rowId->company_website = $file[$i]['company_website'];
-	// 					$rowId->company_email = $file[$i]['company_email'];
-	// 					$rowId->company_contact = $file[$i]['company_contact'];
-	// 					$rowId->company_phone = $file[$i]['company_phone'];
-	// 					$rowId->company_cellular = $file[$i]['company_cellular'];
-	// 					$rowId->company_address = $file[$i]['company_address'];
-	// 					$rowId->company_location = $file[$i]['company_location'];
-	// 					$rowId->company_postcode = $file[$i]['company_postcode'];
-	// 					$rowId->company_latitude = $file[$i]['company_latitude'];
-	// 					$rowId->company_longitude = $file[$i]['company_longitude'];
-	// 					$rowId->deleted_at = null;
-	// 					$rowId->save();
-	// 					$addedRecords++;
-	// 				}
-	// 			}
-	// 		}
-	// 		if (($addedRecords+$updateRecords)==0) {
-	// 			DB::rollBack();
-	// 			return array('error' => true, 'message' => Lang::get('messages.error') . ' ' . Lang::get('messages.error_file_format'));
-	// 		} else {
-	// 			DB::commit();
-	// 			return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));
-	// 		} 
-	// 	} catch (Exception $e) {
-	// 		DB::rollBack();
-	// 		return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
-	// 	}
-	// }	
 
 
 	public function import($file)
@@ -391,29 +366,39 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 		// Begin a Transaction
 		DB::beginTransaction();
+		
 		try {
 			
 			$addedRecords = 0; // count add records
+
 			$updateRecords = 0; //count update records
 
 			$results = \Excel::load($file->getRealPath())->get();
 
 			foreach ($results as $key => $row) {
-				\Log::info($row->id);
+
 				if (isset($row)) {
 					// Validate if comapany name and email already exist
 					$rowId = $this->model->withTrashed()
+
 						->where('company_name', '=', $row->company_name)
+
 						->where('company_email', '=', $row->company_email)
+
 						->first();
+
 					if (empty($rowId)) {
 						// if not takes the id from the file
 						if (isset($row->id)) {
+					
 							$rowId = $this->model->withTrashed()->find($row->id);
+					
 						}
+					
 					}
 					//validate if $id was found so UPDATE it
 					if (isset($rowId)) {
+					
 						$rowId->company_name = $row->company_name;
 						$rowId->company_legal_name = $row->company_legal_name;
 						$rowId->company_tax_id	= $row->company_tax_id;
@@ -430,9 +415,9 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 						$rowId->deleted_at = null;
 						$rowId->save();
 						$updateRecords++;
-					}
-					// validate no found so ADD it
-					else{
+							
+					} else { // validate no found so ADD it
+					
 						$rowId = new $this->model;
 						$rowId->company_name = $row->company_name;
 						$rowId->company_legal_name = $row->company_legal_name;
@@ -450,8 +435,11 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 						$rowId->deleted_at = null;
 						$rowId->save();
 						$addedRecords++;
+			
 					}
+				
 				}
+			
 			}
 
 			if (($addedRecords + $updateRecords)==0) {
@@ -461,6 +449,9 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 				return array('error' => true, 'message' => Lang::get('messages.error') . ' ' . Lang::get('messages.error_file_format'));
 
 			} else {
+
+				\Log::error($e);
+			
 				DB::commit();
 
 				return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));
