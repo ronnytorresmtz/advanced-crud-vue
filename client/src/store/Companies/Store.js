@@ -161,6 +161,7 @@ const store = new Vuex.Store({
   },
   actions: {
     getData(context, url) {
+      console.log(url);
       return Axios.get(url)
       .then((response) => {
         const pagination = {
@@ -174,15 +175,24 @@ const store = new Vuex.Store({
           to: response.data.to,
           total: response.data.total,
         };
-        store.commit('UPDATE_PAGINATION', pagination);
-        store.commit('UPDATE_PAGEDATA', response.data.data);
+        context.commit('UPDATE_PAGINATION', pagination);
+        context.commit('UPDATE_PAGEDATA', response.data.data);
       });
     },
     getDataFiltered(context, currentPage) {
-      store.commit('UPDATE_LOADING', true);
+      context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
-      const page = (!currentPage) ? '' : `page=${currentPage}&`;
-      store.dispatch(
+      const page = (!currentPage) ? '' : `page=${currentPage}`;
+
+      const url = new URL(pagination.path);
+      url.searchParams.append('page', currentPage);
+      url.searchParams.append('searchText', 'context.getters.getSearchText');
+      url.searchParams.append('optionSelected', 'context.getters.getOptionSelected');
+      url.searchParams.append('itemsByPage', 'pagination.per_page');
+      url.searchParams.append('fieldOrderBy', 'context.getters.getFieldOrderBy');
+      console.log('URLSearchParams', url);
+
+      context.dispatch(
         'getData',
         `${pagination.path}?${page}&
           searchText=${context.getters.getSearchText}&
@@ -190,49 +200,49 @@ const store = new Vuex.Store({
           itemsByPage=${pagination.per_page}&
           fieldOrderBy=${context.getters.getFieldOrderBy}&
           orderBy=${context.getters.getOrderBy}`,
-        pagination.per_page,
-      ).then(() => store.commit('UPDATE_LOADING', false));
+        // pagination.per_page,
+      ).then(() => context.commit('UPDATE_LOADING', false));
     },
     addItem(context, data) {
-      store.commit('UPDATE_LOADING', true);
+      context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       const baseUrl = context.getters.getBaseUrlCompanies;
       return Axios.post(baseUrl, data)
         .then((response) => {
           if (!response.data.error) {
-            store.commit('UPDATE_ORDER_BY', 'asc');
-            store.commit('UPDATE_FIELD_ORDER_BY', 'id');
-            store.dispatch('getDataFiltered', pagination.last_page);
+            context.commit('UPDATE_ORDER_BY', 'asc');
+            context.commit('UPDATE_FIELD_ORDER_BY', 'id');
+            context.dispatch('getDataFiltered', pagination.last_page);
           }
-          store.commit('SHOW_MESSAGE', response);
+          context.commit('SHOW_MESSAGE', response);
         })
-        .then(() => store.commit('UPDATE_LOADING', false));
+        .then(() => context.commit('UPDATE_LOADING', false));
     },
     updateItem(context, data) {
-      store.commit('UPDATE_LOADING', true);
+      context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       const baseUrl = context.getters.getBaseUrlCompanies;
       return Axios.put(`${baseUrl}/${data.id}`, data)
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch('getDataFiltered', pagination.current_page);
+            context.dispatch('getDataFiltered', pagination.current_page);
           }
-          store.commit('SHOW_MESSAGE', response);
+          context.commit('SHOW_MESSAGE', response);
         })
-        .then(() => store.commit('UPDATE_LOADING', false));
+        .then(() => context.commit('UPDATE_LOADING', false));
     },
     deleteItem(context, id) {
-      store.commit('UPDATE_LOADING', true);
+      context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       const baseUrl = context.getters.getBaseUrlCompanies;
       return Axios.delete(`${baseUrl}/${id}`, { params: { id } })
         .then((response) => {
           if (!response.data.error) {
-            store.dispatch('getDataFiltered', pagination.current_page);
+            context.dispatch('getDataFiltered', pagination.current_page);
           }
-          store.commit('SHOW_MESSAGE', response);
+          context.commit('SHOW_MESSAGE', response);
         })
-        .then(() => store.commit('UPDATE_LOADING', false));
+        .then(() => context.commit('UPDATE_LOADING', false));
     },
     importFile(context, file) {
       const formData = new FormData();
@@ -241,14 +251,14 @@ const store = new Vuex.Store({
       return Axios.post(`${baseUrl}/import`, formData)
       .then((response) => {
         if (!response.data.error) {
-          store.dispatch('getDataFiltered');
+          context.dispatch('getDataFiltered');
         }
-        store.commit('SHOW_IMPORT_MODAL', false);
-        store.commit('SHOW_MESSAGE', response);
+        context.commit('SHOW_IMPORT_MODAL', false);
+        context.commit('SHOW_MESSAGE', response);
       })
       .catch((response) => {
-        store.commit('SHOW_IMPORT_MODAL', false);
-        store.commit('SHOW_MESSAGE', response);
+        context.commit('SHOW_IMPORT_MODAL', false);
+        context.commit('SHOW_MESSAGE', response);
       });
     },
     getLocations(context) {
