@@ -3,7 +3,7 @@
     cursor: pointer;
   }
 
-  table {
+ /* table {
     background: white;
     border: solid;
     border-width: 2px;
@@ -25,7 +25,7 @@
 
   .table-height{
     height: auto;
-  }
+  }*/
 
   nav ul{
     position: absolute;
@@ -36,7 +36,7 @@
     overflow-y:scroll;
     width: 100%;
     height: 115px;
-    margin-top: -12px;
+    margin-top: 2px;
     padding: 6px 6px;
     font-size: 14px;
     line-height: 1.42857143;
@@ -135,13 +135,6 @@ export default {
         this.showSearchResults = true;
       } else {
         this.showSearchResults = false;
-      }
-    },
-    autoSelectSearchResult() {
-      if (this.locationsSelected.length === 1) {
-        this.locationText = this.locationsSelected[0];
-        this.showSearchResults = false;
-        this.locationsSelected = [];
       }
     },
     getLocationsByLocationText() {
