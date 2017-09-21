@@ -393,8 +393,6 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 			} else {
 
-				\Log::error($e);
-			
 				DB::commit();
 
 				return array('error' => false, 'message' => Lang::get('messages.success_add') . ' ' .  $addedRecords . ' ' . Lang::get('messages.success_update') . ' ' . $updateRecords . ' ' . Lang::get('messages.successfully'));

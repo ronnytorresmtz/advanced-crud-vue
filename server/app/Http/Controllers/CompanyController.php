@@ -12,10 +12,13 @@ use Lang;
 
 class CompanyController extends Controller
 {
+
   protected $companyRepository;
+  
   protected $documentService;
 
   private $baseRoute = 'shipper.companies';
+  
   private $itemsByPage = 10;
 
 
@@ -23,6 +26,7 @@ class CompanyController extends Controller
                               CompanyRepositoryInterface $companyRepository,
                               DocumentServiceInterface $documentService)
   {
+
     $this->companyRepository = $companyRepository;
 
     $this->documentService   = $documentService;
@@ -36,6 +40,7 @@ class CompanyController extends Controller
       $this->itemsByPage = $this->itemsByPage;
 
     }
+
   }
   
   /**
@@ -108,6 +113,7 @@ class CompanyController extends Controller
     }
 
 		return response()->json($result);
+
   }
 
   /**
@@ -129,7 +135,8 @@ class CompanyController extends Controller
 
     }
 
-	 	return response()->json($result);
+		 return response()->json($result);
+		 
   }
 
   /**
