@@ -135,35 +135,35 @@
                 <!--Modal Form Fields-->
                 <div class="row">
                   <div class="col-xs-6">
-                    <label style="padding-top:5px"> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
+                    <label> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.id" @keyup="validFieldsRequired" :disabled="true"></input>
-                    <label style="padding-top:5px"> {{ ts['companyName'] }}: </label><span class="aster-red" v-text="!input.company_name ? ' *' : ''"></span>
+                    <label> {{ ts['companyName'] }}: </label><span class="aster-red" v-text="!input.company_name ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_name" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyLegalName'] }}: </label><span class="aster-red" v-text="!input.company_legal_name ? ' *' : ''"></span>
+                    <label> {{ ts['companyLegalName'] }}: </label><span class="aster-red" v-text="!input.company_legal_name ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_legal_name" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyTaxId'] }}: </label><span class="aster-red" v-text="!input.company_tax_id ? ' *' : ''"></span>
+                    <label> {{ ts['companyTaxId'] }}: </label><span class="aster-red" v-text="!input.company_tax_id ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_tax_id" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:11px"> {{ ts['companyWebsite'] }}: </label><span class="aster-red" v-text="!input.company_website ? ' *' : ''"></span>
+                    <label> {{ ts['companyWebsite'] }}: </label><span class="aster-red" v-text="!input.company_website ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_website" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyContact'] }}: </label><span class="aster-red" v-text="!input.company_contact ? ' *' : ''"></span>
+                    <label> {{ ts['companyContact'] }}: </label><span class="aster-red" v-text="!input.company_contact ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_contact" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyEmail'] }}: </label><span class="aster-red" v-text="!input.company_email ? ' *' : ''"></span>
+                    <label> {{ ts['companyEmail'] }}: </label><span class="aster-red" v-text="!input.company_email ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_email" @keyup="validFieldsRequired"></input>
                   </div>
                   <div class="col-xs-6">
-                    <label style="padding-top:5px"> {{ ts['companyPhone'] }}: </label><span class="aster-red" v-text="!input.company_phone ? ' *' : ''"></span>
+                    <label> {{ ts['companyPhone'] }}: </label><span class="aster-red" v-text="!input.company_phone ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_phone" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyCellular'] }}: </label><span class="aster-red" v-text="!input.company_cellular ? ' *' : ''"></span>
+                    <label> {{ ts['companyCellular'] }}: </label><span class="aster-red" v-text="!input.company_cellular ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_cellular" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
+                    <label> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_address" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
+                    <label> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
                     <mylocation v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
                     <label> {{ ts['companyPostcode'] }}: </label><span class="aster-red" v-text="!input.company_postcode ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_postcode" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
+                    <label> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_latitude" @keyup="validFieldsRequired"></input>
-                    <label style="padding-top:5px"> {{ ts['companyLongitude'] }}: </label><span class="aster-red" v-text="!input.company_longitude ? ' *' : ''"></span>
+                    <label> {{ ts['companyLongitude'] }}: </label><span class="aster-red" v-text="!input.company_longitude ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_longitude" @keyup="validFieldsRequired"></input>
                   </div>
                 </div>
@@ -204,11 +204,11 @@
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li> Clean Code en la Api de Laravel</li>
       <li> Parametrizar el path de Store en cada componente pues trae Company-->Solucion Vuex Modules</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
       <li>Instalar admin-lte</li>
+      <li>Estando en Edicion al dar en la forma Modal al boton de Reset se convierte de Edit a Add y no debería</li>
     </ul>
   </div>
 </template>
