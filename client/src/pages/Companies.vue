@@ -182,7 +182,7 @@
                     <button class="btn btn-sm btn-success btn-std-width" @click.prevent="addItem()" v-if="!isUpdateBtnShow" :disabled="isAddBtnDisable"> {{ ts['add'] }} </button>
                     <button class="btn btn-sm btn-success btn-std-width" @click.prevent="updateItem()" v-if="isUpdateBtnShow" :disabled="isUpdateBtnDisable"> {{ ts['update'] }} </button>
                     <button class="btn btn-sm btn-danger btn-std-width" @click.prevent="deleteItem()" v-if="isUpdateBtnShow"> {{ ts['delete'] }} </button>
-                    <button class="btn btn-sm btn-default btn-std-width" @click.prevent="resetForm()"> {{ ts['reset'] }} </button>
+                    <button class="btn btn-sm btn-default btn-std-width" @click.prevent="resetForm()" v-if="!isUpdateBtnShow"> {{ ts['reset'] }} </button>
                     <button class="btn btn-sm btn-default btn-std-width" @click.prevent="closeModal()"> {{ ts['close'] }} </button>
                   </div>
                 </div>
@@ -386,12 +386,8 @@ export default {
       store.commit('SHOW_IMPORT_MODAL', true);
     },
     resetForm() {
-      store.commit('RESET_ITEM');
-      const id = this.input.id;
-      const status = this.input.deleted_at;
+      store.commit('RESET_ITEM', this.input);
       this.input = resetObjVal(this.input);
-      this.input.id = id;
-      this.input.deleted_at = status;
       this.initModalButtons();
     },
     closeModal() {
