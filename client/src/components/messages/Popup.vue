@@ -61,7 +61,7 @@
 
 <script>
 
-  import store from '../../store/Companies/Store';
+  import store from '../../store/Store';
 
   export default {
 
@@ -72,26 +72,26 @@
     },
 
     created() {
-      this.message = this.$store.getters.getMessage;
+      this.message = store.getters['companies/getMessage'];
       this.hideBoxMessageByTime();
     },
 
     computed: {
       showAlert() {
-        this.message = this.$store.getters.getMessage;
+        this.message = store.getters['companies/getMessage'];
         return this.message.show;
       },
     },
 
     methods: {
       hideBoxMessage() {
-        store.commit('CLOSE_MESSAGE', false);
+        store.commit('companies/CLOSE_MESSAGE', false);
       },
 
       hideBoxMessageByTime() {
         if (this.message.type === 'info') {
           setTimeout(() => {
-            store.commit('CLOSE_MESSAGE', false);
+            store.commit('companies/CLOSE_MESSAGE', false);
           }, 3000);
         }
       },
