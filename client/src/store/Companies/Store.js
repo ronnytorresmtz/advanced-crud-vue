@@ -1,15 +1,11 @@
 /* eslint no-param-reassign: ["error", { "props": false }] */
 import Vue from 'vue';
-import Vuex from 'vuex';
 import Axios from 'axios';
 
 import { storeInLocalStorage } from '../../lib/General';
-// import mockData from '../../store/Companies/FakeData';
 
-Vue.use(Vuex);
-// Vue.prototype.$http = Axios;
-
-const store = new Vuex.Store({
+const store = {
+  namespaced: true,
   state: {
     moduleName: 'companies',
     baseUrlCompanies: 'http://localhost:8000/api/shippers/companies',
@@ -161,7 +157,6 @@ const store = new Vuex.Store({
   },
   actions: {
     getData(context, url) {
-      console.log(url);
       return Axios.get(url)
       .then((response) => {
         const pagination = {
@@ -183,24 +178,23 @@ const store = new Vuex.Store({
       context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       const page = (!currentPage) ? '' : `page=${currentPage}`;
-
       const url = new URL(pagination.path);
-      url.searchParams.append('page', currentPage);
-      url.searchParams.append('searchText', 'context.getters.getSearchText');
-      url.searchParams.append('optionSelected', 'context.getters.getOptionSelected');
-      url.searchParams.append('itemsByPage', 'pagination.per_page');
-      url.searchParams.append('fieldOrderBy', 'context.getters.getFieldOrderBy');
+      url.searchParams.append('page', page);
+      url.searchParams.append('searchText', context.getters.getSearchText);
+      url.searchParams.append('optionSelected', context.getters.getOptionSelected);
+      url.searchParams.append('itemsByPage', pagination.per_page);
+      url.searchParams.append('fieldOrderBy', context.getters.getFieldOrderBy);
+      url.searchParams.append('orderBy', context.getters.getOrderBy);
       console.log('URLSearchParams', url);
-
       context.dispatch(
-        'getData',
-        `${pagination.path}?${page}&
-          searchText=${context.getters.getSearchText}&
-          optionSelected=${context.getters.getOptionSelected}&
-          itemsByPage=${pagination.per_page}&
-          fieldOrderBy=${context.getters.getFieldOrderBy}&
-          orderBy=${context.getters.getOrderBy}`,
-        // pagination.per_page,
+        'getData', url,
+        // `${pagination.path}?${page}&
+        //   searchText=${context.getters.getSearchText}&
+        //   optionSelected=${context.getters.getOptionSelected}&
+        //   itemsByPage=${pagination.per_page}&
+        //   fieldOrderBy=${context.getters.getFieldOrderBy}&
+        //   orderBy=${context.getters.getOrderBy}`,
+        // // pagination.per_page,
       ).then(() => context.commit('UPDATE_LOADING', false));
     },
     addItem(context, data) {
@@ -299,6 +293,6 @@ const store = new Vuex.Store({
     getLocation: state => state.item.company_location,
     getBaseUrlLocations: state => state.baseUrlLocations,
   },
-});
+};
 
 export default store;
