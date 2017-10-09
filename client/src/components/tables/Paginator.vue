@@ -53,7 +53,8 @@
 
 <script>
   // vuex store
-  import store from '../../store/Companies/Store';
+  // import store from '../../store/Companies/Store';
+  import store from '../../store/Store';
   // my components
   import MyLang from '../../components/languages/Languages';
 
@@ -61,7 +62,7 @@
 
     mixins: [MyLang],
 
-    props: ['url'],
+    props: ['url', 'moduleName'],
 
     data() {
       return {
@@ -72,25 +73,24 @@
     },
 
     mounted() {
-      // this.getData(this.pagination.path);
-      this.perPage = this.$store.getters.getPerPage;
+      this.perPage = store.getters[`${this.moduleName}/getPerPage`];
     },
 
     computed: {
       pagination() {
-        return this.$store.getters.getPagination;
+        return store.getters[`${this.moduleName}/getPagination`];
       },
       searchText() {
-        return this.$store.getters.getSearchText;
+        return store.getters[`${this.moduleName}/getSearchText`];
       },
       optionSelected() {
-        return this.$store.getters.getOptionSelected;
+        return store.getters[`${this.moduleName}/getOptionSelected`];
       },
       fieldOrderBy() {
-        return this.$store.getters.getFieldOrderBy;
+        return store.getters[`${this.moduleName}/getFieldOrderBy`];
       },
       orderBy() {
-        return this.$store.getters.getOrderBy;
+        return store.getters[`${this.moduleName}/getOrderBy`];
       },
     },
 
@@ -121,22 +121,22 @@
           orderBy=${this.orderBy}`;
       },
       getData(pageUrl) {
-        store.commit('UPDATE_LOADING', true);
-        store.commit('UPDATE_PER_PAGE', this.perPage);
+        store.commit(`${this.moduleName}/UPDATE_LOADING`, true);
+        store.commit(`${this.moduleName}/UPDATE_PER_PAGE`, this.perPage);
         this.noMorePages = false;
         if (pageUrl !== null) {
           const newPageUrl = pageUrl || this.url;
-          store.dispatch('getData', `${newPageUrl}?${this.getUrlParams()}`)
+          store.dispatch(`${this.moduleName}/getData`, `${newPageUrl}?${this.getUrlParams()}`)
           .then(() => {
-            store.commit('UPDATE_LOADING', false);
+            store.commit(`${this.moduleName}/UPDATE_LOADING`, false);
           })
           .catch(() => {
-            store.commit('SHOW_MESSAGE', this.getUnexpectedErrorMsg());
-            store.commit('UPDATE_LOADING', false);
+            store.commit(`${this.moduleName}/SHOW_MESSAGE`, this.getUnexpectedErrorMsg());
+            store.commit(`${this.moduleName}/UPDATE_LOADING`, false);
           });
         } else {
           this.noMorePages = true;
-          store.commit('UPDATE_LOADING', false);
+          store.commit(`${this.moduleName}/UPDATE_LOADING`, false);
         }
       },
       getUnexpectedErrorMsg() {

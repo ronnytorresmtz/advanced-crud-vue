@@ -54,7 +54,7 @@
         <ul class="dropdown-menu pull-right" aria-labelledby="dropdownMenu1">
           <h6 class="dropdown-header">{{ ts['chooseAFieldToDisplay'] }}</h6>
           <li v-for="col in cols" class="dropdown-item-cog">
-            <input type="checkbox":name="col.name" @change.stop.prevent="columnToDisplay($event)" :checked="col.display">
+             <input type="checkbox":name="col.name" @change.stop.prevent="columnToDisplay($event)" :checked="col.display">
             {{ ts[col.label] }} 
             </input>
          </li>
@@ -97,7 +97,8 @@
 
 <script>
 // vues store
-import store from '../../store/Companies/Store';
+// import store from '../../store/Companies/Store';
+import store from '../../store/Store';
 // my components
 import MyLang from '../../components/languages/Languages';
 // my libraries
@@ -107,7 +108,7 @@ export default {
 
   mixins: [MyLang],
 
-  props: ['cols', 'rows'],
+  props: ['cols', 'rows', 'moduleName'],
 
   data() {
     return {
@@ -115,9 +116,8 @@ export default {
   },
 
   updated() {
-    const moduleName = this.$store.getters.getModuleName;
-    if (localStorage.getItem(`${moduleName}/colsHeaders`) !== null) {
-      const colsInfo = JSON.parse(getValueFromLocalStorage(moduleName, 'colsHeaders'));
+    if (localStorage.getItem(`${this.moduleName}/colsHeaders`) !== null) {
+      const colsInfo = JSON.parse(getValueFromLocalStorage(this.moduleName, 'colsHeaders'));
       Object.keys(colsInfo).forEach((key) => {
         this.cols[key].display = colsInfo[key].display;
       });
@@ -142,29 +142,29 @@ export default {
           this.cols[col].display = !this.cols[col].display;
         }
       });
-      store.commit('UPDATE_COLS_HEADERS', this.cols);
+      store.commit(`${this.moduleName}/UPDATE_COLS_HEADERS`, this.cols);
     },
     itemSelected(row) {
-      const dataRow = this.$store.getters.getPageData.filter(item => item.id === row.id);
-      store.commit('UPDATE_ITEM', createObj(dataRow[0]));
-      store.commit('SHOW_BTN_UPDATE', true);
-      store.commit('SHOW_BTN_ADD_DISABLE', false);
-      store.commit('SHOW_BTN_UPDATE_DISABLE', false);
-      store.commit('SHOW_CLOSE_AFTERACTION_DEFAULT', false);
-      store.commit('SHOW_MODAL', true);
+      const dataRow = store.getters[`${this.moduleName}/getPageData`].filter(item => item.id === row.id);
+      store.commit(`${this.moduleName}/UPDATE_ITEM`, createObj(dataRow[0]));
+      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE`, true);
+      store.commit(`${this.moduleName}/SHOW_BTN_ADD_DISABLE`, false);
+      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE_DISABLE`, false);
+      store.commit(`${this.moduleName}/SHOW_CLOSE_AFTERACTION_DEFAULT`, false);
+      store.commit(`${this.moduleName}/SHOW_MODAL`, true);
     },
     sort(e) {
       const fieldOrderBy = e.target.id;
-      const orderBy = (this.$store.getters.getOrderBy === 'asc' && fieldOrderBy === this.$store.getters.getFieldOrderBy) ? 'desc' : 'asc';
-      store.commit('UPDATE_ORDER_BY', orderBy);
-      store.commit('UPDATE_FIELD_ORDER_BY', fieldOrderBy);
-      store.dispatch('getDataFiltered');
+      const orderBy = (store.getters[`${this.moduleName}/getOrderBy`] === 'asc' && fieldOrderBy === store.getters[`${this.moduleName}/getFieldOrderBy`]) ? 'desc' : 'asc';
+      store.commit(`${this.moduleName}/UPDATE_ORDER_BY`, orderBy);
+      store.commit(`${this.moduleName}/UPDATE_FIELD_ORDER_BY`, fieldOrderBy);
+      store.dispatch(`${this.moduleName}/getDataFiltered`);
     },
     isFieldOrder(name) {
-      return (name === this.$store.getters.getFieldOrderBy);
+      return (name === store.getters[`${this.moduleName}/getFieldOrderBy`]);
     },
     isOrderBy() {
-      if (this.$store.getters.getOrderBy === 'asc') {
+      if (store.getters[`${this.moduleName}/getOrderBy`] === 'asc') {
         return 'glyphicon glyphicon-sort-by-alphabet';
       }
       return 'glyphicon glyphicon-sort-by-alphabet-alt';

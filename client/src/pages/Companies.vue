@@ -37,7 +37,7 @@
   <div class="container-fluid" align="left" style="margin-top: 75px">
 
     <!--Import component-->
-    <myimport :url-import="baseUrlCompanies"></myimport>
+    <myimport :moduleName="moduleName" :url-import="baseUrlCompanies"></myimport>
 
     <!--message component-->
     <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
@@ -158,7 +158,7 @@
                     <label> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_address" @keyup="validFieldsRequired"></input>
                     <label> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
-                    <mylocation v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
+                    <mylocation :moduleName="moduleName" v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
                     <label> {{ ts['companyPostcode'] }}: </label><span class="aster-red" v-text="!input.company_postcode ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_postcode" @keyup="validFieldsRequired"></input>
                     <label> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
@@ -193,29 +193,28 @@
       </div> <!--End Modal-->
 
       <!--Table Component-->
-      <mytable :cols="headers" :rows="pageData"> </mytable>
+      <mytable :cols="headers" :rows="pageData" :moduleName="moduleName"> </mytable>
             
       <br>
 
       <!--Paginator Component-->
-      <mypaginator :url="baseUrlCompanies"></mypaginator>
+      <mypaginator :url="baseUrlCompanies" :moduleName="moduleName"></mypaginator>
 
     </diV>
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li> Parametrizar el path de Store en cada componente pues trae Company-->Solucion Vuex Modules</li>
       <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
       <li>Instalar admin-lte</li>
-      <li>Estando en Edicion al dar en la forma Modal al boton de Reset se convierte de Edit a Add y no debería</li>
     </ul>
   </div>
 </template>
 
 <script>
 // vuex store
-import store from '../store/Companies/Store';
+// import store from '../store/Companies/Store';
+import store from '../store/Store';
 // my components
 import mypopup from '../components/messages/Popup';
 import mylang from '../components/languages/Languages';
@@ -239,6 +238,7 @@ export default {
   data() {
     return {
       title: 'Company',
+      moduleName: 'companies',
       headers: [
         { name: 'id', label: 'id', display: true },
         { name: 'deleted_at', label: 'companyStatus', display: true },
@@ -284,67 +284,69 @@ export default {
   created() {
     const tableParams = this.getTableParamsFromLocalStorage();
     this.updateTableParams(tableParams);
-    this.optionSelected = this.$store.getters.getOptionSelected;
+    this.optionSelected = store.getters[`${this.moduleName}/getOptionSelected`];
     this.isFilterApplied = (this.optionSelected >= 0);
-    store.dispatch('getData', `${this.baseUrlCompanies}?${this.getUrlParams()}`);
+    store.dispatch(`${this.moduleName}/getData`, `${this.baseUrlCompanies}?${this.getUrlParams()}`);
   },
-
   computed: {
     baseUrlCompanies() {
-      return this.$store.getters.getBaseUrlCompanies;
+      return store.getters[`${this.moduleName}/getBaseUrlCompanies`];
     },
     pageData() {
-      return this.$store.getters.getPageData;
+      return store.getters[`${this.moduleName}/getPageData`];
     },
     perPage() {
-      return this.$store.getters.getPerPage;
+      return store.getters[`${this.moduleName}/getPerPage`];
     },
     searchTextFilter() {
-      return this.$store.getters.getSearchText;
+      return store.getters[`${this.moduleName}/getSearchText`];
     },
     fieldOrderBy() {
-      return this.$store.getters.getFieldOrderBy;
+      return store.getters[`${this.moduleName}/getFieldOrderBy`];
     },
     orderBy() {
-      return this.$store.getters.getOrderBy;
+      return store.getters[`${this.moduleName}/getOrderBy`];
     },
     showPopUpMessage: {
       set() { },
       get() {
-        return this.$store.getters.getShowMessage;
+        return store.getters[`${this.moduleName}/getShowMessage`];
       },
     },
     loading() {
-      return this.$store.getters.getLoading;
+      return store.getters[`${this.moduleName}/getLoading`];
     },
-    showModal() {
-      this.input = this.$store.getters.getItem;
-      return this.$store.getters.getShowModal;
+    showModal: {
+      set() { },
+      get() {
+        this.input = store.getters[`${this.moduleName}/getItem`];
+        return store.getters[`${this.moduleName}/getShowModal`];
+      },
     },
     isUpdateBtnShow() {
-      return this.$store.getters.getIsUpdateBtnShow;
+      return store.getters[`${this.moduleName}/getIsUpdateBtnShow`];
     },
     isAddBtnDisable() {
-      return this.$store.getters.getIsAddBtnDisable;
+      return store.getters[`${this.moduleName}/getIsAddBtnDisable`];
     },
     isUpdateBtnDisable() {
-      return this.$store.getters.getIsUpdateBtnDisable;
+      return store.getters[`${this.moduleName}/getIsUpdateBtnDisable`];
     },
     closeAfterAction: {
       set() {
-        store.commit('SHOW_CLOSE_AFTERACTION_DEFAULT', !this.$store.getters.getCloseAfterAction);
+        store.commit(`${this.moduleName}/SHOW_CLOSE_AFTERACTION_DEFAULT`, !store.getters[`${this.moduleName}/getCloseAfterAction`]);
       },
       get() {
-        return this.$store.getters.getCloseAfterAction;
+        return store.getters[`${this.moduleName}/getCloseAfterAction`];
       },
     },
   },
 
   methods: {
     getDataFiltered() {
-      store.commit('UPDATE_SEARCH_TEXT', this.searchText);
-      store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
-      store.dispatch('getDataFiltered');
+      store.commit(`${this.moduleName}/UPDATE_SEARCH_TEXT`, this.searchText);
+      store.commit(`${this.moduleName}/UPDATE_OPTION_SELECT`, this.optionSelected);
+      store.dispatch(`${this.moduleName}/getDataFiltered`);
       this.showFilterButtons();
     },
     showFilterButtons() {
@@ -353,8 +355,8 @@ export default {
     },
     addItem() {
       this.input.deleted_at = null;
-      store.dispatch('addItem', createObj(this.input)).then(() => {
-        if (this.$store.getters.getMessage.type !== 'danger') {
+      store.dispatch(`${this.moduleName}/addItem`, createObj(this.input)).then(() => {
+        if (store.getters[`${this.moduleName}/getMessage.type`] !== 'danger') {
           this.resetForm();
           this.closeModalAfterAction();
         }
@@ -363,14 +365,14 @@ export default {
     },
     updateItem() {
       this.input.deleted_at = null;
-      store.dispatch('updateItem', createObj(this.input));
+      store.dispatch(`${this.moduleName}/updateItem`, createObj(this.input));
       this.resetForm();
       this.closeModal();
       this.displayPopUpMessage();
     },
     deleteItem() {
       const id = this.input.id;
-      store.dispatch('deleteItem', id);
+      store.dispatch(`${this.moduleName}/deleteItem`, id);
       if (this.input.id === id) {
         this.resetForm();
       }
@@ -378,53 +380,53 @@ export default {
       this.displayPopUpMessage();
     },
     getExportUrl() {
-      return `${this.$store.getters.getPagination.path}/export?
+      return `${store.getters[`${this.moduleName}/getPagination`].path}/export?
         searchText=${this.searchText}&
         optionSelected=${this.optionSelected}`;
     },
     importData() {
-      store.commit('SHOW_IMPORT_MODAL', true);
+      store.commit(`${this.moduleName}/SHOW_IMPORT_MODAL`, true);
     },
     resetForm() {
-      store.commit('RESET_ITEM', this.input);
+      store.commit(`${this.moduleName}/RESET_ITEM`, this.input);
       this.input = resetObjVal(this.input);
       this.initModalButtons();
     },
     closeModal() {
-      store.commit('SHOW_MODAL', false);
+      store.commit(`${this.moduleName}/SHOW_MODAL`, false);
       this.resetForm();
       this.input.id = 'New';
       this.initModalButtons();
     },
     closeModalAfterAction() {
       if (this.closeAfterAction) {
-        store.commit('SHOW_MODAL', false);
+        store.commit(`${this.moduleName}/SHOW_MODAL`, false);
         $('#myModalForm').modal('hide');
       }
     },
     initModalButtons(value) {
-      store.commit('SHOW_BTN_UPDATE', value);
-      store.commit('SHOW_BTN_ADD_DISABLE', !value);
-      store.commit('SHOW_BTN_UPDATE_DISABLE', !value);
+      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE`, value);
+      store.commit(`${this.moduleName}/SHOW_BTN_ADD_DISABLE`, !value);
+      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE_DISABLE`, !value);
     },
     validFieldsRequired() {
       const emptyFields = Object.keys(this.input).filter(key => this.input[key] === '');
       const isEmptyFields = (emptyFields.length !== 0);
-      store.commit('SHOW_BTN_ADD_DISABLE', isEmptyFields);
-      store.commit('SHOW_BTN_UPDATE_DISABLE', isEmptyFields);
+      store.commit(`${this.moduleName}/SHOW_BTN_ADD_DISABLE`, isEmptyFields);
+      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE_DISABLE`, isEmptyFields);
     },
     displayPopUpMessage() {
-      this.showPopUpMessage = this.$store.getters.getShowMessage;
+      this.showPopUpMessage = store.getters[`${this.moduleName}/getShowMessage`];
     },
     showAddForm() {
-      store.commit('SHOW_MODAL', true);
+      store.commit(`${this.moduleName}/SHOW_MODAL`, true);
     },
     clearSearchTextFilter() {
       this.searchText = '';
     },
     clearApplyFilter() {
       this.optionSelected = '-1';
-      store.commit('UPDATE_OPTION_SELECT', this.optionSelected);
+      store.commit(`${this.moduleName}/UPDATE_OPTION_SELECT`, this.optionSelected);
       this.getDataFiltered();
       this.isFilterApplied = false;
     },
@@ -432,25 +434,24 @@ export default {
       return `searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
     },
     getTableParamsFromLocalStorage() {
-      const moduleName = this.$store.getters.getModuleName;
-      const tableDefaults = JSON.stringify(this.$store.getters.getTableDefaults);
-      const values = JSON.parse(getValueFromLocalStorage(moduleName, 'tableParams', tableDefaults));
+      const tableDefaults = JSON.stringify(store.getters[`${this.moduleName}/getTableDefaults`]);
+      const values = JSON.parse(getValueFromLocalStorage(this.moduleName, 'tableParams', tableDefaults));
       return values;
     },
     updateTableParams(tableParams) {
-      store.commit('UPDATE_OPTION_SELECT', tableParams.optionSelected);
-      store.commit('UPDATE_FIELD_ORDER_BY', tableParams.fieldOrderBy);
-      store.commit('UPDATE_ORDER_BY', tableParams.orderBy);
-      store.commit('UPDATE_PER_PAGE', tableParams.perPage);
+      store.commit(`${this.moduleName}/UPDATE_OPTION_SELECT`, tableParams.optionSelected);
+      store.commit(`${this.moduleName}/UPDATE_FIELD_ORDER_BY`, tableParams.fieldOrderBy);
+      store.commit(`${this.moduleName}/UPDATE_ORDER_BY`, tableParams.orderBy);
+      store.commit(`${this.moduleName}/UPDATE_PER_PAGE`, tableParams.perPage);
     },
   },
   watch: {
     showModal() {
-      const hideOrShow = (this.$store.getters.getShowModal) ? 'show' : 'hide';
+      const hideOrShow = (store.getters[`${this.moduleName}/getShowModal`]) ? 'show' : 'hide';
       $('#myModalForm').modal(hideOrShow);
     },
     searchText() {
-      store.commit('UPDATE_SEARCH_TEXT', this.searchText);
+      store.commit(`${this.moduleName}/UPDATE_SEARCH_TEXT`, this.searchText);
       if (!this.searchText) {
         this.getDataFiltered();
         this.isFilterBySearchText = false;
