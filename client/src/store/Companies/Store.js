@@ -186,16 +186,8 @@ const store = {
       url.searchParams.append('fieldOrderBy', context.getters.getFieldOrderBy);
       url.searchParams.append('orderBy', context.getters.getOrderBy);
       console.log('URLSearchParams', url);
-      context.dispatch(
-        'getData', url,
-        // `${pagination.path}?${page}&
-        //   searchText=${context.getters.getSearchText}&
-        //   optionSelected=${context.getters.getOptionSelected}&
-        //   itemsByPage=${pagination.per_page}&
-        //   fieldOrderBy=${context.getters.getFieldOrderBy}&
-        //   orderBy=${context.getters.getOrderBy}`,
-        // // pagination.per_page,
-      ).then(() => context.commit('UPDATE_LOADING', false));
+      context.dispatch('getData', url)
+        .then(() => context.commit('UPDATE_LOADING', false));
     },
     addItem(context, data) {
       context.commit('UPDATE_LOADING', true);
