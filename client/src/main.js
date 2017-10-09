@@ -4,7 +4,8 @@ import Vue from 'vue';
 import VueWorker from 'vue-worker';
 import App from './App';
 import router from './router';
-import store from './store/Companies/Store';
+import store from './store/Store';
+
 
 window._ = require('lodash');
 
