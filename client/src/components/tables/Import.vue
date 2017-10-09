@@ -9,13 +9,13 @@
       <div class="modal-content">
         <div class="modal-header" style="background:#f5f5f5">
           <!--Modal Header-->
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <!--button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button-->
           <h4 class="modal-title" id="myModalImportLabel">{{ ts['importFile'] }}</h4>
         </div>
         <div class="modal-body">
           <Form>
             <!-- Input File -->
-            <input type="file" name="fileToImport" id="fileToImport" @change.prevent="selectFile($event)">
+            <input type="file" @change.prevent="selectFile($event)">
             <br>
             <div class="modal-footer">
               <div class="row">
@@ -25,7 +25,7 @@
                   <span v-if="processing"> <i class="fa fa-spinner fa-spin"></i> </span>
                   {{ ts['import'] }}
                   </button>
-                  <button type="reset" class="btn btn-sm btn-success">{{ ts['reset'] }}</button>
+                  <button type="reset" @click.prevent="resetFile" class="btn btn-sm btn-success">{{ ts['reset'] }}</button>
                   <button class="btn btn-sm btn-default" data-dismiss="modal" @click.prevent="closeModal">{{ ts['close'] }}</button>
                 </div>
               </div>
@@ -42,7 +42,8 @@
 
 <script>
   // vuex store
-  import store from '../../store/Companies/Store';
+  // import store from '../../store/Companies/Store';
+  import store from '../../store/Store';
   // my components
   import MyLang from '../../components/languages/Languages';
 
@@ -50,17 +51,18 @@
 
     mixins: [MyLang],
 
-    props: ['urlImport'],
+    props: ['urlImport', 'moduleName'],
 
     data() {
       return {
         processing: false,
+        file: '',
       };
     },
 
     computed: {
       showImportModal() {
-        return this.$store.getters.getShowImportModal;
+        return store.getters[`${this.moduleName}/getShowImportModal`];
       },
     },
 
@@ -69,14 +71,29 @@
         this.file = e.target.files[0];
       },
       importFile() {
-        this.processing = true;
-        store.dispatch('importFile', this.file);
+        if (this.file.name !== undefined) {
+          this.processing = true;
+          store.dispatch(`${this.moduleName}/importFile`, this.file).then(() => {
+            this.resetFile();
+          });
+        } else {
+          const message = { data: { message: 'Select a file to import and try again', error: 400 } };
+          store.commit(`${this.moduleName}/SHOW_MESSAGE`, message);
+        }
+      },
+      resetFile() {
+        $('input[type=file]').val('');
+        this.file = '';
+      },
+      closeModal() {
+        this.resetFile();
+        store.commit(`${this.moduleName}/SHOW_IMPORT_MODAL`, false);
       },
     },
 
     watch: {
       showImportModal() {
-        if (this.$store.getters.getShowImportModal) {
+        if (store.getters[`${this.moduleName}/getShowImportModal`]) {
           this.processing = false;
           $('#myModalImport').modal('show');
           $('input[type=file]').val('');
