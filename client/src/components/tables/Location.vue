@@ -86,13 +86,16 @@
 
 <script>
 // vuex store
-import store from '../../store/Companies/Store';
+// import store from '../../store/Companies/Store';
+import store from '../../store/Store';
 // my components
 import mylang from '../../components/languages/Languages';
 
 export default {
 
   mixins: [mylang],
+
+  props: ['moduleName'],
 
   created() {
     this.initSearch();
@@ -109,12 +112,12 @@ export default {
 
   computed: {
     locations() {
-      return this.$store.getters.getLocations;
+      return store.getters[`${this.moduleName}/getLocations`];
     },
     locationText: {
       set() { },
       get() {
-        return this.$store.getters.getLocation;
+        return store.getters[`${this.moduleName}/getLocation`];
       },
     },
   },
@@ -122,7 +125,7 @@ export default {
   methods: {
 
     initSearch() {
-      store.dispatch('getLocations');
+      store.dispatch(`${this.moduleName}/getLocations`);
     },
     resetSearch() {
       if (this.locationText.length < 1) {
@@ -162,7 +165,7 @@ export default {
       *   RightArrow=39, Start=36, End=35
       */
     search(e) {
-      store.commit('UPDATE_LOCATION', e.target.value);
+      store.commit(`${this.moduleName}/UPDATE_LOCATION`, e.target.value);
       if (!this.isEscKey(e)) {
         if (![8, 46, 37, 36, 37, 39].includes(e.keyCode)) {
           this.getLocationsByLocationText();
@@ -176,14 +179,14 @@ export default {
       this.validateLocationText();
     },
     selectItem(e) {
-      store.commit('UPDATE_LOCATION', e.target.outerText);
+      store.commit(`${this.moduleName}/UPDATE_LOCATION`, e.target.outerText);
       this.locationsSelected = [];
       this.showSearchResults = false;
     },
     validateLocationText() {
       const isEmptyFields = (this.locationText.length === 0);
-      store.commit('SHOW_BTN_ADD_DISABLE', isEmptyFields);
-      store.commit('SHOW_BTN_UPDATE_DISABLE', isEmptyFields);
+      store.commit(`${this.moduleName}/SHOW_BTN_ADD_DISABLE`, isEmptyFields);
+      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE_DISABLE`, isEmptyFields);
     },
   },
 };
