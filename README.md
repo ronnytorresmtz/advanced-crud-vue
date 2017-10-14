@@ -2,17 +2,18 @@
     
 >With Vue, Vuex, VueRouter, Larevel, Axios, CORS, Bootstrap, Animate
 
-1. CRUD with a Table and Form.
-2. Colum Table are sorteable.
-3. Choose Field to Display in Table.
+1. CRUD with a Table and Form
+2. Colum Table are sorteable
+3. Choose Field to Display in Table
 4. Search Box and Filter Record Status
-5. Use Vuex for State.
+5. Use Vuex for State with Modules
 6. Top Popup Messages
 7. Form's Fields Validations on Client
 8. Handle Languagues 
-9. Use Bootstrap and Animate
-10. CORS Implementation 
-11. Laravel API 5.4 for CRUD Operations
+9. Import and Export functionalities
+10. Use Bootstrap and Animate
+11. CORS Implementation 
+12. Laravel API 5.4 for CRUD Operations
 
 >Some Components created from scratch
 1. Pagination Component
@@ -25,11 +26,8 @@
 5. Topbar Component
 
 ## TODO
-1. Sidebar component
-2. Add Import and Export functionalities
-3. Upgrade Laravel 5.4 to 5.5
-4. Test spec's
-5. Review CORS security and general security issues
+
+1. Test spec's
 
 ## Build Setup
 
