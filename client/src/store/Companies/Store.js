@@ -157,6 +157,7 @@ const store = {
   },
   actions: {
     getData(context, url) {
+      context.commit('UPDATE_LOADING', true);
       return Axios.get(url)
       .then((response) => {
         const pagination = {
@@ -172,10 +173,11 @@ const store = {
         };
         context.commit('UPDATE_PAGINATION', pagination);
         context.commit('UPDATE_PAGEDATA', response.data.data);
+        context.commit('UPDATE_LOADING', false);
       });
     },
     getDataFiltered(context, currentPage) {
-      context.commit('UPDATE_LOADING', true);
+      // context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       const page = (!currentPage) ? '' : `page=${currentPage}`;
       const url = new URL(pagination.path);
@@ -185,9 +187,8 @@ const store = {
       url.searchParams.append('itemsByPage', pagination.per_page);
       url.searchParams.append('fieldOrderBy', context.getters.getFieldOrderBy);
       url.searchParams.append('orderBy', context.getters.getOrderBy);
-      console.log('URLSearchParams', url);
-      context.dispatch('getData', url)
-        .then(() => context.commit('UPDATE_LOADING', false));
+      context.dispatch('getData', url);
+        // .then(() => context.commit('UPDATE_LOADING', false));
     },
     addItem(context, data) {
       context.commit('UPDATE_LOADING', true);
