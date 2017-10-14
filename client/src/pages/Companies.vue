@@ -34,10 +34,9 @@
 </style>
 
 <template>
-  <div class="container-fluid" align="left" style="margin-top: 75px">
-
+  <div class="container-fluid" align="left" style="background:#f2f2f2">
     <!--Import component-->
-    <myimport :moduleName="moduleName" :url-import="baseUrlCompanies"></myimport>
+    <myimport :url-import="baseUrlCompanies"></myimport>
 
     <!--message component-->
     <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
@@ -45,16 +44,16 @@
     </transition>
 
     <!--Panel-->
-    <div class="panel panel-default panel-padding">
+    <div class="panel panel-default panel-padding" style="margin-top: 75px">
       <div class="row">
         <div class="col-xs-6">
           <!--Page Title-->
-          <h1> {{ ts['companyList']}}
+          <h3> {{ ts['companyList']}}
           <!--Spin Icon-->
           <span v-if="loading">
             <i class="fa fa-spinner fa-spin"></i>
           </span>
-          </h1>
+          </h3>
         </div>
         
         <div class="col-xs-6" style="margin-top: 30px" align="right">
@@ -158,7 +157,7 @@
                     <label> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_address" @keyup="validFieldsRequired"></input>
                     <label> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
-                    <mylocation :moduleName="moduleName" v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
+                    <mylocation v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
                     <label> {{ ts['companyPostcode'] }}: </label><span class="aster-red" v-text="!input.company_postcode ? ' *' : ''"></span>
                     <input type="text" class="form-control" v-model="input.company_postcode" @keyup="validFieldsRequired"></input>
                     <label> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
@@ -193,22 +192,20 @@
       </div> <!--End Modal-->
 
       <!--Table Component-->
-      <mytable :cols="headers" :rows="pageData" :moduleName="moduleName"> </mytable>
+      <mytable :cols="headers" :rows="pageData"> </mytable>
             
       <br>
 
       <!--Paginator Component-->
-      <mypaginator :url="baseUrlCompanies" :moduleName="moduleName"></mypaginator>
+      <mypaginator :url="baseUrlCompanies"></mypaginator>
 
     </diV>
     <hr>
     <h4>TODO</h4>
     <ul>
-      <li>ValidaFieldRequire requiere ajuste con los nuevos campos</li>
       <li>Instalar larave 5.5</li>
-      <li>Instalar admin-lte</li>
     </ul>
-  </div>
+  </div> 
 </template>
 
 <script>
