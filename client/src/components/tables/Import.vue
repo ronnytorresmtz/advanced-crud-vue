@@ -51,7 +51,7 @@
 
     mixins: [MyLang],
 
-    props: ['urlImport', 'moduleName'],
+    props: ['urlImport'],
 
     data() {
       return {
@@ -62,7 +62,7 @@
 
     computed: {
       showImportModal() {
-        return store.getters[`${this.moduleName}/getShowImportModal`];
+        return store.getters[`${this.$parent.moduleName}/getShowImportModal`];
       },
     },
 
@@ -73,12 +73,12 @@
       importFile() {
         if (this.file.name !== undefined) {
           this.processing = true;
-          store.dispatch(`${this.moduleName}/importFile`, this.file).then(() => {
+          store.dispatch(`${this.$parent.moduleName}/importFile`, this.file).then(() => {
             this.resetFile();
           });
         } else {
           const message = { data: { message: 'Select a file to import and try again', error: 400 } };
-          store.commit(`${this.moduleName}/SHOW_MESSAGE`, message);
+          store.commit(`${this.$parent.moduleName}/SHOW_MESSAGE`, message);
         }
       },
       resetFile() {
@@ -87,13 +87,13 @@
       },
       closeModal() {
         this.resetFile();
-        store.commit(`${this.moduleName}/SHOW_IMPORT_MODAL`, false);
+        store.commit(`${this.$parent.moduleName}/SHOW_IMPORT_MODAL`, false);
       },
     },
 
     watch: {
       showImportModal() {
-        if (store.getters[`${this.moduleName}/getShowImportModal`]) {
+        if (store.getters[`${this.$parent.moduleName}/getShowImportModal`]) {
           this.processing = false;
           $('#myModalImport').modal('show');
           $('input[type=file]').val('');

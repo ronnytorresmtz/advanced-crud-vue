@@ -49,52 +49,52 @@
 
 </style>
 
-<template>
+      <template>
 
-  <div :id="message.id" :class="'popup-position popup-' + message.type" v-show="showAlert" >
-      {{message.text}}
-      <span class="popup-close" v-show="showAlert" @click.prevent="hideBoxMessage"> &times; </span>
-  </div>
-  <!--/div-->
+        <div :id="message.id" :class="'popup-position popup-' + message.type" v-show="showAlert" >
+            {{message.text}}
+            <span class="popup-close" v-show="showAlert" @click.prevent="hideBoxMessage"> &times; </span>
+        </div>
+        <!--/div-->
 
-</template>
+      </template>
 
-<script>
+      <script>
 
-  import store from '../../store/Store';
+        import store from '../../store/Store';
 
-  export default {
+        export default {
 
-    data() {
-      return {
-        message: {},
-      };
-    },
+          data() {
+            return {
+              message: {},
+            };
+          },
 
-    created() {
-      this.message = store.getters['companies/getMessage'];
-      this.hideBoxMessageByTime();
-    },
+          created() {
+            this.message = store.getters[`${this.$parent.moduleName}/getMessage`];
+            this.hideBoxMessageByTime();
+          },
 
-    computed: {
-      showAlert() {
-        this.message = store.getters['companies/getMessage'];
-        return this.message.show;
-      },
-    },
+          computed: {
+            showAlert() {
+              this.message = store.getters[`${this.$parent.moduleName}/getMessage`];
+              return this.message.show;
+            },
+          },
 
-    methods: {
-      hideBoxMessage() {
-        store.commit('companies/CLOSE_MESSAGE', false);
-      },
+          methods: {
+            hideBoxMessage() {
+              store.commit(`${this.$parent.moduleName}/CLOSE_MESSAGE`, false);
+            },
 
-      hideBoxMessageByTime() {
-        if (this.message.type === 'info') {
-          setTimeout(() => {
-            store.commit('companies/CLOSE_MESSAGE', false);
-          }, 3000);
-        }
-      },
-    },
-  };
+            hideBoxMessageByTime() {
+              if (this.message.type === 'info') {
+                setTimeout(() => {
+                  store.commit(`${this.$parent.moduleName}/CLOSE_MESSAGE`, false);
+                }, 3000);
+              }
+            },
+          },
+        };
 </script>

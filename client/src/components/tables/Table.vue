@@ -62,7 +62,7 @@
       </div> 
     </div>
     <!--Table-->
-    <div  class="table-responsive table-hscroll table-height">
+    <div  class="table-responsive table-hscroll">
       <table id="table1" class="table table-hover">
         <!--Table Header-->
         <th v-for="(col, key) in cols" :class="`table-cell-${hideOrShowCell(col.name)}`">
@@ -108,7 +108,7 @@ export default {
 
   mixins: [MyLang],
 
-  props: ['cols', 'rows', 'moduleName'],
+  props: ['cols', 'rows'],
 
   data() {
     return {
@@ -116,8 +116,8 @@ export default {
   },
 
   updated() {
-    if (localStorage.getItem(`${this.moduleName}/colsHeaders`) !== null) {
-      const colsInfo = JSON.parse(getValueFromLocalStorage(this.moduleName, 'colsHeaders'));
+    if (localStorage.getItem(`${this.$parent.moduleName}/colsHeaders`) !== null) {
+      const colsInfo = JSON.parse(getValueFromLocalStorage(this.$parent.moduleName, 'colsHeaders'));
       Object.keys(colsInfo).forEach((key) => {
         this.cols[key].display = colsInfo[key].display;
       });
@@ -142,29 +142,29 @@ export default {
           this.cols[col].display = !this.cols[col].display;
         }
       });
-      store.commit(`${this.moduleName}/UPDATE_COLS_HEADERS`, this.cols);
+      store.commit(`${this.$parent.moduleName}/UPDATE_COLS_HEADERS`, this.cols);
     },
     itemSelected(row) {
-      const dataRow = store.getters[`${this.moduleName}/getPageData`].filter(item => item.id === row.id);
-      store.commit(`${this.moduleName}/UPDATE_ITEM`, createObj(dataRow[0]));
-      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE`, true);
-      store.commit(`${this.moduleName}/SHOW_BTN_ADD_DISABLE`, false);
-      store.commit(`${this.moduleName}/SHOW_BTN_UPDATE_DISABLE`, false);
-      store.commit(`${this.moduleName}/SHOW_CLOSE_AFTERACTION_DEFAULT`, false);
-      store.commit(`${this.moduleName}/SHOW_MODAL`, true);
+      const dataRow = store.getters[`${this.$parent.moduleName}/getPageData`].filter(item => item.id === row.id);
+      store.commit(`${this.$parent.moduleName}/UPDATE_ITEM`, createObj(dataRow[0]));
+      store.commit(`${this.$parent.moduleName}/SHOW_BTN_UPDATE`, true);
+      store.commit(`${this.$parent.moduleName}/SHOW_BTN_ADD_DISABLE`, false);
+      store.commit(`${this.$parent.moduleName}/SHOW_BTN_UPDATE_DISABLE`, false);
+      store.commit(`${this.$parent.moduleName}/SHOW_CLOSE_AFTERACTION_DEFAULT`, false);
+      store.commit(`${this.$parent.moduleName}/SHOW_MODAL`, true);
     },
     sort(e) {
       const fieldOrderBy = e.target.id;
-      const orderBy = (store.getters[`${this.moduleName}/getOrderBy`] === 'asc' && fieldOrderBy === store.getters[`${this.moduleName}/getFieldOrderBy`]) ? 'desc' : 'asc';
-      store.commit(`${this.moduleName}/UPDATE_ORDER_BY`, orderBy);
-      store.commit(`${this.moduleName}/UPDATE_FIELD_ORDER_BY`, fieldOrderBy);
-      store.dispatch(`${this.moduleName}/getDataFiltered`);
+      const orderBy = (store.getters[`${this.$parent.moduleName}/getOrderBy`] === 'asc' && fieldOrderBy === store.getters[`${this.$parent.moduleName}/getFieldOrderBy`]) ? 'desc' : 'asc';
+      store.commit(`${this.$parent.moduleName}/UPDATE_ORDER_BY`, orderBy);
+      store.commit(`${this.$parent.moduleName}/UPDATE_FIELD_ORDER_BY`, fieldOrderBy);
+      store.dispatch(`${this.$parent.moduleName}/getDataFiltered`);
     },
     isFieldOrder(name) {
-      return (name === store.getters[`${this.moduleName}/getFieldOrderBy`]);
+      return (name === store.getters[`${this.$parent.moduleName}/getFieldOrderBy`]);
     },
     isOrderBy() {
-      if (store.getters[`${this.moduleName}/getOrderBy`] === 'asc') {
+      if (store.getters[`${this.$parent.moduleName}/getOrderBy`] === 'asc') {
         return 'glyphicon glyphicon-sort-by-alphabet';
       }
       return 'glyphicon glyphicon-sort-by-alphabet-alt';
