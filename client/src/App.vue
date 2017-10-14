@@ -1,6 +1,6 @@
 <template>
-  <div id="app" style="margin:0px">
-    <topbar></topbar>
+  <div id="app" style="margin:0 px;">
+    <topbar moduleName="companies"></topbar>
     <router-view></router-view>
   </div>
 </template>
