@@ -177,7 +177,6 @@ const store = {
       });
     },
     getDataFiltered(context, currentPage) {
-      // context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
       const page = (!currentPage) ? '' : `page=${currentPage}`;
       const url = new URL(pagination.path);
@@ -188,7 +187,6 @@ const store = {
       url.searchParams.append('fieldOrderBy', context.getters.getFieldOrderBy);
       url.searchParams.append('orderBy', context.getters.getOrderBy);
       context.dispatch('getData', url);
-        // .then(() => context.commit('UPDATE_LOADING', false));
     },
     addItem(context, data) {
       context.commit('UPDATE_LOADING', true);
