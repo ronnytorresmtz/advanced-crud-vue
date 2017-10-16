@@ -10,6 +10,17 @@ const store = new Vuex.Store({
   modules: {
     companies,
   },
+  state: {
+    showSidebar: false,
+  },
+  mutations: {
+    SHOW_SIDEBAR(state, show) {
+      state.showSidebar = show;
+    },
+  },
+  getters: {
+    getShowSidebar: state => state.showSidebar,
+  },
 });
 
 export default store;
