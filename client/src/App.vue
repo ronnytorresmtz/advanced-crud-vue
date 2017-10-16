@@ -1,6 +1,15 @@
+<style>
+html {
+  height: 100%;
+}
+body {
+  background-color:#f2f2f2;
+}
+</style>
+
 <template>
-  <div id="app" style="margin:0 px;">
-    <topbar moduleName="companies"></topbar>
+  <div id="app" style="margin:0px;">
+    <topbar></topbar>
     <router-view></router-view>
   </div>
 </template>
@@ -18,4 +27,3 @@ export default {
 };
 </script>
 
-<style></style>
