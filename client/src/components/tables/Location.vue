@@ -86,7 +86,6 @@
 
 <script>
 // vuex store
-// import store from '../../store/Companies/Store';
 import store from '../../store/Store';
 // my components
 import mylang from '../../components/languages/Languages';
@@ -102,7 +101,6 @@ export default {
 
   data() {
     return {
-      // locationText: '',
       locationsSelected: [],
       showSearchResults: false,
     };

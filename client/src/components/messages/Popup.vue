@@ -60,7 +60,6 @@
       </template>
 
       <script>
-
         import store from '../../store/Store';
 
         export default {
