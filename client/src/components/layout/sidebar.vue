@@ -4,7 +4,8 @@
     padding: 0px;
   }
   .nav-side-menu {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     font-family: verdana;
     font-size: 12px;
     font-weight: 200;
@@ -104,11 +105,6 @@
     -ms-transition: all 1s ease;
     transition: all 1s ease;
   }
-  .user {
-    height:60px;
-    background:rgba(0,0,0,0.5);
-    padding-top: 20px;
-  }
   @media (max-width: 767px) {
     .nav-side-menu {
       position: relative;
@@ -141,8 +137,20 @@
     }
   }
 
-  
- 
+.sidebar-navigatorbar-title {
+  margin-top: 5px;
+  background:rgba(0,0,0,0.2);
+  padding: 10px;
+  text-align: center;
+}
+.sidebar-online {
+    font-size: 10.5px;
+  }
+.sidebar-online-circle:before {
+  content: ' \25CF';
+  font-size: 20px;
+  color: #03a51e;
+}
 
 </style>
 
@@ -158,10 +166,21 @@
       </i>
     </span>
     <!--i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i-->
-  <div> 
-    <p> John Robinson</p>
-    <input class="form-control" type="text"> </input>
-  </div>
+
+    <div class="row">
+      <div class="col-xs-4">
+        <myavatar email="ronnytorresmtz@gamial.com" size="50"></myavatar>
+      </div>
+      <div class="col-xs-8" style="margin-top:10px">
+        <span>Ronny Torres</span>
+        <p class="sidebar-online">
+          <span class="sidebar-online-circle"></span> 
+            Online
+        </p>
+       </div>
+    </div>
+        
+    <div class="sidebar-navigatorbar-title">NAVIGATION BAR</div>
     <div class="menu-list">
         <ul id="menu-content" class="menu-content collapse out" v-for="row in menus">
             <li data-toggle="collapse" :data-target="`#${row.name}`" class="collapsed">
@@ -191,8 +210,13 @@
 <script>
   import store from '../../store/Store';
   import mymenus from '../../components/layout/menus';
+  import myavatar from '../../components/layout/avatar';
 
   export default {
+
+    components: {
+      myavatar,
+    },
 
     data() {
       return {
