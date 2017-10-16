@@ -34,177 +34,185 @@
 </style>
 
 <template>
-  <div class="container-fluid" align="left" style="background:#f2f2f2">
-    <!--Import component-->
-    <myimport :url-import="baseUrlCompanies"></myimport>
-
-    <!--message component-->
-    <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
-      <mypopup v-if="showPopUpMessage"> </mypopup>
-    </transition>
-
-    <!--Panel-->
-    <div class="panel panel-default panel-padding" style="margin-top: 75px">
-      <div class="row">
-        <div class="col-xs-6">
-          <!--Page Title-->
-          <h3> {{ ts['companyList']}}
-          <!--Spin Icon-->
-          <span v-if="loading">
-            <i class="fa fa-spinner fa-spin"></i>
-          </span>
-          </h3>
-        </div>
-        
-        <div class="col-xs-6" style="margin-top: 30px" align="right">
-          <!--Add button-->
-          <button class="btn btn-sm btn-primary" @click.prevent="showAddForm()"> {{ ts['addCompany'] }} </button>
-          <!--Expot button-->
-          <a :href="getExportUrl()" class="btn btn-sm btn-primary button-size" :title="ts['export']">
-            <span class="glyphicon glyphicon-arrow-down"></span>
-          </a>
-          <!--Import button-->
-          <button class="btn btn-sm btn-primary" @click.prevent="importData()" :title="ts['import']"> 
-            <span class="glyphicon glyphicon-arrow-up"></span>
-          </button>
-        </div>
+  <div class="container-fluid" align="left">
+    <div class="row" >
+      <div class="col-sm-2" v-if="showSidebar">
+        <mysidebar id="sidebarCompanies"></mysidebar>
       </div>
-      <hr>
-      <div class="row">
-        <!--Search Text-->
-        <div class="col-xs-3 pull-left" style="padding-right:0px">
-          <div class="input-group">
-            <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
-            <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer">
-              <span class="glyphicon glyphicon-search"></span>
-            </span>
-          </div>
-        </div>
+      <!--div :class="`col-xs-${(showSidebar)? 10 : 12}`"-->
+      <div class="col-xs-12">
+        <!--Import component-->
+        <myimport :url-import="baseUrlCompanies"></myimport>
 
-        <div class="col-xs-6">
-          <!--Button Filter for SearchText-->
-          <div class="col-xs-6 pull-left" style="padding:0px">
-            <div v-show="isFilterBySearchText" @click.prevent="clearSearchTextFilter()" :title="ts['clearFilter']">
-              <button class="btn btn-sm btn-warning" style="cursor: pointer"> 
-                <span class="glyphicon glyphicon-filter"></span>
+        <!--message component-->
+        <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
+          <mypopup v-if="showPopUpMessage"> </mypopup>
+        </transition>
+
+        <!--Panel-->
+        <div class="panel panel-default panel-padding" style="margin-top: 75px">
+          <div class="row">
+            <div class="col-xs-6">
+              <!--Page Title-->
+              <h3> {{ ts['companyList']}}
+              <!--Spin Icon-->
+              <span v-if="loading">
+                <i class="fa fa-spinner fa-spin"></i>
+              </span>
+              </h3>
+            </div>
+            
+            <div class="col-xs-6" style="margin-top: 30px" align="right">
+              <!--Add button-->
+              <button class="btn btn-sm btn-primary" @click.prevent="showAddForm()"> {{ ts['addCompany'] }} </button>
+              <!--Expot button-->
+              <a :href="getExportUrl()" class="btn btn-sm btn-primary button-size" :title="ts['export']">
+                <span class="glyphicon glyphicon-arrow-down"></span>
+              </a>
+              <!--Import button-->
+              <button class="btn btn-sm btn-primary" @click.prevent="importData()" :title="ts['import']"> 
+                <span class="glyphicon glyphicon-arrow-up"></span>
               </button>
             </div>
           </div>
-          <!--Button Filer for Apply Filter-->
-          <div class="col-xs-6 pull-right" style="padding:0px">
-            <div v-show="isFilterApplied" @click.prevent="clearApplyFilter()" :title="ts['clearFilter']" align="right" >
-              <button class="btn btn-sm btn-warning"> 
-                <span class="glyphicon glyphicon-filter"></span>
-              </button>
-            </div>
-          </div>
-
-        </div>          
-        <!--Apply Filter Select-->
-        <div class="col-xs-3 pull-right" style="padding-left:0px">
-          <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
-            <option value="-1"> {{ ts['applyAFilter'] }} </option>
-            <option value="0"> {{ ts['active'] }} </option>
-            <option value="1"> {{ ts['inactive'] }} </option>
-          </select>
-        </div>
-
-      </div>
-      <hr>
-      <!--Modal Form-->
-      <div class="modal fade" id="myModalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalFormLabel">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <!--Modal Title-->
-              <h4 class="modal-title" v-text="(isUpdateBtnShow) ? ts['editCompany'] : ts['addCompany']"></h4>
-            </div>
-            <div class="modal-body">
-              <div class="row" align="right" style="padding-right:20px" v-if="isUpdateBtnShow">
-                <!--Modal Status-->
-                <label> {{ ts['companyStatus'] }}: </label>
-                <span v-if="(input.deleted_at===null)">
-                  <button class="btn btn-xs btn-success btn-std-width" v-model="input.status"> {{ ts['active'] }} </button>
-                </span>
-                <span v-else>
-                  <button class="btn btn-xs btn-danger btn-std-width" v-model="input.status"> {{ ts['inactive'] }} </button>
+          <hr>
+          <div class="row">
+            <!--Search Text-->
+            <div class="col-xs-3 pull-left" style="padding-right:0px">
+              <div class="input-group">
+                <input type="text" class="form-control" v-model="searchText" @keyup.enter="getDataFiltered" :placeholder="ts['typeForSearch']"></input>
+                <span class="input-group-addon" @click="getDataFiltered"  style="cursor: pointer">
+                  <span class="glyphicon glyphicon-search"></span>
                 </span>
               </div>
-              <form>
-                <!--Modal Form Fields-->
-                <div class="row">
-                  <div class="col-xs-6">
-                    <label> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.id" @keyup="validFieldsRequired" :disabled="true"></input>
-                    <label> {{ ts['companyName'] }}: </label><span class="aster-red" v-text="!input.company_name ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_name" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLegalName'] }}: </label><span class="aster-red" v-text="!input.company_legal_name ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_legal_name" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyTaxId'] }}: </label><span class="aster-red" v-text="!input.company_tax_id ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_tax_id" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyWebsite'] }}: </label><span class="aster-red" v-text="!input.company_website ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_website" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyContact'] }}: </label><span class="aster-red" v-text="!input.company_contact ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_contact" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyEmail'] }}: </label><span class="aster-red" v-text="!input.company_email ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_email" @keyup="validFieldsRequired"></input>
-                  </div>
-                  <div class="col-xs-6">
-                    <label> {{ ts['companyPhone'] }}: </label><span class="aster-red" v-text="!input.company_phone ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_phone" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyCellular'] }}: </label><span class="aster-red" v-text="!input.company_cellular ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_cellular" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_address" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
-                    <mylocation v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
-                    <label> {{ ts['companyPostcode'] }}: </label><span class="aster-red" v-text="!input.company_postcode ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_postcode" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_latitude" @keyup="validFieldsRequired"></input>
-                    <label> {{ ts['companyLongitude'] }}: </label><span class="aster-red" v-text="!input.company_longitude ? ' *' : ''"></span>
-                    <input type="text" class="form-control" v-model="input.company_longitude" @keyup="validFieldsRequired"></input>
-                  </div>
+            </div>
+
+            <div class="col-xs-6">
+              <!--Button Filter for SearchText-->
+              <div class="col-xs-6 pull-left" style="padding:0px">
+                <div v-show="isFilterBySearchText" @click.prevent="clearSearchTextFilter()" :title="ts['clearFilter']">
+                  <button class="btn btn-sm btn-warning" style="cursor: pointer"> 
+                    <span class="glyphicon glyphicon-filter"></span>
+                  </button>
                 </div>
-              </form>
-              <br>
-              <div class="modal-footer">
-                <div class="row">
-                  <!--Check box for Close After Action-->
-                  <div class="col-xs-4" align="left">
-                    <div v-show="!isUpdateBtnShow">
-                      <input type="checkbox" v-model="closeAfterAction"> <span style="cursor:pointer" @click.prevent="closeAfterAction = !closeAfterAction"> {{ ts['closeAfterAction'] }} </span></input>
+              </div>
+              <!--Button Filer for Apply Filter-->
+              <div class="col-xs-6 pull-right" style="padding:0px">
+                <div v-show="isFilterApplied" @click.prevent="clearApplyFilter()" :title="ts['clearFilter']" align="right" >
+                  <button class="btn btn-sm btn-warning"> 
+                    <span class="glyphicon glyphicon-filter"></span>
+                  </button>
+                </div>
+              </div>
+
+            </div>          
+            <!--Apply Filter Select-->
+            <div class="col-xs-3 pull-right" style="padding-left:0px">
+              <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
+                <option value="-1"> {{ ts['applyAFilter'] }} </option>
+                <option value="0"> {{ ts['active'] }} </option>
+                <option value="1"> {{ ts['inactive'] }} </option>
+              </select>
+            </div>
+
+          </div>
+          <hr>
+          <!--Modal Form-->
+          <div class="modal fade" id="myModalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalFormLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <!--Modal Title-->
+                  <h4 class="modal-title" v-text="(isUpdateBtnShow) ? ts['editCompany'] : ts['addCompany']"></h4>
+                </div>
+                <div class="modal-body">
+                  <div class="row" align="right" style="padding-right:20px" v-if="isUpdateBtnShow">
+                    <!--Modal Status-->
+                    <label> {{ ts['companyStatus'] }}: </label>
+                    <span v-if="(input.deleted_at===null)">
+                      <button class="btn btn-xs btn-success btn-std-width" v-model="input.status"> {{ ts['active'] }} </button>
+                    </span>
+                    <span v-else>
+                      <button class="btn btn-xs btn-danger btn-std-width" v-model="input.status"> {{ ts['inactive'] }} </button>
+                    </span>
+                  </div>
+                  <form>
+                    <!--Modal Form Fields-->
+                    <div class="row">
+                      <div class="col-xs-6">
+                        <label> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.id" @keyup="validFieldsRequired" :disabled="true"></input>
+                        <label> {{ ts['companyName'] }}: </label><span class="aster-red" v-text="!input.company_name ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_name" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyLegalName'] }}: </label><span class="aster-red" v-text="!input.company_legal_name ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_legal_name" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyTaxId'] }}: </label><span class="aster-red" v-text="!input.company_tax_id ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_tax_id" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyWebsite'] }}: </label><span class="aster-red" v-text="!input.company_website ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_website" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyContact'] }}: </label><span class="aster-red" v-text="!input.company_contact ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_contact" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyEmail'] }}: </label><span class="aster-red" v-text="!input.company_email ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_email" @keyup="validFieldsRequired"></input>
+                      </div>
+                      <div class="col-xs-6">
+                        <label> {{ ts['companyPhone'] }}: </label><span class="aster-red" v-text="!input.company_phone ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_phone" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyCellular'] }}: </label><span class="aster-red" v-text="!input.company_cellular ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_cellular" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyAddress'] }}: </label><span class="aster-red" v-text="!input.company_address ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_address" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyLocation'] }}: </label><span class="aster-red" v-text="!input.company_location ? ' *' : ''"></span>
+                        <mylocation v-model="input.company_location" @keyup="validFieldsRequired"></mylocation>
+                        <label> {{ ts['companyPostcode'] }}: </label><span class="aster-red" v-text="!input.company_postcode ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_postcode" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyLatitude'] }}: </label><span class="aster-red" v-text="!input.company_latitude ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_latitude" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['companyLongitude'] }}: </label><span class="aster-red" v-text="!input.company_longitude ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.company_longitude" @keyup="validFieldsRequired"></input>
+                      </div>
+                    </div>
+                  </form>
+                  <br>
+                  <div class="modal-footer">
+                    <div class="row">
+                      <!--Check box for Close After Action-->
+                      <div class="col-xs-4" align="left">
+                        <div v-show="!isUpdateBtnShow">
+                          <input type="checkbox" v-model="closeAfterAction"> <span style="cursor:pointer" @click.prevent="closeAfterAction = !closeAfterAction"> {{ ts['closeAfterAction'] }} </span></input>
+                        </div>
+                      </div>
+                      <!--Modal Footer Button-->
+                      <div class="col-xs-8">
+                        <button class="btn btn-sm btn-success btn-std-width" @click.prevent="addItem()" v-if="!isUpdateBtnShow" :disabled="isAddBtnDisable"> {{ ts['add'] }} </button>
+                        <button class="btn btn-sm btn-success btn-std-width" @click.prevent="updateItem()" v-if="isUpdateBtnShow" :disabled="isUpdateBtnDisable"> {{ ts['update'] }} </button>
+                        <button class="btn btn-sm btn-danger btn-std-width" @click.prevent="deleteItem()" v-if="isUpdateBtnShow"> {{ ts['delete'] }} </button>
+                        <button class="btn btn-sm btn-default btn-std-width" @click.prevent="resetForm()" v-if="!isUpdateBtnShow"> {{ ts['reset'] }} </button>
+                        <button class="btn btn-sm btn-default btn-std-width" @click.prevent="closeModal()"> {{ ts['close'] }} </button>
+                      </div>
                     </div>
                   </div>
-                  <!--Modal Footer Button-->
-                  <div class="col-xs-8">
-                    <button class="btn btn-sm btn-success btn-std-width" @click.prevent="addItem()" v-if="!isUpdateBtnShow" :disabled="isAddBtnDisable"> {{ ts['add'] }} </button>
-                    <button class="btn btn-sm btn-success btn-std-width" @click.prevent="updateItem()" v-if="isUpdateBtnShow" :disabled="isUpdateBtnDisable"> {{ ts['update'] }} </button>
-                    <button class="btn btn-sm btn-danger btn-std-width" @click.prevent="deleteItem()" v-if="isUpdateBtnShow"> {{ ts['delete'] }} </button>
-                    <button class="btn btn-sm btn-default btn-std-width" @click.prevent="resetForm()" v-if="!isUpdateBtnShow"> {{ ts['reset'] }} </button>
-                    <button class="btn btn-sm btn-default btn-std-width" @click.prevent="closeModal()"> {{ ts['close'] }} </button>
-                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div> <!--End Modal-->
+          </div> <!--End Modal-->
 
-      <!--Table Component-->
-      <mytable :cols="headers" :rows="pageData"> </mytable>
-            
-      <br>
+          <!--Table Component-->
+          <mytable :cols="headers" :rows="pageData"> </mytable>
+                
+          <br>
 
-      <!--Paginator Component-->
-      <mypaginator :url="baseUrlCompanies"></mypaginator>
+          <!--Paginator Component-->
+          <mypaginator :url="baseUrlCompanies"></mypaginator>
 
-    </diV>
-    <hr>
-    <h4>TODO</h4>
-    <ul>
-      <li>Instalar larave 5.5</li>
-    </ul>
+        </diV>
+        <hr>
+        <h4>TODO</h4>
+        <ul>
+          <li>Instalar larave 5.5</li>
+        </ul>
+      </div> 
+    </div> 
   </div> 
 </template>
 
@@ -219,6 +227,7 @@ import mytable from '../components/tables/Table';
 import mylocation from '../components/tables/Location';
 import myimport from '../components/tables/Import';
 import mypaginator from '../components/tables/Paginator';
+import mysidebar from '../components/layout/sidebar';
 // my libraries
 import createObj, { resetObjVal, getValueFromLocalStorage } from '../lib/General';
 
@@ -231,7 +240,9 @@ export default {
     mylocation,
     myimport,
     mypaginator,
+    mysidebar,
   },
+
   data() {
     return {
       title: 'Company',
@@ -336,6 +347,9 @@ export default {
       get() {
         return store.getters[`${this.moduleName}/getCloseAfterAction`];
       },
+    },
+    showSidebar() {
+      return store.getters.getShowSidebar;
     },
   },
 
