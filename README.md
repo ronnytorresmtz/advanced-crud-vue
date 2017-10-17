@@ -3,7 +3,7 @@
 >With Vue, Vuex, VueRouter, Larevel, Axios, CORS, Bootstrap, Animate
 
 1. CRUD with a Table and Form
-2. Colum Table are sorteable
+2. Colum Table are Sorteable
 3. Choose Field to Display in Table
 4. Search Box and Filter Record Status
 5. Use Vuex for State with Modules
@@ -11,9 +11,11 @@
 7. Form's Fields Validations on Client
 8. Handle Languagues 
 9. Import and Export functionalities
-10. Use Bootstrap and Animate
+10. Use Bootstrap 3 and Animate
 11. CORS Implementation 
 12. Laravel API 5.4 for CRUD Operations
+13. Integrate Gravatar Service
+14. Location Searcheable Field
 
 >Some Components created from scratch
 1. Pagination Component
@@ -24,6 +26,9 @@
 3. Popup Messaging Component
 4. Language Component
 5. Topbar Component
+5. Sidebar Component
+6. Avatar Component based on Gravatar Service
+7. Location Component
 
 ## TODO
 
