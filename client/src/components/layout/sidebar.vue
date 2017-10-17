@@ -159,9 +159,9 @@
 <div class="container" >
   <div class="nav-side-menu">
     <span class="brand">
-      BRAND LOGO
+        Brand Logo
       <i class="fa fa-chevron-left fa-lg" 
-        style="margin-left:70px;color: white; cursor:pointer"
+        style="margin-left:80px;color: white; cursor:pointer"
         @click="expandCollapse"> 
       </i>
     </span>
@@ -175,7 +175,7 @@
         <span>Ronny Torres</span>
         <p class="sidebar-online">
           <span class="sidebar-online-circle"></span> 
-            Online
+          Online
         </p>
        </div>
     </div>
