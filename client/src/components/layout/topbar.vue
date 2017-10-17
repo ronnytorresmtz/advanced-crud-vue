@@ -5,6 +5,8 @@
   }
 </style>
 
+
+<span class="topbar-circle"></span> 
 <template>
   <div>
     <nav class="navbar navbar-default navbar-fixed-top" style="background:#3c8dbc" >
@@ -17,10 +19,10 @@
           </label>
         </div>
         <div class="col-xs-9" align="right">
-            <i class="fa fa-bell-o topbar-icons"></i>
+            <i class="fa fa-bell-o topbar-icons"> </i>
             <i class="fa fa-comment-o topbar-icons"></i>
             <i class="fa fa-flag-o topbar-icons"></i>
-            <myavatar email="ronnytorresmtz@gamial.com" size="28"></myavatar>
+            <myavatar email="ronnytorresmtz@gamial.com" size="32"></myavatar>
         </div>
       
       </div>
