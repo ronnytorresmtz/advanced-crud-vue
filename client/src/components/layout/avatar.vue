@@ -16,7 +16,7 @@
 
 <template>
     <img 
-      class="avatar avatar-margin avatar-border" 
+      class="avatar avatar-margin" 
       :src="`${gratavarImage}?s=${size}`" 
     >
 </template>
@@ -34,7 +34,7 @@
     },
 
     created() {
-      // const md5Emal = md5(this.email);
+      // const md5Emal = md5(this.email);bf2eb61bb075298edd8d6a1f104e40de
       this.gratavarImage = 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50';
     },
   };
