@@ -14,7 +14,7 @@
     position: fixed;
     top: 0px;
     left: 0px;
-    width: 210px;
+    /*width: 225px;*/
     height: 100%;
     color: #e1ffff;
     z-index: 9999;
@@ -152,56 +152,71 @@
   color: #03a51e;
 }
 
+
 </style>
 
 <template>
 
 <div class="container" >
   <div class="nav-side-menu">
-    <span class="brand">
-        Brand Logo
-      <i class="fa fa-chevron-left fa-lg" 
-        style="margin-left:80px;color: white; cursor:pointer"
-        @click="expandCollapse"> 
-      </i>
-    </span>
-    <!--i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i-->
-
     <div class="row">
-      <div class="col-xs-4">
-        <myavatar email="ronnytorresmtz@gamial.com" size="50"></myavatar>
-      </div>
-      <div class="col-xs-8" style="margin-top:10px">
-        <span>Ronny Torres</span>
-        <p class="sidebar-online">
-          <span class="sidebar-online-circle"></span> 
-          Online
-        </p>
-       </div>
-    </div>
-        
-    <div class="sidebar-navigatorbar-title">NAVIGATION BAR</div>
-    <div class="menu-list">
-        <ul id="menu-content" class="menu-content collapse out" v-for="row in menus">
-            <li data-toggle="collapse" :data-target="`#${row.name}`" class="collapsed">
-              <a>
-                <i :class="`fa ${row.icon} fa-lg`"></i> 
-                <span >{{ row.name }}</span> 
-                <span class="arrow"></span>
-              </a>
-            </li>
-            <ul class="sub-menu collapse" :id="row.name">
-                <li v-for="child in row.child">
-                  <!--router-link :to="child.link">
+      <div class="col-xs-12">
+        <div class="row brand">
+          <div class="col-xs-9">
+            <span>
+              Brand Logo <!--Karganos.com, Despachador.com, Kargaloz.com, Kargalox.com-->
+            </span>
+          </div>
+          <div class="col-xs-3" >
+            <i class="fa fa-chevron-left fa-lg" 
+              style="margin-right: 50px;color: white; cursor:pointer"
+              @click="expandCollapse"> 
+            </i>
+          </div>
+        </div>  
+
+        <div class="row">
+          <div class="col-xs-4">
+            <myavatar 
+              email="ronnytorresmtz@gmail1.com" 
+              circle-size="50px" 
+              letter-size="2em"
+            >
+            </myavatar>
+          </div>
+          <div class="col-xs-8" style="margin-top:10px">
+            <span>Ronny Torres</span>
+            <p class="sidebar-online">
+              <span class="sidebar-online-circle"></span> 
+              Online
+            </p>
+          </div>
+        </div>
+            
+        <div class="sidebar-navigatorbar-title">NAVIGATION BAR</div>
+        <div class="menu-list">
+            <ul id="menu-content" class="menu-content collapse out" v-for="row in menus">
+              <li data-toggle="collapse" :data-target="`#${row.name}`" class="collapsed">
+                <a>
+                  <i :class="`fa ${row.icon} fa-lg`"></i> 
+                  <span >{{ row.name }}</span> 
+                  <span class="arrow"></span>
+                </a>
+              </li>
+              <ul class="sub-menu collapse" :id="row.name">
+                <li v-for="child in row.child" @click.prevent="expandCollapse">
+                  <i :class="`fa ${child.icon} fa-lg`"></i>
+                  <!--a :href="child.link">
                       {{ child.name }}
-                  </router-link-->
-                    <i :class="`fa ${child.icon} fa-lg`"></i>
-                  <a :href="child.link">
-                      {{ child.name }}
-                  </a>
+                  </a-->
+                  <router-link :to="child.link" >
+                    {{ child.name }}
+                  </router-link>
                 </li>
+              </ul>
             </ul>
-        </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>

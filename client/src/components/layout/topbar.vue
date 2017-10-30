@@ -1,30 +1,51 @@
-<style>
+<style scoped>
   .topbar-icons {
     color:#e1ffff;
     padding-right:20px;
   }
+  .brand {
+    text-align: left !important;
+    font-size: 22px;
+    padding-left: 20px;
+    line-height: 50px !important;
+    background-color: #337ab7;
+    line-height: 50px;
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    color: #e1ffff;
+    font-family: verdana;
+  }
 </style>
 
 
-<span class="topbar-circle"></span> 
+
 <template>
   <div>
     <nav class="navbar navbar-default navbar-fixed-top" style="background:#3c8dbc" >
       <div class="container-fluid">
-
-        <div class="col-xs-3">
-          
-          <label style="padding-top:15px; margin-left:-20px; background-color:#3c8dbc; cursor:pointer" @click="expandCollapse">
-            <i class="fa fa-bars fa-lg" style="color: white"> </i>
-          </label>
-        </div>
-        <div class="col-xs-9" align="right">
-            <i class="fa fa-bell-o topbar-icons"> </i>
-            <i class="fa fa-comment-o topbar-icons"></i>
-            <i class="fa fa-flag-o topbar-icons"></i>
-            <myavatar email="ronnytorresmtz@gamial.com" size="32"></myavatar>
-        </div>
-      
+        <div class="row">
+          <div class="col-xs-1">
+            <i class="fa fa-bars fa-lg" 
+              style="margin-top:20px; color: white; cursor:pointer"
+              @click="expandCollapse"> 
+            </i>
+          </div>
+          <div class="col-xs-11">
+            <div class="col-xs-11" align="right" style="margin-top:15px" @mouseover.stop.prevent="collapseSidebar">
+                <i class="fa fa-bell-o topbar-icons"> </i>
+                <i class="fa fa-comment-o topbar-icons"></i>
+                <i class="fa fa-flag-o topbar-icons"></i>
+            </div>
+            <div class="col-xs-1" align="center" @click.stop.prevent="expandCollapse">
+                <myavatar 
+                  email="ronnytorresmtz@gmail1.com" 
+                  circle-size="32px" 
+                  letter-size="1.5em">
+                </myavatar>
+            </div>
+          </div>
+        </div>      
       </div>
     </nav>
   </div>
@@ -53,6 +74,9 @@
     },
 
     methods: {
+      collapseSidebar() {
+        store.commit('SHOW_SIDEBAR', false);
+      },
       expandCollapse() {
         store.commit('SHOW_SIDEBAR', !this.showSidebar);
       },
