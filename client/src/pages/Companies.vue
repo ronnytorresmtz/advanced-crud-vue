@@ -40,7 +40,7 @@
         <mysidebar id="sidebarCompanies"></mysidebar>
       </div>
       <!--div :class="`col-xs-${(showSidebar)? 10 : 12}`"-->
-      <div class="col-xs-12">
+      <div class="col-xs-12" @mouseover.stop.prevent="collapseSidebar">
         <!--Import component-->
         <myimport :url-import="baseUrlCompanies"></myimport>
 
@@ -108,7 +108,7 @@
             </div>          
             <!--Apply Filter Select-->
             <div class="col-xs-3 pull-right" style="padding-left:0px">
-              <select class="form-control" v-model="optionSelected" @change="getDataFiltered">
+              <select class="form-control" v-model="filterSelected" @change.prevent="getDataFiltered">
                 <option value="-1"> {{ ts['applyAFilter'] }} </option>
                 <option value="0"> {{ ts['active'] }} </option>
                 <option value="1"> {{ ts['inactive'] }} </option>
@@ -268,7 +268,7 @@ export default {
       searchText: '',
       isFilterBySearchText: false,
       isFilterApplied: false,
-      optionSelected: '-1',
+      filterSelected: '-1',
       input: {
         id: 'New',
         company_name: '',
@@ -292,8 +292,8 @@ export default {
   created() {
     const tableParams = this.getTableParamsFromLocalStorage();
     this.updateTableParams(tableParams);
-    this.optionSelected = store.getters[`${this.moduleName}/getOptionSelected`];
-    this.isFilterApplied = (this.optionSelected >= 0);
+    this.filterSelected = store.getters[`${this.moduleName}/getFilterSelected`];
+    this.isFilterApplied = (this.filterSelected >= 0);
     store.dispatch(`${this.moduleName}/getData`, `${this.baseUrlCompanies}?${this.getUrlParams()}`);
   },
   computed: {
@@ -309,6 +309,9 @@ export default {
     searchTextFilter() {
       return store.getters[`${this.moduleName}/getSearchText`];
     },
+    // filterSelected() {
+    //   return store.getters[`${this.moduleName}/getFilterSelected`];
+    // },
     fieldOrderBy() {
       return store.getters[`${this.moduleName}/getFieldOrderBy`];
     },
@@ -354,15 +357,18 @@ export default {
   },
 
   methods: {
+    collapseSidebar() {
+      store.commit('SHOW_SIDEBAR', false);
+    },
     getDataFiltered() {
       store.commit(`${this.moduleName}/UPDATE_SEARCH_TEXT`, this.searchText);
-      store.commit(`${this.moduleName}/UPDATE_OPTION_SELECT`, this.optionSelected);
+      store.commit(`${this.moduleName}/UPDATE_FILTER_SELECTED`, this.filterSelected);
       store.dispatch(`${this.moduleName}/getDataFiltered`);
       this.showFilterButtons();
     },
     showFilterButtons() {
       this.isFilterBySearchText = (this.searchText !== '');
-      this.isFilterApplied = (this.optionSelected !== '-1');
+      this.isFilterApplied = (this.filterSelected !== '-1');
     },
     addItem() {
       this.input.deleted_at = null;
@@ -393,7 +399,7 @@ export default {
     getExportUrl() {
       return `${store.getters[`${this.moduleName}/getPagination`].path}/export?
         searchText=${this.searchText}&
-        optionSelected=${this.optionSelected}`;
+        filterSelected=${this.filterSelected}`;
     },
     importData() {
       store.commit(`${this.moduleName}/SHOW_IMPORT_MODAL`, true);
@@ -436,13 +442,13 @@ export default {
       this.searchText = '';
     },
     clearApplyFilter() {
-      this.optionSelected = '-1';
-      store.commit(`${this.moduleName}/UPDATE_OPTION_SELECT`, this.optionSelected);
+      this.filterSelected = '-1';
+      store.commit(`${this.moduleName}/UPDATE_FILTER_SELECTED`, this.filterSelected);
       this.getDataFiltered();
       this.isFilterApplied = false;
     },
     getUrlParams() {
-      return `searchText=${this.searchText}&optionSelected=${this.optionSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
+      return `searchText=${this.searchText}&filterSelected=${this.filterSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
     },
     getTableParamsFromLocalStorage() {
       const tableDefaults = JSON.stringify(store.getters[`${this.moduleName}/getTableDefaults`]);
@@ -450,7 +456,7 @@ export default {
       return values;
     },
     updateTableParams(tableParams) {
-      store.commit(`${this.moduleName}/UPDATE_OPTION_SELECT`, tableParams.optionSelected);
+      store.commit(`${this.moduleName}/UPDATE_FILTER_SELECTED`, tableParams.filterSelected);
       store.commit(`${this.moduleName}/UPDATE_FIELD_ORDER_BY`, tableParams.fieldOrderBy);
       store.commit(`${this.moduleName}/UPDATE_ORDER_BY`, tableParams.orderBy);
       store.commit(`${this.moduleName}/UPDATE_PER_PAGE`, tableParams.perPage);
