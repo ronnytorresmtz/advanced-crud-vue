@@ -83,8 +83,14 @@
       searchText() {
         return store.getters[`${this.$parent.moduleName}/getSearchText`];
       },
-      optionSelected() {
-        return store.getters[`${this.$parent.moduleName}/getOptionSelected`];
+      companySelected() {
+        if (store.getters[`${this.$parent.moduleName}/getCompanySelected`] === undefined) {
+          return null;
+        }
+        return store.getters[`${this.$parent.moduleName}/getCompanySelected`];
+      },
+      filterSelected() {
+        return store.getters[`${this.$parent.moduleName}/getFilterSelected`];
       },
       fieldOrderBy() {
         return store.getters[`${this.$parent.moduleName}/getFieldOrderBy`];
@@ -114,8 +120,10 @@
         this.getData(pageUrl);
       },
       getUrlParams() {
-        return `searchText=${this.searchText}&
-          optionSelected=${this.optionSelected}&
+        console.log(this.companySelected);
+        return `companyId=${this.companySelected}&
+        searchText=${this.searchText}&
+          filterSelected=${this.filterSelected}&
           itemsByPage=${this.perPage}&
           fieldOrderBy=${this.fieldOrderBy}&
           orderBy=${this.orderBy}`;
