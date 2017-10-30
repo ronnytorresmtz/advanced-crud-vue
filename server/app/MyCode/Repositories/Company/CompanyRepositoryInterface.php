@@ -5,6 +5,7 @@ use MyCode\Repositories\Eloquent\MyEloquentRepositoryInterface;
 interface CompanyRepositoryInterface extends MyEloquentRepositoryInterface
 {
 	public function getAll();
+	public function getCompanyIdByName($companyName);
 	public function getAllWithFilters($request);
 	public function getAllActive();
 	public function getAllIdAndNameActive();
