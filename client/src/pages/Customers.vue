@@ -209,12 +209,6 @@
           <mypaginator :url="baseUrlCustomers"></mypaginator>
 
         </diV>
-        <hr>
-        <h4>TODO</h4>
-        <ul>
-          <li>Instalar laravel 5.5 y Vue 2.5</li>
-          <li>Incorporar un avatar con la carga de una imagen del usuario y luego se debe redondear</li>
-        </ul>
       </div> 
     </div> 
   </div> 
