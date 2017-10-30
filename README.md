@@ -36,7 +36,7 @@
 
 >Application Architecture
 
-<p align="center">
+<p align="left">
 <img src="/architecture.png" width="500"/>
 </p>
 
