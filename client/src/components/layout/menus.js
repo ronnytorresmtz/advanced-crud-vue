@@ -5,7 +5,7 @@ export default [
     icon: 'fa fa-tachometer',
   },
   {
-    name: 'Shippers',
+    name: 'Catalogs',
     link: '',
     icon: 'fa fa-cubes',
     child: [
