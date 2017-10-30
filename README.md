@@ -37,7 +37,7 @@
 >Application Architecture
 
 <p align="center">
-<img src="/architecture.png" width="1000"/>
+<img src="/architecture.png" width="500"/>
 </p>
 
 * The client is a VueJS Sigle Page Application 
