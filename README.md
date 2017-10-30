@@ -34,6 +34,16 @@
 7. Location Component
 8. Language Traslations Component
 
+>Application Architecture
+
+* Client is a VueJS Sigle Page Application 
+* Server is a Laravel API 
+* Comunication uses CORS
+* Database is a MySQL Database
+
+To use/play with application work needs to runs npm run dev in the client directory and php artisan in the server directory
+
+
 ## TODO
 
 1. Allow to add an image as avatar if the email does not exit in gravatar service
