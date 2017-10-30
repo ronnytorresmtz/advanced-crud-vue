@@ -1,4 +1,4 @@
-# An Advance SPA CRUD Example
+# An Advanced SPA CRUD Example
 
 <p align="left">
 <img src="/architecture.png" width="700"/>
