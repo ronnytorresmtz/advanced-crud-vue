@@ -5,31 +5,42 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Events\RegisterTransactionAccessEvent;
 use MyCode\Repositories\Customer\CustomerRepositoryInterface;
+use MyCode\Services\Document\DocumentServiceInterface;
 
 
 class CustomerController extends Controller
 {
   protected $customerRepository;
+
+  protected $documentService;
+
   private $baseRoute = 'shipper.customers';
+
   private $itemsByPage = 10;
 
-  public function __construct(Request $request, CustomerRepositoryInterface $customerRepository)
+  public function __construct(CustomerRepositoryInterface $customerRepository,
+                              DocumentServiceInterface $documentService)
+
   {
     $this->customerRepository = $customerRepository;
-    $this->itemsByPage = $request->per_pages;
+
+    $this->documentService   = $documentService;
+    
   }
   
   /**
   * Display a listing of the resource.
   *
+  * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
   */
-  public function index()
+  public function index(Request $request)
   {
-    $companyId = 1;
 
-    $customers = $this->customerRepository->getByPage($companyId, $this->itemsByPage);
+    $customers = $this->customerRepository->getByPageWithFilters($request);
+    
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
+    
     return response()->json($customers);
   }
 
@@ -61,7 +72,9 @@ class CustomerController extends Controller
 	public function edit($id)
 	{
     $customers = $this->customerRepository->getById($id);
+
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.edit'));
+
     return response()->json($customers);
 	}
 
@@ -75,14 +88,16 @@ class CustomerController extends Controller
   public function update(Request $request, $id)
   {
     $result = [];
-    
+
     $result = $this->customerRepository->update($request, $id);
 
-    if (! $result['error']){
+    if (! $result['error']) {
+
       //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.update'));
+
     }
 
-		return response()->json($result);
+    return response()->json($result);
   }
 
   /**
@@ -98,86 +113,92 @@ class CustomerController extends Controller
 		$result=$this->customerRepository->delete($request->id);
 
 		if (! $result['error']){
-			//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
+
+      //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
+      
 		}
 
 	 	return response()->json($result);
   }
 
   /**
-  * Search the specified test in the storage.
+  * Export all customers from Excel
   *
   * @param  \Illuminate\Http\Request  $request
-  * @return \Illuminate\Http\Response
-  */
-  public function search(Request $request) 
-	{
-
-		$customers = $this->customerRepository->search(
-          $request->companyId,  
-          $request->searchText, 
-          $this->itemsByPage
-    );
-		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
-
-		return response()->json($customers);
-	}
-
-  /**
-  * Export all moduleas to Excel
-  *
   * @return Response
   */
-	public function export() 
+	public function export(Request $request) 
 	{ 
+    $data = $this->customerRepository->getAllWithFilters($request);
 
-    $customers = $this->customerRepository->getAll();
+    \Log::info($data);
+		$result =$this->documentService->export($data, 'csv', 'Customers');
 
-		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
+		if (! $result['error']){
 
-		return response()->json($customers); 
-	}
-
-  public function import(Request $request) 
-	{ 
-    $result = [];
-
-		$file = json_decode($request->data, true);
-		//validate the request if file is missing send an error to user
-		if (! empty($file)) {
-			
-			$result = $this->customerRepository->importFile($file);
-
-			if (! $result['error']){
-				//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
-			}
+			// Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
 		}
-		
-		return response()->json($result);
-	}
+
+		return response()->json($result); 
+  }
+  
+  /**
+  * Import all customers from Excel
+  *
+  * @param  \Illuminate\Http\Request  $request
+  * @return Response
+  */
+  public function import(Request $request) 
+  {
+    $result = [];
+
+    $file = $request->file('fileToImport');
+    //validate the request if file is missing send an error to user
+    if (empty($file)) {
+      
+      $result = array('error' => true, 'message' => Lang::get('messages.error'));
+      
+      return response()->json($result);
+
+    }
+      
+    $result = $this->customerRepository->import($file);
+
+    if (! $result['error']) {
+
+      // Event::fire(new RegisterTransactionAccessEvent('facilities.institutes.import'));
+
+    }
+    
+    return response()->json($result);
+  }
 
   
-  public function getCustomerByCompanyID($id) 
+  public function getCustomerByCompanyID(Request $request) 
   {
-    $customers = $this->customerRepository->getByPage($id, $this->itemsByPage);
+    $companyId = 1; 
+
+    $customers = $this->customerRepository->getByPageWithFilters($request);
 
     return  response()->json($customers);
   }
 
-  public function getAllCustomersActive() 
+  
+  public function getAllCustomersActive(Request $request) 
 	{ 
 
-    $customers = $this->customerRepository->getAllActive();
+    $customers = $this->customerRepository->getAllActive($request);
 
 		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
 		return response()->json($customers); 
 	}
 
-  public function getAllCustomersIdAndNamesActive() 
+  
+  public function getAllCustomersIdAndNamesActive(Request $request) 
 	{ 
-    $customers = $this->customerRepository->getAllIdAndNameActive();
+    $customers = $this->customerRepository->getAllIdAndNameActive($request);
 
 		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
