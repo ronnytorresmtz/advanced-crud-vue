@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
       $this->app->bind('MyCode\Repositories\Customer\CustomerRepositoryInterface', function($app) 
       {
 
-        return new CustomerRepository(new Customer);
+        return new CustomerRepository(new Customer, new Company);
 
       });
 
