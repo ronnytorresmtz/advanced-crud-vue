@@ -16,7 +16,7 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id');
-            $table->string('customer_commercial_name', 100);
+            $table->string('customer_name', 100);
             $table->string('customer_legal_name', 100);
             $table->string('customer_tax_id', 30);
             $table->string('customer_website', 255);
@@ -32,8 +32,9 @@ class CreateCustomersTable extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->index('company_id', 'customer_commercial_name');
-            $table->index('company_id','customer_email');
+            $table->unique(array('company_id', 'customer_name'));
+            $table->unique(array('company_id','customer_email'));
+            // $table->index('company_id','customer_name', 'customer_email');
         });
     }
 
