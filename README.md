@@ -37,8 +37,10 @@
 ## TODO
 
 1. Allow to add an image as avatar if the email does not exit in gravatar service
+2. Review Security for CORS and Others possible security holes
 2. Test spec's
-3. Upgrate to 5.5 and Vue 2.5 or last releases
+3. Upgrate to Laravel 5.5  Vue 2.5 or lastest releases
+4. Upgrate to  Vue 2.5 or last releases or lastest releases
 
 
 ## Build Setup
