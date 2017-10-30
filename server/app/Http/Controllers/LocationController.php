@@ -157,8 +157,8 @@ class LocationController extends Controller
 	{ 
     
     $locations = $this->locationRepository->getAll();
-    \Log::info($locations);
-		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
+
+    //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
 		return response()->json($locations); 
 	}
