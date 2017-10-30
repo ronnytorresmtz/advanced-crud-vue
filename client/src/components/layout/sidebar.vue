@@ -178,7 +178,7 @@
         <div class="row">
           <div class="col-xs-4">
             <myavatar 
-              email="ronnytorresmtz@gmail1.com" 
+              email="ronnytorresmtz@gmail.com" 
               circle-size="50px" 
               letter-size="2em"
             >

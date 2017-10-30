@@ -39,7 +39,7 @@
             </div>
             <div class="col-xs-1" align="center" @click.stop.prevent="expandCollapse">
                 <myavatar 
-                  email="ronnytorresmtz@gmail1.com" 
+                  email="ronnytorresmtz@gmail.com" 
                   circle-size="32px" 
                   letter-size="1.5em">
                 </myavatar>
