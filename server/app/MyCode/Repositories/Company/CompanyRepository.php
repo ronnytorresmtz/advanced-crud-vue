@@ -33,6 +33,18 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		return $companies;
 	}
 
+	public function getCompanyIdByName($companyName)
+	{
+		
+		$company = $this->model->withTrashed()->select('id', 'company_name')
+		
+		->where('company_id', '=', $companyName)
+
+		->get();
+
+		return $company;
+	}
+
 
 	public function getAllWithFilters($request)
 	{
@@ -69,13 +81,13 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 		->where(function ($query) use ($request) {
 		
-			if ($request->optionSelected == 0) {
+			if ($request->filterSelected == 0) {
 		
 				$query->whereNull('deleted_at');
 		
 			}
 		
-			if ($request->optionSelected == 1) {
+			if ($request->filterSelected == 1) {
 		
 				$query->whereNotNull('deleted_at');
 		
@@ -173,13 +185,13 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 		->where(function ($query) use ($request) {
 		
-			if ($request->optionSelected == 0) {
+			if ($request->filterSelected == 0) {
 		
 				$query->whereNull('deleted_at');
 		
 			}
 		
-			if ($request->optionSelected == 1) {
+			if ($request->filterSelected == 1) {
 		
 				$query->whereNotNull('deleted_at');
 		
@@ -219,7 +231,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 			$model->company_latitude = $request->input('company_latitude');
 			$model->company_longitude = $request->input('company_longitude');
 			
-			if (! $model->save()){
+			if (! $model->save()) {
 		
 				return array('error' => true, 'message' => Lang::get('messages.error'));
 		
@@ -231,7 +243,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 			\Log::error($e);
 			
-				return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
+			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
 		}	
 
 	}
@@ -272,6 +284,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 			\Log::error($e);
 
 			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
+
 		}	
 	}
 
@@ -282,7 +295,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 		
 			$model = $this->model->withTrashed()->find($id);
 		
-			if (! $model->delete()){
+			if (! $model->delete()) {
 		
 				return array('error' => true, 'message' => Lang::get('messages.error'));
 		
@@ -303,8 +316,12 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 	public function import($file)
 	{
 		/*=====================	RULES TO IMPORt FILES ========================================
-		1) The first row must be the fields hearder .
-		2) if the row has a value in the ID Field it will be update if not will be added.
+		1) The top row of the data must be the fields hearder 
+        2) if the row has a value in the ID Field it will be update if not will be added
+        3) The file can not contains duplicates id´s to avoid user errors
+        4) Some fields can not be duplicated in the database based on the table unique indexes
+		5) The deleted_at field will not affect the database
+        6) The deleted_at field from the field could be delete it or leaved it from the file, it will not takes effect
 		===================================================================================*/
 
 		// Begin a Transaction
@@ -316,27 +333,42 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 			$updateRecords = 0; //count update records
 
+			$fileIds = []; //arrays of id´s in the file to validate duplication
+
 			$results = \Excel::load($file->getRealPath())->get();
 
 			foreach ($results as $key => $row) {
 
+				$rowId = null;
+
 				if (isset($row)) {
 					// Validate if comapany name and email already exist
-					$rowId = $this->model->withTrashed()
+					// $rowId = $this->model->withTrashed()
 
-						->where('company_name', '=', $row->company_name)
+					// 	->where('company_name', '=', $row->company_name)
 
-						->where('company_email', '=', $row->company_email)
+					// 	->where('company_email', '=', $row->company_email)
 
-						->first();
+					// 	->first();
 
-					if (empty($rowId)) {
-						// if not takes the id from the file
-						if (isset($row->id)) {
-					
-							$rowId = $this->model->withTrashed()->find($row->id);
-					
+					if (isset($row->id)) {
+
+						// Validate id from file if it is duplicated 
+                        if (in_array($row->id, $fileIds)) {
+							
+							DB::rollBack();
+							
+							return array('error' => true, 'message' => Lang::get('messages.error_id_import_duplicated') . ': ' . $row->id);
+
 						}
+
+						 // if id is not duplicated add to array
+						 array_push($fileIds, $row->id);
+
+						// if not takes the id from the file
+					
+						$rowId = $this->model->withTrashed()->find($row->id);
+					
 					
 					}
 					//validate if $id was found so UPDATE it
@@ -355,7 +387,7 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 						$rowId->company_postcode = $row->company_postcode;
 						$rowId->company_latitude = $row->company_latitude;
 						$rowId->company_longitude = $row->company_longitude;
-						$rowId->deleted_at = null;
+						// $rowId->deleted_at = null;
 						$rowId->save();
 						$updateRecords++;
 							
@@ -403,11 +435,10 @@ class CompanyRepository extends MyAbstractEloquentRepository implements CompanyR
 
 	    } catch (Exception $e) {
 
-			\Log::error($e);
-
 			DB::rollBack();
 
-			return array('error' => true, 'message' => Lang::get('messages.error_caught_exception') . ' ' . str_replace("'"," ", strstr($e->getMessage(), '(SQL:', true)));
+			throw new Exception($e->getMessage());
+			
 		}
 
 	}
