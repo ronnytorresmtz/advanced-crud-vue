@@ -1,7 +1,7 @@
 # An Advance SPA CRUD Example
 
 <p align="left">
-<img src="/architecture.png" width="800"/>
+<img src="/architecture.png" width="700"/>
 </p>
     
 >With Vue, Vuex, VueRouter, Larevel, Axios, CORS, Bootstrap, Animate
