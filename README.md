@@ -32,7 +32,10 @@
 
 ## TODO
 
-1. Test spec's
+1. Allow to add an image as avatar if the email does not exit in gravatar service
+2. Test spec's
+3. Upgrate to 5.5 and Vue 2.5 or last releases
+
 
 ## Build Setup
 
