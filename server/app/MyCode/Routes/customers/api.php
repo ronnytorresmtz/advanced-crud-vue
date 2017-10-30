@@ -2,8 +2,6 @@
 
 // Route::group(array('middleware' => 'auth'), function(){
 
-    Route::get('shippers/customers/search', 'CustomerController@search'); 
-    
     Route::get('shippers/customers/export', 'CustomerController@export');
 
     Route::post('shippers/customers/import', 'CustomerController@import');
