@@ -1,6 +1,6 @@
 # An Advanced SPA CRUD Example
 
-<p align="left">
+<p align="center">
 <img src="/architecture.png" width="700"/>
 </p>
     
