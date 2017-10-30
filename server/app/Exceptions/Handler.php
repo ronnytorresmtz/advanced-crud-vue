@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception, Lang;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Exceptions\SQLException;
 
 class Handler extends ExceptionHandler
 {
@@ -32,6 +33,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        // if ($e instanceof SQLException) {
         parent::report($exception);
     }
 
@@ -44,6 +46,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        
+        $message = $this->format($e->getMessage());
+            
+        return response()->json(['error' => true, 'message' =>  $message]);
+
         return parent::render($request, $exception);
     }
 
@@ -57,9 +64,34 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
+
             return response()->json(['error' => 'Unauthenticated.'], 401);
+
         }
 
         return redirect()->guest(route('login'));
     }
+
+     /**
+     * Format an Exception Message
+     *
+     * @param  string  $message
+     */
+
+    public function format($message) {
+ 
+        $findMe = '(SQL:';
+
+        if (strpos($message, $findMe) !== false) {
+            
+            $message = explode($findMe, $message)[0];
+        
+        }
+
+        $message = '[Error Exception]: ' . $message;
+
+        return $message;
+
+    }
+
 }
