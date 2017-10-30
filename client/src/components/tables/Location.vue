@@ -95,7 +95,7 @@ export default {
   mixins: [mylang],
 
   created() {
-    this.initSearch();
+    // this.initSearch();
     this.locationsSelected = this.locations;
   },
 
@@ -108,7 +108,7 @@ export default {
 
   computed: {
     locations() {
-      return store.getters[`${this.$parent.moduleName}/getLocations`];
+      return store.getters.getLocations;
     },
     locationText: {
       set() { },
@@ -120,9 +120,9 @@ export default {
 
   methods: {
 
-    initSearch() {
-      store.dispatch(`${this.$parent.moduleName}/getLocations`);
-    },
+    // initSearch() {
+    //   // store.dispatch(`${this.$parent.moduleName}/getLocations`);
+    // },
     resetSearch() {
       if (this.locationText.length < 1) {
         this.showSearchResults = false;
