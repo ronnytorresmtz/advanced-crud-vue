@@ -113,7 +113,6 @@ class CompanyController extends Controller
     }
 
 		return response()->json($result);
-
   }
 
   /**
@@ -140,7 +139,7 @@ class CompanyController extends Controller
   }
 
   /**
-  * Export all moduleas to Excel
+  * Export all companies to Excel
   *
   * @return Response
   */
@@ -148,7 +147,7 @@ class CompanyController extends Controller
 	{ 
     $data = $this->companyRepository->getAllWithFilters($request);
 
-		$result =$this->documentService->export($data, 'csv', 'Module');
+		$result =$this->documentService->export($data, 'csv', 'Companies');
 
 		if (! $result['error']){
 
@@ -159,8 +158,14 @@ class CompanyController extends Controller
 		return response()->json($result); 
 	}
 
-
-  public function import(Request $request) {
+  /**
+  * Import all companies from Excel
+  *
+  * @param  \Illuminate\Http\Request  $request
+  * @return Response
+  */
+  public function import(Request $request) 
+  {
 
     $result = [];
 
@@ -200,6 +205,8 @@ class CompanyController extends Controller
 	{ 
 
     $companies = $this->companyRepository->getAllIdAndNameActive();
+
+    \Log::info($companies);
 
 		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
