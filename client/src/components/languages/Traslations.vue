@@ -22,9 +22,6 @@ export default {
     close: 'Close',
     export: 'Export',
     import: 'Import',
-    addCompany: 'Add Company',
-    editCompany: 'Edit Company',
-
     // Pagination
     start: 'Start',
     prev: 'Prev',
@@ -37,9 +34,12 @@ export default {
     items: 'items',
     pages: 'Pages',
 
-    // Company Module
-    companyList: 'Company List',
     id: 'ID',
+
+    // Company Module
+    addCompany: 'Add Company',
+    editCompany: 'Edit Company',
+    companyList: 'Company List',
     companyName: 'Name',
     companyLegalName: 'Legal Name',
     companyTaxId: 'Tax-ID',
@@ -54,6 +54,26 @@ export default {
     companyLatitude: 'Latitude',
     companyLongitude: 'Longitude',
     companyStatus: 'Status',
+
+
+     // Company Module
+    addCustomer: 'Add Customer',
+    editCustomer: 'Edit Customer',
+    customerList: 'Customer List',
+    customerName: 'Name',
+    customerLegalName: 'Legal Name',
+    customerTaxId: 'Tax-ID',
+    customerWebsite: 'Website',
+    customerContact: 'Contact',
+    customerEmail: 'Email',
+    customerPhone: 'Phone',
+    customerCellular: 'Cellular',
+    customerAddress: 'Address',
+    customerLocation: 'Location',
+    customerPostcode: 'Postcode',
+    customerLatitude: 'Latitude',
+    customerLongitude: 'Longitude',
+    customerStatus: 'Status',
 
     // Traslations_Template Don´t Delete This Line
   },
@@ -78,9 +98,6 @@ export default {
     close: 'Cerrar',
     export: 'Exportar',
     import: 'Importar',
-    addCompany: 'Agregar Compañía',
-    editCompany: 'Editar Compañía',
-
     // Pagination
     start: 'Inicio',
     prev: 'Prev',
@@ -93,9 +110,12 @@ export default {
     items: 'elementos',
     pages: 'Páginas',
 
-    // Company Module
-    companyList: 'Lista de Companías',
     id: 'ID',
+
+    // Company Module
+    addCompany: 'Agregar Compañía',
+    editCompany: 'Editar Compañía',
+    companyList: 'Lista de Companías',
     companyName: 'Nombre',
     companyLegalName: 'Nombre Legal',
     companyTaxId: 'Identificador Legal',
@@ -110,6 +130,26 @@ export default {
     companyLatitude: 'Latitud',
     companyLongitude: 'Longitud',
     companyStatus: 'Estado',
+
+
+    // Customer Module
+    addCustomer: 'Agregar Cliente',
+    editCustomer: 'Editar Cliente',
+    customerList: 'Lista de Clientes',
+    customerName: 'Nombre',
+    customerLegalName: 'Nombre Legal',
+    customerTaxId: 'Identificador Legal',
+    customerWebsite: 'Página Web',
+    customerContact: 'Contacto',
+    customerEmail: 'Correo Electónico',
+    customerPhone: 'Teléfono',
+    customerCellular: 'Celular',
+    customerAddress: 'Dirección',
+    customerLocation: 'Ubicación',
+    customerPostcode: 'Código Postal',
+    customerLatitude: 'Latitud',
+    customerLongitude: 'Longitud',
+    customerStatus: 'Estado',
     // Traslations_Template Don´t Delete This Line
   },
 };
