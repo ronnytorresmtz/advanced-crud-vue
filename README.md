@@ -16,6 +16,8 @@
 12. Laravel API 5.4 for CRUD Operations
 13. Integrate Gravatar Service
 14. Location Searcheable Field
+15. Language Traslations
+
 
 >Some Components created from scratch
 1. Pagination Component
@@ -29,6 +31,7 @@
 5. Sidebar Component
 6. Avatar Component based on Gravatar Service
 7. Location Component
+8. Language Traslations Component
 
 ## TODO
 
