@@ -33,7 +33,7 @@ export default [
       },
       {
         name: 'Customers',
-        link: '/shipper/shippers/customers',
+        link: '/customers',
         icon: 'fa fa-user',
       },
       {
