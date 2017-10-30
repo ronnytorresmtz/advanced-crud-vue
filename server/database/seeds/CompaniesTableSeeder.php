@@ -17,7 +17,7 @@ class CompaniesTableSeeder extends Seeder
 
         $faker = Faker::create();
 
-    	foreach (range(1,100) as $index) {
+    	foreach (range(1,3) as $index) {
     
             switch ($index) {
     
