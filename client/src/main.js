@@ -6,8 +6,7 @@ import App from './App';
 import router from './router';
 import store from './store/Store';
 
-
-window._ = require('lodash');
+// window._ = require('lodash');
 
 Vue.use(VueWorker);
 
@@ -19,5 +18,17 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App },
+  components: {
+    App,
+  },
+
+  created() {
+    Promise.all([
+      store.dispatch('getAllCompaniesIdAndNamesActive'),
+      store.dispatch('getLocations'),
+    ])
+    .then(() => console.log('Init App -> OK [Companies, Locations Loaded]'))
+    .catch(error => console.log(`Init App -> Error [${error}]`));
+  },
+
 });
