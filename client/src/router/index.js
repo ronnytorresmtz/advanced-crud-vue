@@ -9,6 +9,11 @@ export default new Router({
   mode: 'history',
   routes: [
     {
+      path: '/',
+      name: 'Companies',
+      component: Companies,
+    },
+    {
       path: '/companies',
       name: 'Companies',
       component: Companies,
