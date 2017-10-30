@@ -1,4 +1,8 @@
 # An Advance SPA CRUD Example
+
+<p align="left">
+<img src="/architecture.png" width="500"/>
+</p>
     
 >With Vue, Vuex, VueRouter, Larevel, Axios, CORS, Bootstrap, Animate
 
@@ -35,10 +39,6 @@
 8. Language Traslations Component
 
 >Application Architecture
-
-<p align="left">
-<img src="/architecture.png" width="500"/>
-</p>
 
 * The client is a VueJS Sigle Page Application 
 * The server is a Laravel API 
