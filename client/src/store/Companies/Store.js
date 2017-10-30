@@ -9,10 +9,10 @@ const store = {
   state: {
     moduleName: 'companies',
     baseUrlCompanies: 'http://localhost:8000/api/shippers/companies',
-    baseUrlLocations: 'http://localhost:8000/api/admin/locations',
+    // baseUrlLocations: 'http://localhost:8000/api/admin/locations',
     pageData: [],
     searchText: '',
-    optionSelected: '',
+    filterSelected: '-1',
     colsHeaders: [],
     fieldOrderBy: 'company_name',
     orderBy: 'asc',
@@ -25,7 +25,7 @@ const store = {
     isAddBtnDisable: true,
     isUpdateBtnDisable: true,
     closeAfterAction: false,
-    locations: [],
+    // locations: [],
     item: {
       id: 'New',
       company_name: '',
@@ -50,13 +50,13 @@ const store = {
       show: false,
     },
     tableDefaults: {
-      optionSelected: -1,
+      filterSelected: '-1',
       fieldOrderBy: 'company_name',
       orderBy: 'asc',
       perPage: '10',
     },
     tableParams: {
-      optionSelected: '',
+      filterSelected: '-1',
       fieldOrderBy: '',
       orderBy: '',
       perPage: '',
@@ -103,9 +103,9 @@ const store = {
     UPDATE_SEARCH_TEXT(state, text) {
       state.searchText = text;
     },
-    UPDATE_OPTION_SELECT(state, value) {
-      state.optionSelected = value;
-      state.tableParams.optionSelected = value;
+    UPDATE_FILTER_SELECTED(state, value) {
+      state.filterSelected = value;
+      state.tableParams.filterSelected = value;
       storeInLocalStorage(`${state.moduleName}/tableParams`, JSON.stringify(state.tableParams));
     },
     UPDATE_LOADING(state, loading) {
@@ -146,6 +146,7 @@ const store = {
     },
     SHOW_IMPORT_MODAL(state, show) {
       // state.showImportModal = show;
+      state.message.show = false;
       Vue.set(state, 'showImportModal', show);
     },
     SET_LOCATIONS(state, locations) {
@@ -182,7 +183,7 @@ const store = {
       const url = new URL(pagination.path);
       url.searchParams.append('page', page);
       url.searchParams.append('searchText', context.getters.getSearchText);
-      url.searchParams.append('optionSelected', context.getters.getOptionSelected);
+      url.searchParams.append('filterSelected', context.getters.getFilterSelected);
       url.searchParams.append('itemsByPage', pagination.per_page);
       url.searchParams.append('fieldOrderBy', context.getters.getFieldOrderBy);
       url.searchParams.append('orderBy', context.getters.getOrderBy);
@@ -246,17 +247,17 @@ const store = {
         context.commit('SHOW_MESSAGE', response);
       });
     },
-    getLocations(context) {
-      const baseUrl = context.getters.getBaseUrlLocations;
-      return Axios.get(`${baseUrl}/getAllLocationsActive`)
-      .then((response) => {
-        const locations = response.data.map(obj => obj.location_name);
-        context.commit('SET_LOCATIONS', locations);
-      })
-      .catch((response) => {
-        context.commit('SHOW_MESSAGE', response);
-      });
-    },
+    // getLocations(context) {
+    //   const baseUrl = context.getters.getBaseUrlLocations;
+    //   return Axios.get(`${baseUrl}/getAllLocationsActive`)
+    //   .then((response) => {
+    //     const locations = response.data.map(obj => obj.location_name);
+    //     context.commit('SET_LOCATIONS', locations);
+    //   })
+    //   .catch((response) => {
+    //     context.commit('SHOW_MESSAGE', response);
+    //   });
+    // },
   },
   getters: {
     getModuleName: state => state.moduleName,
@@ -274,13 +275,13 @@ const store = {
     getIsUpdateBtnDisable: state => state.isUpdateBtnDisable,
     getCloseAfterAction: state => state.closeAfterAction,
     getSearchText: state => state.searchText,
-    getOptionSelected: state => state.optionSelected,
+    getFilterSelected: state => state.filterSelected,
     getFieldOrderBy: state => state.fieldOrderBy,
     getOrderBy: state => state.orderBy,
     getShowImportModal: state => state.showImportModal,
     getTableDefaults: state => state.tableDefaults,
     getTableParams: state => state.tableParams,
-    getLocations: state => state.locations,
+    // getLocations: state => state.locations,
     getLocation: state => state.item.company_location,
     getBaseUrlLocations: state => state.baseUrlLocations,
   },
