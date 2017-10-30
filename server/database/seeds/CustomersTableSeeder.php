@@ -31,12 +31,12 @@ class CustomersTableSeeder extends Seeder
                     break;
             }
 
-            $company = $faker->company;
+            $customer =  $faker->name;;
 
 	        Customer::create(array(
                 'company_id' => 1,
-	            'customer_commercial_name' => $company,
-	            'customer_legal_name' => $company . $faker->randomElement(array (', Inc.',' Customer',' Co.')),
+	            'customer_name' => $customer,
+	            'customer_legal_name' => $customer . $faker->randomElement(array (', Inc.',' Customer',' Co.')),
                 'customer_tax_id' => $faker->bothify('###-') . $faker->numberBetween(70, 88) . $faker->bothify('-####'),
                 'customer_website' => $faker->url,
                 'customer_email' => $email,
@@ -50,12 +50,12 @@ class CustomersTableSeeder extends Seeder
                 'customer_longitude' => $faker->longitude(-180, 180),
 	        ));
 
-            $company = $faker->company;
+            $customer = $faker->name;
 
             Customer::create(array(
                 'company_id' => 2,
-	            'customer_commercial_name' => $company,
-	            'customer_legal_name' => $company . $faker->randomElement(array (', Inc.',' Customer',' Co.')),
+	            'customer_name' => $customer,
+	            'customer_legal_name' => $customer . $faker->randomElement(array (', Inc.',' Customer',' Co.')),
                 'customer_tax_id' => $faker->bothify('###-') . $faker->numberBetween(70, 88) . $faker->bothify('-####'),
                 'customer_website' => $faker->url,
                 'customer_email' => $email,
@@ -69,12 +69,12 @@ class CustomersTableSeeder extends Seeder
                 'customer_longitude' => $faker->longitude(-180, 180),
 	        ));
 
-             $company = $faker->company;
+             $customer = $faker->name;
 
             Customer::create(array(
                 'company_id' => 3,
-	            'customer_commercial_name' => $company,
-	            'customer_legal_name' => $company . $faker->randomElement(array (', Inc.',' Customer',' Co.')),
+	            'customer_name' => $customer,
+	            'customer_legal_name' => $customer . $faker->randomElement(array (', Inc.',' Customer',' Co.')),
                 'customer_tax_id' => $faker->bothify('###-') . $faker->numberBetween(70, 88) . $faker->bothify('-####'),
                 'customer_website' => $faker->url,
                 'customer_email' => $email,
