@@ -36,12 +36,16 @@
 
 >Application Architecture
 
-* Client is a VueJS Sigle Page Application 
-* Server is a Laravel API 
-* Comunication uses CORS
-* Database is a MySQL Database
+<p align="center">
+<img src="/architecture.PNG" width="1000"/>
+</p>
 
-To use/play with application work needs to runs npm run dev in the client directory and php artisan in the server directory
+* The client is a VueJS Sigle Page Application 
+* The server is a Laravel API 
+* The Comunication uses CORS
+* The Database is a MySQL Database
+
+To use/play with application you need to runs npm run dev in the client directory and php artisan in the server directory
 
 
 ## TODO
