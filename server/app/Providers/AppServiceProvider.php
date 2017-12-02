@@ -3,15 +3,19 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use MyCode\Repositories\Login\LoginRepository;
 use MyCode\Repositories\Company\CompanyRepository;
 use MyCode\Repositories\Customer\CustomerRepository;
 use MyCode\Repositories\Warehouse\WarehouseRepository;
 use MyCode\Repositories\Location\LocationRepository;
 use MyCode\Services\Document\DocumentService;
+use MyCode\Services\Mail\MailServiceInterface;
 use MyCode\Models\Company;
 use MyCode\Models\Customer;
 use MyCode\Models\Warehouse;
 use MyCode\Models\Location;
+use MyCode\Services\Mail\MailService;
+use MyCode\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
       $this->app->bind('MyCode\Repositories\Warehouse\WarehouseRepositoryInterface', function($app) 
       {
 
-        return new WarehouseRepository(new Warehouse);
+        return new WarehouseRepository(new Warehouse, new Customer);
 
       });
 
@@ -60,10 +64,18 @@ class AppServiceProvider extends ServiceProvider
         return new LocationRepository(new Location);
 
       });
+      
+      $this->app->bind('MyCode\Repositories\Login\LoginRepositoryInterface', function($app) 
+      {
+        
+        return new LoginRepository(new User, new MailService);
+        
+      });
+      
       //AppBind_Template Don´t Delete This Line
+      $this->app->bind('MyCode\Services\Mail\MailServiceInterface','MyCode\Services\Mail\MailService');
 
       $this->app->bind('MyCode\Services\Document\DocumentServiceInterface','MyCode\Services\Document\DocumentService');
-    
     }
 
 }
