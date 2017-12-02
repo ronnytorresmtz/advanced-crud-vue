@@ -177,7 +177,7 @@ class CustomerController extends Controller
   
   public function getCustomerByCompanyID(Request $request) 
   {
-    $companyId = 1; 
+    // $companyId = 1; 
 
     $customers = $this->customerRepository->getByPageWithFilters($request);
 
