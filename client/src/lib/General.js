@@ -38,6 +38,13 @@ GENERAL FUNCTION LIBRARY
       const value = localStorage.getItem(`${moduleName}/${key}`);
       return (value === null) ? defaultValue : value;
     }
+     /*
+    * Check if the email is a valid email
+    */
+    export function isValidEmail(email) {
+      const emailReg = /^([\w-.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+      return emailReg.test(email);
+    }
     /*
     * Compare two values receivend in the key object
     * and return 1 if the first object is greater
