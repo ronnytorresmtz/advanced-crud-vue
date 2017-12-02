@@ -4,12 +4,14 @@ use MyCode\Repositories\Eloquent\MyEloquentRepositoryInterface;
  
 interface WarehouseRepositoryInterface extends MyEloquentRepositoryInterface
 {
-	public function getAll($customerId);
+	// public function getAll($request);
+	public function getAllWithFilters($request);
+	public function getAllActive($request);
+	public function getAllIdAndNameActive($request);
 	public function getById($id);
-	public function getByPage($customerId, $itemsByPage);
+	public function getByPageWithFilters($request);
 	public function store($request);
 	public function update($request, $id);
 	public function delete($id);
-	public function search($customerId, $value, $itemsByPage);
-	public function importFile($file);
+	public function import($file);
 }
