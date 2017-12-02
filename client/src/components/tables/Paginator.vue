@@ -4,15 +4,15 @@
   }
 
   .pagination-showing {
-    padding-top: 10px; 
+    padding-top: 10px;
     font-size: 14px;
-    display: inline; 
+    display: inline;
   }
-  
+
   .label-nomorepages {
-    padding-right:20px; 
+    padding-right:20px;
     color:gray;
-    font: bold; 
+    font: bold;
     font: italic;
   }
 
@@ -33,13 +33,13 @@
     <div class="col-sm-6">
       <div align="right">
         <!--Pagination Buttons-->
-        <a class="btn btn-sm btn-primary button-width" 
+        <a class="btn btn-sm btn-primary button-width"
         @click.prevent="setStartPageUrl"> {{ ts['start'] }} </a>
-        <a class="btn btn-sm btn-primary button-width" 
+        <a class="btn btn-sm btn-primary button-width"
         @click.prevent="setPrevPageUrl"> {{ ts['prev'] }} </a>
         <a class="btn btn-sm btn-primary button-width"
         @click.prevent="setNextPageUrl"> {{ ts['next'] }} </a>
-        <a class="btn btn-sm btn-primary button-width" 
+        <a class="btn btn-sm btn-primary button-width"
         @click.prevent="setEndPageUrl"> {{ ts['end'] }} </a>
         <br/> <br/>
       </div>
@@ -98,43 +98,52 @@
       orderBy() {
         return store.getters[`${this.$parent.moduleName}/getOrderBy`];
       },
+      getUrlParams() {
+        const urlParams = store.getters[`${this.$parent.moduleName}/getUrlParams`];
+        return (urlParams !== null) ? (urlParams.search).substring(1) : '';
+      },
     },
 
     methods: {
       setStartPageUrl() {
-        const pageUrl = `${this.pagination.path}?${this.getUrlParams()}`;
+        store.dispatch(`${this.$parent.moduleName}/getUrlParams`);
+        const pageUrl = `${this.pagination.path}?${this.getUrlParams}`;
         this.getData(pageUrl);
       },
       setPrevPageUrl() {
-        const prevUrl = `${this.pagination.prev_page_url}&${this.getUrlParams()}`;
+        store.dispatch(`${this.$parent.moduleName}/getUrlParams`);
+        const prevUrl = `${this.pagination.prev_page_url}&${this.getUrlParams}`;
         const pageUrl = (this.pagination.prev_page_url) ? prevUrl : null;
         this.getData(pageUrl);
       },
       setNextPageUrl() {
-        const nextUrl = `${this.pagination.next_page_url}&${this.getUrlParams()}`;
+        store.dispatch(`${this.$parent.moduleName}/getUrlParams`);
+        const nextUrl = `${this.pagination.next_page_url}&${this.getUrlParams}`;
         const pageUrl = (this.pagination.next_page_url) ? nextUrl : null;
         this.getData(pageUrl);
       },
       setEndPageUrl() {
-        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&${this.getUrlParams()}`;
+        store.dispatch(`${this.$parent.moduleName}/getUrlParams`);
+        const pageUrl = `${this.pagination.path}?page=${this.pagination.last_page}&${this.getUrlParams}`;
         this.getData(pageUrl);
       },
-      getUrlParams() {
-        console.log(this.companySelected);
-        return `companyId=${this.companySelected}&
-        searchText=${this.searchText}&
-          filterSelected=${this.filterSelected}&
-          itemsByPage=${this.perPage}&
-          fieldOrderBy=${this.fieldOrderBy}&
-          orderBy=${this.orderBy}`;
-      },
+      // getUrlParams() {
+        // return `companyId=${this.companySelected}&
+        //   searchText=${this.searchText}&
+        //   filterSelected=${this.filterSelected}&
+        //   itemsByPage=${this.perPage}&
+        //   fieldOrderBy=${this.fieldOrderBy}&
+        //   orderBy=${this.orderBy}`;
+      // },
       getData(pageUrl) {
         store.commit(`${this.$parent.moduleName}/UPDATE_LOADING`, true);
         store.commit(`${this.$parent.moduleName}/UPDATE_PER_PAGE`, this.perPage);
         this.noMorePages = false;
         if (pageUrl !== null) {
           const newPageUrl = pageUrl || this.url;
-          store.dispatch(`${this.$parent.moduleName}/getData`, `${newPageUrl}?${this.getUrlParams()}`)
+          store.dispatch(`${this.$parent.moduleName}/getUrlParams`);
+          console.log(`${this.$parent.moduleName}/getData`, `${newPageUrl}?${this.getUrlParams}`);
+          store.dispatch(`${this.$parent.moduleName}/getData`, `${newPageUrl}?${this.getUrlParams}`)
           .then(() => {
             store.commit(`${this.$parent.moduleName}/UPDATE_LOADING`, false);
           })
