@@ -149,7 +149,7 @@ class CustomerRepository extends MyAbstractEloquentRepository implements Custome
 	{
         $customers = $this->model->select('id', 'customer_name')
 
-        ->where('company_id', '=', $request->companyId)
+        ->where('company_id', '=', 1) //$request->companyId)
         
         ->get();
 
