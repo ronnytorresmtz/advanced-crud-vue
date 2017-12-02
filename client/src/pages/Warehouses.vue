@@ -37,12 +37,12 @@
   <div class="container-fluid" align="left" >
     <div class="row" >
       <div class="col-sm-2" v-if="showSidebar">
-        <mysidebar id="sidebarCustomers"></mysidebar>
+        <mysidebar id="sidebarWarehouses"></mysidebar>
       </div>
       <!--div :class="`col-xs-${(showSidebar)? 10 : 12}`"-->
       <div class="col-xs-12" @mouseover.stop.prevent="collapseSidebar">
         <!--Import component-->
-        <myimport :url-import="baseUrlCustomers"></myimport>
+        <myimport :url-import="baseUrlWarehouses"></myimport>
 
         <!--message component-->
         <transition enter-active-class="animated fadeInDown" leave-active-class="animated fadeOutUp">
@@ -54,7 +54,7 @@
           <div class="row">
             <div class="col-xs-6">
               <!--Page Title-->
-              <h3> {{ ts['customerList']}}
+              <h3> {{ ts['warehouseList']}}
                 <!--Spin Icon-->
                 <span v-if="loading">
                   <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
@@ -63,7 +63,7 @@
             </div>
             <div class="col-xs-6" style="margin-top:20px" align="right">
               <!--Add button-->
-              <button class="btn btn-sm btn-primary" @click.prevent="showAddForm()"> {{ ts['addCustomer'] }} </button>
+              <button class="btn btn-sm btn-primary" @click.prevent="showAddForm()"> {{ ts['addWarehouse'] }} </button>
               <!--Expot button-->
               <a :href="getExportUrl()" class="btn btn-sm btn-primary button-size" :title="ts['export']">
                 <span class="glyphicon glyphicon-arrow-down"></span>
@@ -77,8 +77,8 @@
           <hr>
           <div class="row">
              <div class="col-xs-4">
-                <select class="form-control" v-model="companySelected" @change.prevent="getDataFiltered">
-                  <option  v-for="(value, index) in companiesActive" :value="index + 1"> {{ value }} </option>
+                <select class="form-control" v-model="customerSelected" @change.prevent="getDataFiltered">
+                  <option  v-for="(value, index) in customersActive" :value="index + 1"> {{ value }} </option>
                 </select>
             </div>
             <!--Search Text-->
@@ -126,12 +126,12 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <!--Modal Title-->
-                  <h4 class="modal-title" v-text="(isUpdateBtnShow) ? ts['editCustomer'] : ts['addCustomer']"></h4>
+                  <h4 class="modal-title" v-text="(isUpdateBtnShow) ? ts['editWarehouse'] : ts['addWarehouse']"></h4>
                 </div>
                 <div class="modal-body">
                   <div class="row" align="right" style="padding-right:20px" v-if="isUpdateBtnShow">
                     <!--Modal Status-->
-                    <label> {{ ts['customerStatus'] }}: </label>
+                    <label> {{ ts['warehouseStatus'] }}: </label>
                     <span v-if="(input.deleted_at===null)">
                       <button class="btn btn-xs btn-success btn-std-width" v-model="input.status"> {{ ts['active'] }} </button>
                     </span>
@@ -145,34 +145,28 @@
                       <div class="col-xs-6">
                         <label> {{ ts['id'] }}: </label> <span class="aster-red" v-text="!input.id ? ' *' : ''"></span>
                         <input type="text" class="form-control" v-model="input.id" @keyup="validFieldsRequired" :disabled="true"></input>
-                        <label> {{ ts['customerName'] }}: </label><span class="aster-red" v-text="!input.customer_name ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_name" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerLegalName'] }}: </label><span class="aster-red" v-text="!input.customer_legal_name ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_legal_name" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerTaxId'] }}: </label><span class="aster-red" v-text="!input.customer_tax_id ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_tax_id" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerWebsite'] }}: </label><span class="aster-red" v-text="!input.customer_website ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_website" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerContact'] }}: </label><span class="aster-red" v-text="!input.customer_contact ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_contact" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerEmail'] }}: </label><span class="aster-red" v-text="!input.customer_email ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_email" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseName'] }}: </label><span class="aster-red" v-text="!input.warehouse_name ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_name" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseContact'] }}: </label><span class="aster-red" v-text="!input.warehouse_contact ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_contact" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseEmail'] }}: </label><span class="aster-red" v-text="!input.warehouse_email ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_email" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehousePhone'] }}: </label><span class="aster-red" v-text="!input.warehouse_phone ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_phone" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseCellular'] }}: </label><span class="aster-red" v-text="!input.warehouse_cellular ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_cellular" @keyup="validFieldsRequired"></input>
                       </div>
                       <div class="col-xs-6">
-                        <label> {{ ts['customerPhone'] }}: </label><span class="aster-red" v-text="!input.customer_phone ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_phone" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerCellular'] }}: </label><span class="aster-red" v-text="!input.customer_cellular ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_cellular" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerAddress'] }}: </label><span class="aster-red" v-text="!input.customer_address ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_address" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerLocation'] }}: </label><span class="aster-red" v-text="!input.customer_location ? ' *' : ''"></span>
-                        <mylocation v-model="input.customer_location" @keyup="validFieldsRequired"></mylocation>
-                        <label> {{ ts['customerPostcode'] }}: </label><span class="aster-red" v-text="!input.customer_postcode ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_postcode" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerLatitude'] }}: </label><span class="aster-red" v-text="!input.customer_latitude ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_latitude" @keyup="validFieldsRequired"></input>
-                        <label> {{ ts['customerLongitude'] }}: </label><span class="aster-red" v-text="!input.customer_longitude ? ' *' : ''"></span>
-                        <input type="text" class="form-control" v-model="input.customer_longitude" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseAddress'] }}: </label><span class="aster-red" v-text="!input.warehouse_address ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_address" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseLocation'] }}: </label><span class="aster-red" v-text="!input.warehouse_location ? ' *' : ''"></span>
+                        <mylocation v-model="input.warehouse_location" @keyup="validFieldsRequired"></mylocation>
+                        <label> {{ ts['warehousePostcode'] }}: </label><span class="aster-red" v-text="!input.warehouse_postcode ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_postcode" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseLatitude'] }}: </label><span class="aster-red" v-text="!input.warehouse_latitude ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_latitude" @keyup="validFieldsRequired"></input>
+                        <label> {{ ts['warehouseLongitude'] }}: </label><span class="aster-red" v-text="!input.warehouse_longitude ? ' *' : ''"></span>
+                        <input type="text" class="form-control" v-model="input.warehouse_longitude" @keyup="validFieldsRequired"></input>
                       </div>
                     </div>
                   </form>
@@ -206,9 +200,11 @@
           <br>
 
           <!--Paginator Component-->
-          <mypaginator :url="baseUrlCustomers"></mypaginator>
+          <mypaginator :url="baseUrlWarehouses"></mypaginator>
 
         </diV>
+        <h3> TODO </h3>
+        <p> En customerRepository en el evento getAllIdAndNameActive (152) estamos forzando a company = 1 y debería ser determinado por el usuario o sistema</p>
       </div> 
     </div> 
   </div> 
@@ -229,7 +225,7 @@ import mysidebar from '../components/layout/sidebar';
 import createObj, { resetObjVal, getValueFromLocalStorage } from '../lib/General';
 
 export default {
-  name: 'Customers',
+  name: 'Warehouses',
   mixins: [mylang],
   components: {
     mypopup,
@@ -242,47 +238,41 @@ export default {
 
   data() {
     return {
-      title: 'Customer',
-      moduleName: 'customers',
+      title: 'Warehouse',
+      moduleName: 'warehouses',
       headers: [
         { name: 'id', label: 'id', display: true },
-        { name: 'deleted_at', label: 'customerStatus', display: true },
-        { name: 'customer_name', label: 'customerName', display: true },
-        { name: 'customer_legal_name', label: 'customerLegalName', display: false },
-        { name: 'customer_tax_id', label: 'customerTaxId', display: false },
-        { name: 'customer_website', label: 'customerWebsite', display: false },
-        { name: 'customer_contact', label: 'customerContact', display: true },
-        { name: 'customer_email', label: 'customerEmail', display: true },
-        { name: 'customer_phone', label: 'customerPhone', display: true },
-        { name: 'customer_cellular', label: 'customerCellular', display: true },
-        { name: 'customer_location', label: 'customerLocation', display: false },
-        { name: 'customer_address', label: 'customerAddress', display: false },
-        { name: 'customer_postcode', label: 'customerPostcode', display: false },
-        { name: 'customer_latitude', label: 'customerLatitude', display: false },
-        { name: 'customer_longitude', label: 'customerLongitude', display: false },
+        { name: 'deleted_at', label: 'warehouseStatus', display: true },
+        { name: 'warehouse_name', label: 'warehouseName', display: true },
+        { name: 'warehouse_contact', label: 'warehouseContact', display: true },
+        { name: 'warehouse_email', label: 'warehouseEmail', display: true },
+        { name: 'warehouse_phone', label: 'warehousePhone', display: true },
+        { name: 'warehouse_cellular', label: 'warehouseCellular', display: true },
+        { name: 'warehouse_location', label: 'warehouseLocation', display: false },
+        { name: 'warehouse_address', label: 'warehouseAddress', display: false },
+        { name: 'warehouse_postcode', label: 'warehousePostcode', display: false },
+        { name: 'warehouse_latitude', label: 'warehouseLatitude', display: false },
+        { name: 'warehouse_longitude', label: 'warehouseLongitude', display: false },
       ],
       totalRows: '',
       searchText: '',
       isFilterBySearchText: false,
       isFilterApplied: false,
       filterSelected: '-1',
-      companySelected: 1,
+      customerSelected: 1,
       input: {
         id: 'New',
-        company_id: '',
-        customer_name: '',
-        customer_legal_name: '',
-        customer_tax_id: '',
-        customer_website: '',
-        customer_contact: '',
-        customer_email: '',
-        customer_phone: '',
-        customer_cellular: '',
-        customer_address: '',
-        customer_location: '',
-        customer_postcode: '',
-        customer_latitude: '',
-        customer_longitude: '',
+        warehouse_id: '',
+        warehouse_name: '',
+        warehouse_contact: '',
+        warehouse_email: '',
+        warehouse_phone: '',
+        warehouse_cellular: '',
+        warehouse_address: '',
+        warehouse_location: '',
+        warehouse_postcode: '',
+        warehouse_latitude: '',
+        warehouse_longitude: '',
         deleted_at: '',
       },
     };
@@ -291,17 +281,17 @@ export default {
   created() {
     const tableParams = this.getTableParamsFromLocalStorage();
     this.updateTableParams(tableParams);
-    this.companySelected = store.getters[`${this.moduleName}/getCompanySelected`];
+    this.customerSelected = store.getters[`${this.moduleName}/getCustomerSelected`];
     this.filterSelected = store.getters[`${this.moduleName}/getFilterSelected`];
     this.isFilterApplied = (this.filterSelected >= 0);
-    store.dispatch(`${this.moduleName}/getData`, `${this.baseUrlCustomers}?${this.getUrlParams()}`);
+    store.dispatch(`${this.moduleName}/getData`, `${this.baseUrlWarehouses}?${this.getUrlParams()}`);
   },
   computed: {
-    companiesActive() {
-      return store.getters.getAllCompaniesIdAndNamesActive;
+    customersActive() {
+      return store.getters.getAllCustomersIdAndNamesActive;
     },
-    baseUrlCustomers() {
-      return store.getters[`${this.moduleName}/getBaseUrlCustomers`];
+    baseUrlWarehouses() {
+      return store.getters[`${this.moduleName}/getBaseUrlWarehouses`];
     },
     pageData() {
       return store.getters[`${this.moduleName}/getPageData`];
@@ -361,7 +351,7 @@ export default {
       store.commit('SHOW_SIDEBAR', false);
     },
     getDataFiltered() {
-      store.commit(`${this.moduleName}/UPDATE_COMPANY_SELECTED`, this.companySelected);
+      store.commit(`${this.moduleName}/UPDATE_CUSTOMER_SELECTED`, this.customerSelected);
       store.commit(`${this.moduleName}/UPDATE_SEARCH_TEXT`, this.searchText);
       store.commit(`${this.moduleName}/UPDATE_FILTER_SELECTED`, this.filterSelected);
       store.dispatch(`${this.moduleName}/getDataFiltered`);
@@ -393,11 +383,10 @@ export default {
         this.resetForm();
       }
       this.closeModal();
-      // this.displayPopUpMessage();
     },
     getExportUrl() {
       return `${store.getters[`${this.moduleName}/getPagination`].path}/export?
-        companyId=${this.companySelected}&
+        customerId=${this.customerSelected}&
         searchText=${this.searchText}&
         filterSelected=${this.filterSelected}`;
     },
@@ -445,7 +434,7 @@ export default {
       this.isFilterApplied = false;
     },
     getUrlParams() {
-      return `companyId=${this.companySelected}&searchText=${this.searchText}&filterSelected=${this.filterSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
+      return `customerId=${this.customerSelected}&searchText=${this.searchText}&filterSelected=${this.filterSelected}&itemsByPage=${this.perPage}&fieldOrderBy=${this.fieldOrderBy}&orderBy=${this.orderBy}`;
     },
     getTableParamsFromLocalStorage() {
       const tableDefaults = JSON.stringify(store.getters[`${this.moduleName}/getTableDefaults`]);
