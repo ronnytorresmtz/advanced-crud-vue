@@ -9,7 +9,6 @@ const store = {
   state: {
     moduleName: 'customers',
     baseUrlCustomers: 'http://localhost:8000/api/shippers/customers',
-    // baseUrlLocations: 'http://localhost:8000/api/admin/locations',
     pageData: [],
     searchText: '',
     filterSelected: '-1',
@@ -20,13 +19,14 @@ const store = {
     pagination: {},
     perPage: 10,
     loading: false,
+    showPopUpMessage: false,
     showModal: false,
     showImportModal: false,
     isUpdateBtnShow: false,
     isAddBtnDisable: true,
     isUpdateBtnDisable: true,
     closeAfterAction: false,
-    // locations: [],
+    urlParams: null,
     item: {
       id: 'New',
       companyId: '',
@@ -104,6 +104,7 @@ const store = {
     UPDATE_PER_PAGE(state, perPage) {
       state.perPage = perPage;
       state.tableParams.perPage = perPage;
+      state.pagination.per_page = perPage;
       storeInLocalStorage(`${state.moduleName}/tableParams`, JSON.stringify(state.tableParams));
     },
     UPDATE_SEARCH_TEXT(state, text) {
@@ -131,9 +132,17 @@ const store = {
       state.message.text = (response.data.message) ? response.data.message : 'The operation was NOT executed as expected, try again or please contact the support service';
       state.message.type = (response.data.error || !response.data.message) ? 'danger' : 'info';
       state.message.show = true;
+      state.showPopUpMessage = true;
+    },
+    SHOW_MESSAGE_ERROR(state, message) {
+      state.message.text = message;
+      state.message.type = 'danger';
+      state.message.show = true;
+      state.showPopUpMessage = true;
     },
     CLOSE_MESSAGE(state, close) {
       state.message.show = close;
+      state.showPopUpMessage = close;
     },
     SHOW_MODAL(state, show) {
       state.showModal = show;
@@ -151,7 +160,6 @@ const store = {
       state.closeAfterAction = close;
     },
     SHOW_IMPORT_MODAL(state, show) {
-      // state.showImportModal = show;
       state.message.show = false;
       Vue.set(state, 'showImportModal', show);
     },
@@ -161,9 +169,13 @@ const store = {
     UPDATE_LOCATION(state, location) {
       state.item.customer_location = location;
     },
+    UPDATE_URL_PARAMS(state, urlParams) {
+      state.urlParams = urlParams;
+    },
   },
   actions: {
     getData(context, url) {
+      console.log(url);
       context.commit('UPDATE_LOADING', true);
       return Axios.get(url)
       .then((response) => {
@@ -181,20 +193,36 @@ const store = {
         context.commit('UPDATE_PAGINATION', pagination);
         context.commit('UPDATE_PAGEDATA', response.data.data);
         context.commit('UPDATE_LOADING', false);
+      })
+      .catch((error) => {
+        context.commit('SHOW_MESSAGE_ERROR', error.message);
       });
     },
     getDataFiltered(context, currentPage) {
       const pagination = context.getters.getPagination;
       const page = (!currentPage) ? '' : `page=${currentPage}`;
       const url = new URL(pagination.path);
+      url.searchParams.append('companyId', context.getters.getCompanySelected);
       url.searchParams.append('page', page);
+      url.searchParams.append('searchText', context.getters.getSearchText);
+      url.searchParams.append('filterSelected', context.getters.getFilterSelected);
+      url.searchParams.append('itemsByPage', pagination.per_page);
+      url.searchParams.append('fieldOrderBy', context.getters.getFieldOrderBy);
+      url.searchParams.append('orderBy', context.getters.getOrderBy);
+      context.commit('UPDATE_URL_PARAMS', url);
+      context.dispatch('getData', url);
+    },
+    getUrlParams(context) {
+      const pagination = context.getters.getPagination;
+      const url = new URL(pagination.path);
       url.searchParams.append('companyId', context.getters.getCompanySelected);
       url.searchParams.append('searchText', context.getters.getSearchText);
       url.searchParams.append('filterSelected', context.getters.getFilterSelected);
       url.searchParams.append('itemsByPage', pagination.per_page);
       url.searchParams.append('fieldOrderBy', context.getters.getFieldOrderBy);
       url.searchParams.append('orderBy', context.getters.getOrderBy);
-      context.dispatch('getData', url);
+      context.commit('UPDATE_URL_PARAMS', url);
+      return url;
     },
     addItem(context, data) {
       context.commit('UPDATE_LOADING', true);
@@ -203,14 +231,17 @@ const store = {
       data.company_id = context.getters.getCompanySelected;
       return Axios.post(baseUrl, data)
         .then((response) => {
+          context.commit('SHOW_MESSAGE', response);
           if (!response.data.error) {
             context.commit('UPDATE_ORDER_BY', 'asc');
             context.commit('UPDATE_FIELD_ORDER_BY', 'id');
             context.dispatch('getDataFiltered', pagination.last_page);
           }
-          context.commit('SHOW_MESSAGE', response);
         })
-        .then(() => context.commit('UPDATE_LOADING', false));
+        .then(() => context.commit('UPDATE_LOADING', false))
+        .catch((error) => {
+          context.commit('SHOW_MESSAGE_ERROR', error.message);
+        });
     },
     updateItem(context, data) {
       context.commit('UPDATE_LOADING', true);
@@ -219,12 +250,15 @@ const store = {
       data.company_id = context.getters.getCompanySelected;
       return Axios.put(`${baseUrl}/${data.id}`, data)
         .then((response) => {
+          context.commit('SHOW_MESSAGE', response);
           if (!response.data.error) {
             context.dispatch('getDataFiltered', pagination.current_page);
           }
-          context.commit('SHOW_MESSAGE', response);
         })
-        .then(() => context.commit('UPDATE_LOADING', false));
+        .then(() => context.commit('UPDATE_LOADING', false))
+        .catch((error) => {
+          context.commit('SHOW_MESSAGE_ERROR', error.message);
+        });
     },
     deleteItem(context, id) {
       context.commit('UPDATE_LOADING', true);
@@ -232,12 +266,15 @@ const store = {
       const baseUrl = context.getters.getBaseUrlCustomers;
       return Axios.delete(`${baseUrl}/${id}`, { params: { id } })
         .then((response) => {
+          context.commit('SHOW_MESSAGE', response);
           if (!response.data.error) {
             context.dispatch('getDataFiltered', pagination.current_page);
           }
-          context.commit('SHOW_MESSAGE', response);
         })
-        .then(() => context.commit('UPDATE_LOADING', false));
+        .then(() => context.commit('UPDATE_LOADING', false))
+        .catch((error) => {
+          context.commit('SHOW_MESSAGE_ERROR', error.message);
+        });
     },
     importFile(context, file) {
       const formData = new FormData();
@@ -245,28 +282,17 @@ const store = {
       const baseUrl = context.getters.getBaseUrlCustomers;
       return Axios.post(`${baseUrl}/import`, formData)
       .then((response) => {
+        context.commit('SHOW_MESSAGE', response);
         if (!response.data.error) {
           context.dispatch('getDataFiltered');
         }
         context.commit('SHOW_IMPORT_MODAL', false);
-        context.commit('SHOW_MESSAGE', response);
       })
-      .catch((response) => {
+      .catch((error) => {
         context.commit('SHOW_IMPORT_MODAL', false);
-        context.commit('SHOW_MESSAGE', response);
+        context.commit('SHOW_MESSAGE_ERROR', error.message);
       });
     },
-    // getLocations(context) {
-    //   const baseUrl = context.getters.getBaseUrlLocations;
-    //   return Axios.get(`${baseUrl}/getAllLocationsActive`)
-    //   .then((response) => {
-    //     const locations = response.data.map(obj => obj.location_name);
-    //     context.commit('SET_LOCATIONS', locations);
-    //   })
-    //   .catch((response) => {
-    //     context.commit('SHOW_MESSAGE', response);
-    //   });
-    // },
   },
   getters: {
     getCompanySelected: state => state.companySelected,
@@ -278,6 +304,7 @@ const store = {
     getItem: state => state.item,
     getMessage: state => state.message,
     getShowMessage: state => state.message.show,
+    getShowPopUpMessage: state => state.showPopUpMessage,
     getLoading: state => state.loading,
     getShowModal: state => state.showModal,
     getIsUpdateBtnShow: state => state.isUpdateBtnShow,
@@ -291,9 +318,9 @@ const store = {
     getShowImportModal: state => state.showImportModal,
     getTableDefaults: state => state.tableDefaults,
     getTableParams: state => state.tableParams,
-    // getLocations: state => state.locations,
     getLocation: state => state.item.customer_location,
     getBaseUrlLocations: state => state.baseUrlLocations,
+    getUrlParams: state => state.urlParams,
   },
 };
 

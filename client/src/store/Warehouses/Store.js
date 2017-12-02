@@ -7,13 +7,14 @@ import { storeInLocalStorage } from '../../lib/General';
 const store = {
   namespaced: true,
   state: {
-    moduleName: 'companies',
-    baseUrlCompanies: 'http://localhost:8000/api/shippers/companies',
+    moduleName: 'warehouses',
+    baseUrlWarehouses: 'http://localhost:8000/api/shippers/warehouses',
     pageData: [],
     searchText: '',
     filterSelected: '-1',
+    customerSelected: 1,
     colsHeaders: [],
-    fieldOrderBy: 'company_name',
+    fieldOrderBy: 'warehouse_name',
     orderBy: 'asc',
     pagination: {},
     perPage: 10,
@@ -28,19 +29,17 @@ const store = {
     urlParams: null,
     item: {
       id: 'New',
-      company_name: '',
-      company_legal_name: '',
-      company_tax_id: '',
-      company_website: '',
-      company_contact: '',
-      company_email: '',
-      company_phone: '',
-      company_cellular: '',
-      company_address: '',
-      company_location: '',
-      company_postcode: '',
-      company_latitude: '',
-      company_longitude: '',
+      customerId: '',
+      warehouse_name: '',
+      warehouse_contact: '',
+      warehouse_email: '',
+      warehouse_phone: '',
+      warehouse_cellular: '',
+      warehouse_address: '',
+      warehouse_location: '',
+      warehouse_postcode: '',
+      warehouse_latitude: '',
+      warehouse_longitude: '',
       deleted_at: null,
     },
     message: {
@@ -51,18 +50,22 @@ const store = {
     },
     tableDefaults: {
       filterSelected: '-1',
-      fieldOrderBy: 'company_name',
+      fieldOrderBy: 'warehouse_name',
       orderBy: 'asc',
       perPage: '10',
     },
     tableParams: {
-      filterSelected: '-1',
+      filterSelected: '',
       fieldOrderBy: '',
       orderBy: '',
       perPage: '',
     },
   },
   mutations: {
+    UPDATE_CUSTOMER_SELECTED(state, customerId) {
+      state.customerSelected = customerId;
+      state.item.customerId = customerId;
+    },
     UPDATE_COLS_HEADERS(state, colsHeaders) {
       state.colsHeaders = colsHeaders;
       storeInLocalStorage(`${state.moduleName}/colsHeaders`, JSON.stringify(colsHeaders));
@@ -76,19 +79,16 @@ const store = {
     RESET_ITEM(state) {
       state.item = {
         id: 'New',
-        company_name: '',
-        company_legal_name: '',
-        company_tax_id: '',
-        company_website: '',
-        company_contact: '',
-        company_email: '',
-        company_phone: '',
-        company_cellular: '',
-        company_address: '',
-        company_location: '',
-        company_postcode: '',
-        company_latitude: '',
-        company_longitude: '',
+        warehouse_name: '',
+        warehouse_contact: '',
+        warehouse_email: '',
+        warehouse_phone: '',
+        warehouse_cellular: '',
+        warehouse_address: '',
+        warehouse_location: '',
+        warehouse_postcode: '',
+        warehouse_latitude: '',
+        warehouse_longitude: '',
         deleted_at: null,
       };
     },
@@ -154,7 +154,6 @@ const store = {
       state.closeAfterAction = close;
     },
     SHOW_IMPORT_MODAL(state, show) {
-      // state.showImportModal = show;
       state.message.show = false;
       Vue.set(state, 'showImportModal', show);
     },
@@ -162,7 +161,7 @@ const store = {
       state.locations = locations;
     },
     UPDATE_LOCATION(state, location) {
-      state.item.company_location = location;
+      state.item.warehouse_location = location;
     },
     UPDATE_URL_PARAMS(state, urlParams) {
       state.urlParams = urlParams;
@@ -189,7 +188,6 @@ const store = {
         context.commit('UPDATE_LOADING', false);
       })
       .catch((error) => {
-        console.log(error.message);
         context.commit('SHOW_MESSAGE_ERROR', error.message);
       });
     },
@@ -197,6 +195,7 @@ const store = {
       const pagination = context.getters.getPagination;
       const page = (!currentPage) ? '' : `page=${currentPage}`;
       const url = new URL(pagination.path);
+      url.searchParams.append('customerId', context.getters.getCustomerSelected);
       url.searchParams.append('page', page);
       url.searchParams.append('searchText', context.getters.getSearchText);
       url.searchParams.append('filterSelected', context.getters.getFilterSelected);
@@ -209,6 +208,7 @@ const store = {
     getUrlParams(context) {
       const pagination = context.getters.getPagination;
       const url = new URL(pagination.path);
+      url.searchParams.append('customerId', context.getters.getCustomerSelected);
       url.searchParams.append('searchText', context.getters.getSearchText);
       url.searchParams.append('filterSelected', context.getters.getFilterSelected);
       url.searchParams.append('itemsByPage', pagination.per_page);
@@ -220,7 +220,8 @@ const store = {
     addItem(context, data) {
       context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
-      const baseUrl = context.getters.getBaseUrlCompanies;
+      const baseUrl = context.getters.getBaseUrlWarehouses;
+      data.customer_id = context.getters.getCustomerSelected;
       return Axios.post(baseUrl, data)
         .then((response) => {
           context.commit('SHOW_MESSAGE', response);
@@ -238,7 +239,8 @@ const store = {
     updateItem(context, data) {
       context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
-      const baseUrl = context.getters.getBaseUrlCompanies;
+      const baseUrl = context.getters.getBaseUrlWarehouses;
+      data.customer_id = context.getters.getCustomerSelected;
       return Axios.put(`${baseUrl}/${data.id}`, data)
         .then((response) => {
           context.commit('SHOW_MESSAGE', response);
@@ -254,7 +256,7 @@ const store = {
     deleteItem(context, id) {
       context.commit('UPDATE_LOADING', true);
       const pagination = context.getters.getPagination;
-      const baseUrl = context.getters.getBaseUrlCompanies;
+      const baseUrl = context.getters.getBaseUrlWarehouses;
       return Axios.delete(`${baseUrl}/${id}`, { params: { id } })
         .then((response) => {
           context.commit('SHOW_MESSAGE', response);
@@ -270,7 +272,7 @@ const store = {
     importFile(context, file) {
       const formData = new FormData();
       formData.append('fileToImport', file);
-      const baseUrl = context.getters.getBaseUrlCompanies;
+      const baseUrl = context.getters.getBaseUrlWarehouses;
       return Axios.post(`${baseUrl}/import`, formData)
       .then((response) => {
         context.commit('SHOW_MESSAGE', response);
@@ -286,8 +288,9 @@ const store = {
     },
   },
   getters: {
+    getCustomerSelected: state => state.customerSelected,
     getModuleName: state => state.moduleName,
-    getBaseUrlCompanies: state => state.baseUrlCompanies,
+    getBaseUrlWarehouses: state => state.baseUrlWarehouses,
     getPagination: state => state.pagination,
     getPerPage: state => state.perPage,
     getPageData: state => state.pageData,
@@ -308,7 +311,7 @@ const store = {
     getShowImportModal: state => state.showImportModal,
     getTableDefaults: state => state.tableDefaults,
     getTableParams: state => state.tableParams,
-    getLocation: state => state.item.company_location,
+    getLocation: state => state.item.warehouse_location,
     getBaseUrlLocations: state => state.baseUrlLocations,
     getUrlParams: state => state.urlParams,
   },
