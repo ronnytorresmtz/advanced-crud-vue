@@ -13,6 +13,7 @@ export default {
     chooseAFieldToDisplay: 'Choose a Filed to Display',
     enterCityStateCountry: 'Enter your city, state and country',
     importFile: 'Import File',
+    logout: 'Logout',
     // Actions
     add: 'Add',
     edit: 'Edit',
@@ -22,6 +23,7 @@ export default {
     close: 'Close',
     export: 'Export',
     import: 'Import',
+    send: 'Send',
     // Pagination
     start: 'Start',
     prev: 'Prev',
@@ -35,6 +37,32 @@ export default {
     pages: 'Pages',
 
     id: 'ID',
+
+    // *** Login ***
+    signIn: 'Sign In',
+    typeTheUsername: 'Type the username',
+    typeThePassword: 'Type the password',
+    typeTheEmailAddress: 'Type an email address',
+    typeTheEmailError: 'Please type a valid email address,',
+    rememberMe: 'Remember Me',
+    forgotYourPassword: 'Forgot Your Password',
+    loginUserDemo: 'Login User Demo',
+    getYourPassword: 'Get Your Password,',
+    getYourPassMsg: 'Enter the email address associated with your account, then click Send. You will recieve an email with instrucctions to set a new password.',
+    resetYourPassword: 'Reset Your Password,',
+    securtiyNumberMsg: 'Type the Security Number you received in your email account, then type your New Password, confirm the New Password and Click Reset.',
+    securtiyNumber: 'Security Number',
+    typeTheSecurityNumber: 'Type the Security Number',
+    newPassword: 'New Password',
+    typeTheNewPassword: 'Type the New Password',
+    newPasswordError: 'Password require 8 characters',
+    confirmPassword: 'Confirm Password',
+    typeTheConfirmPassword: 'Type the Confirm Password',
+    confirmPasswordError: 'Confirm Password does not match',
+
+    // Dashboard Module
+
+    dashboard: 'Dashabord',
 
     // Company Module
     addCompany: 'Add Company',
@@ -55,7 +83,6 @@ export default {
     companyLongitude: 'Longitude',
     companyStatus: 'Status',
 
-
      // Company Module
     addCustomer: 'Add Customer',
     editCustomer: 'Edit Customer',
@@ -75,7 +102,22 @@ export default {
     customerLongitude: 'Longitude',
     customerStatus: 'Status',
 
-    // Traslations_Template Don´t Delete This Line
+    // Warehouse Module
+    addWarehouse: 'Add Warehouse',
+    editWarehouse: 'Edit Warehouse',
+    warehouseList: 'Warehouse List',
+    warehouseName: 'Name',
+    warehouseContact: 'Contact',
+    warehouseEmail: 'Email',
+    warehousePhone: 'Phone',
+    warehouseCellular: 'Cellular',
+    warehouseAddress: 'Address',
+    warehouseLocation: 'Location',
+    warehousePostcode: 'Postcode',
+    warehouseLatitude: 'Latitude',
+    warehouseLongitude: 'Longitude',
+    warehouseStatus: 'Status',
+
   },
 
   sp: {
@@ -89,6 +131,7 @@ export default {
     chooseAFieldToDisplay: 'Selecciona un Campo para Mostrarlo',
     enterCityStateCountry: 'Captura la ciudad, estado y país',
     importFile: 'Importar Archivo',
+    logout: 'Cerrar Sessión',
     // Actions
     add: 'Agregar',
     edit: 'Editar',
@@ -98,6 +141,7 @@ export default {
     close: 'Cerrar',
     export: 'Exportar',
     import: 'Importar',
+    send: 'Enviar',
     // Pagination
     start: 'Inicio',
     prev: 'Prev',
@@ -111,6 +155,28 @@ export default {
     pages: 'Páginas',
 
     id: 'ID',
+
+    // *** Login ***
+    signIn: 'Accesar',
+    typeTheUsername: 'Ingresa el usuarios',
+    typeThePassword: 'Ingresa la constraseña',
+    typeTheEmailAddress: 'Ingresa una dirección de correo',
+    typeTheEmailError: 'Ingresa una dirección de correo válida',
+    rememberMe: 'Recordar Me',
+    forgotYourPassword: '¿Olvidaste Tú Constraseña?',
+    loginUserDemo: 'Accesar como Usuarios Demo',
+    getYourPassword: 'Obtén Tú Password,',
+    getYourPassMsg: 'Ingrese la dirección de correo asociada a tú cuenta, posteriormente presiona el botón Enviar. Recibirás en un corrreo electrónico las instrucciones para resetear tu password.',
+    resetYourPassword: 'Resetea Tú Password,',
+    securtiyNumberMsg: 'Ingresa el Número de Seguridad que recibiste en tú correo electrónico, posteriormente captura tú nueva contraseña, confirmala y presiona el botón Resetear.',
+    securtiyNumber: 'Número de Seguridad',
+    typeTheSecurityNumber: 'Ingresa el Número de Seguridad',
+    newPassword: 'Nueva Contraseña',
+    typeTheNewPassword: 'Ingresa la Nueva Contraseña',
+    newPasswordError: 'La contraseña requiere 8 caracteres como mínimo',
+    confirmPassword: 'Confirma la Contraseña',
+    typeTheConfirmPassword: 'Ingresa la Confirmación de la Contraseña',
+    confirmPasswordError: 'La nueva contraseña y la confirmación deben ser iguales',
 
     // Company Module
     addCompany: 'Agregar Compañía',
@@ -150,7 +216,22 @@ export default {
     customerLatitude: 'Latitud',
     customerLongitude: 'Longitud',
     customerStatus: 'Estado',
-    // Traslations_Template Don´t Delete This Line
+
+    // Warehouse Module
+    addWarehouse: 'Agregar Almacén',
+    editWarehouse: 'Editar Almacén',
+    warehouseList: 'Lista de Almacenes',
+    warehouseName: 'Nombre',
+    warehouseContact: 'Contacto',
+    warehouseEmail: 'Correo Electrónico',
+    warehousePhone: 'Teléfono',
+    warehouseCellular: 'Celular',
+    warehouseAddress: 'Dirección',
+    warehouseLocation: 'Ubicación',
+    warehousePostcode: 'Código Postal',
+    warehouseLatitude: 'Latitud',
+    warehouseLongitude: 'Longitud',
+    warehouseStatus: 'Estatus',
   },
 };
 
