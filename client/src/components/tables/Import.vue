@@ -22,7 +22,7 @@
                 <div class="col-md-12" align="right">
                   <!--Modal Buttons-->
                   <button class="btn btn-sm btn-success" @click.prevent="importFile($event)"> 
-                  <span v-if="processing"> <i class="fa fa-spinner fa-spin"></i> </span>
+                  <span v-if="processing"> <i class="fa fa-spinner fa-spin" aria-hidden="true"></i> </span>
                   {{ ts['import'] }}
                   </button>
                   <button type="reset" @click.prevent="resetFile" class="btn btn-sm btn-success">{{ ts['reset'] }}</button>
