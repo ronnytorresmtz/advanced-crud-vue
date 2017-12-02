@@ -1,0 +1,12 @@
+INTALLAR LARAVEL PASSPORT
+====================
+Instalar laravel passport y seguir las instucciones
+ejecutar la migracion de laravel passport y el passport:install para obtener el token del cliente_id
+copiar Login.Vue
+copiar el Store de Login
+copiar el directorio lib
+agregar el language\traslations
+agregar el layout\avatar.vue y topbar.vue
+agregar en el router el meta: 'auth' en las urls, el import de Auth y el router.beforeEach
+eliminar del App.vue el topbar component
+agregar interceptor en el main.js y agregar import Auth
