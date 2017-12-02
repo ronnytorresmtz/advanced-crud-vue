@@ -1,10 +1,18 @@
 <?php
 
-namespace App;
+/** 
+* To change the User Model from App namespace to another one like MyCode/Models
+* you need to change the providers array in config/auth.php file
+* form 'model' => App\User::class to 'model' => MyCode\Models\User::class,
+*/
+
+namespace MyCode\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 
 class User extends Authenticatable
 {
