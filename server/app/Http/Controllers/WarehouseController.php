@@ -5,31 +5,42 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Events\RegisterTransactionAccessEvent;
 use MyCode\Repositories\Warehouse\WarehouseRepositoryInterface;
+use MyCode\Services\Document\DocumentServiceInterface;
 
 
 class WarehouseController extends Controller
 {
   protected $warehouseRepository;
+
+  protected $documentService;
+
   private $baseRoute = 'shipper.warehouses';
+
   private $itemsByPage = 10;
 
-  public function __construct(Request $request, WarehouseRepositoryInterface $warehouseRepository)
+  public function __construct(WarehouseRepositoryInterface $warehouseRepository,
+                              DocumentServiceInterface $documentService)
+
   {
     $this->warehouseRepository = $warehouseRepository;
-    $this->itemsByPage = $request->per_pages;
+
+    $this->documentService   = $documentService;
+    
   }
   
   /**
   * Display a listing of the resource.
   *
+  * @param  \Illuminate\Http\Request  $request
   * @return \Illuminate\Http\Response
   */
-  public function index()
+  public function index(Request $request)
   {
-    $warehouseId = 1;
 
-    $warehouses = $this->warehouseRepository->getByPage($warehouseId, $this->itemsByPage);
+    $warehouses = $this->warehouseRepository->getByPageWithFilters($request);
+    
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
+    
     return response()->json($warehouses);
   }
 
@@ -61,7 +72,9 @@ class WarehouseController extends Controller
 	public function edit($id)
 	{
     $warehouses = $this->warehouseRepository->getById($id);
+
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.edit'));
+
     return response()->json($warehouses);
 	}
 
@@ -75,14 +88,16 @@ class WarehouseController extends Controller
   public function update(Request $request, $id)
   {
     $result = [];
-    
+
     $result = $this->warehouseRepository->update($request, $id);
 
-    if (! $result['error']){
+    if (! $result['error']) {
+
       //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.update'));
+
     }
 
-		return response()->json($result);
+    return response()->json($result);
   }
 
   /**
@@ -98,72 +113,95 @@ class WarehouseController extends Controller
 		$result=$this->warehouseRepository->delete($request->id);
 
 		if (! $result['error']){
-			//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
+
+      //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.delete'));		
+      
 		}
 
 	 	return response()->json($result);
   }
 
   /**
-  * Search the specified test in the storage.
+  * Export all warehouses from Excel
   *
   * @param  \Illuminate\Http\Request  $request
-  * @return \Illuminate\Http\Response
-  */
-  public function search(Request $request) 
-	{
-
-		$warehouses = $this->warehouseRepository->search(
-          $request->warehouseId,  
-          $request->searchText, 
-          $this->itemsByPage
-    );
-		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.search'));
-
-		return response()->json($warehouses);
-	}
-
-  /**
-  * Export all moduleas to Excel
-  *
   * @return Response
   */
-	public function export() 
+	public function export(Request $request) 
 	{ 
+    $data = $this->warehouseRepository->getAllWithFilters($request);
 
-    $warehouses = $this->warehouseRepository->getAll();
+		$result =$this->documentService->export($data, 'csv', 'Warehouses');
+
+		if (! $result['error']){
+
+			// Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
+
+		}
+
+		return response()->json($result); 
+  }
+  
+  /**
+  * Import all warehouses from Excel
+  *
+  * @param  \Illuminate\Http\Request  $request
+  * @return Response
+  */
+  public function import(Request $request) 
+  {
+    $result = [];
+
+    $file = $request->file('fileToImport');
+    //validate the request if file is missing send an error to user
+    if (empty($file)) {
+      
+      $result = array('error' => true, 'message' => Lang::get('messages.error'));
+      
+      return response()->json($result);
+
+    }
+      
+    $result = $this->warehouseRepository->import($file);
+
+    if (! $result['error']) {
+
+      // Event::fire(new RegisterTransactionAccessEvent('facilities.institutes.import'));
+
+    }
+    
+    return response()->json($result);
+  }
+
+  
+  public function getWarehouseByCustomerID(Request $request) 
+  {
+    $customerId = 1; 
+
+    $warehouses = $this->warehouseRepository->getByPageWithFilters($request);
+
+    return  response()->json($warehouses);
+  }
+
+  
+  public function getAllWarehousesActive(Request $request) 
+	{ 
+    $warehouses = $this->warehouseRepository->getAllActive($request);
 
 		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
 
 		return response()->json($warehouses); 
 	}
 
-  public function import(Request $request) 
-	{ 
-    $result = [];
-
-		$file = json_decode($request->data, true);
-		//validate the request if file is missing send an error to user
-		if (! empty($file)) {
-			
-			$result = $this->warehouseRepository->importFile($file);
-
-			if (! $result['error']){
-				//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.import'));
-			}
-
-		}
-		
-		return response()->json($result);
-	}
-
   
-  public function getWarehousesByCustumerID($id) 
-  {
-    $warehouses = $this->warehouseRepository->getByPage($id, $this->itemsByPage);
+  public function getAllWarehousesIdAndNamesActive(Request $request) 
+	{ 
+    $warehouses = $this->warehouseRepository->getAllIdAndNameActive($request);
 
-    return  response()->json($warehouses);
-  }
+		//Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.export'));
+
+		return response()->json($warehouses); 
+	}
 
 
   public function show (Request $request) 
