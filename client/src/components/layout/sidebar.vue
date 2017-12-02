@@ -169,6 +169,7 @@
           </div>
           <div class="col-xs-3" >
             <i class="fa fa-chevron-left fa-lg" 
+              aria-hidden="true"
               style="margin-right: 50px;color: white; cursor:pointer"
               @click="expandCollapse"> 
             </i>
@@ -181,6 +182,8 @@
               email="ronnytorresmtz@gmail.com" 
               circle-size="50px" 
               letter-size="2em"
+              background="white"
+              color="black"
             >
             </myavatar>
           </div>
