@@ -2,6 +2,7 @@
   .topbar-icons {
     color:#e1ffff;
     padding-right:20px;
+    cursor: pointer;
   }
   .brand {
     text-align: left !important;
@@ -26,23 +27,33 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-xs-1">
-            <i class="fa fa-bars fa-lg" 
+            <i class="fa fa-bars fa-md" 
               style="margin-top:20px; color: white; cursor:pointer"
               @click="expandCollapse"> 
             </i>
           </div>
           <div class="col-xs-11">
-            <div class="col-xs-11" align="right" style="margin-top:15px" @mouseover.stop.prevent="collapseSidebar">
-                <i class="fa fa-bell-o topbar-icons"> </i>
-                <i class="fa fa-comment-o topbar-icons"></i>
-                <i class="fa fa-flag-o topbar-icons"></i>
+            <div class="col-xs-8">
             </div>
-            <div class="col-xs-1" align="center" @click.stop.prevent="expandCollapse">
+            <div class="col-xs-4" align="right">
+                <i class="fa fa-bell-o fa-md topbar-icons" aria-hidden="true"> </i>
+                <i class="fa fa-comment-o fa-md topbar-icons" aria-hidden="true"></i>
+                <i class="fa fa-flag-o fa-md topbar-icons" aria-hidden="true"></i>
                 <myavatar 
                   email="ronnytorresmtz@gmail.com" 
                   circle-size="32px" 
-                  letter-size="1.5em">
+                  letter-size="1.5em"
+                  background="white"
+                  color="black"
+                  >
                 </myavatar>
+               <span style="padding-left:20px" @click="logout">
+                <i class="fa fa-power-off fa-md topbar-icons"
+                  aria-hidden="true"
+                  :title="ts['logout']"
+                > 
+                </i>
+               </span>
             </div>
           </div>
         </div>      
@@ -55,8 +66,11 @@
 
   import store from '../../store/Store';
   import myavatar from '../../components/layout/avatar';
+  import mylang from '../../components/languages/Languages';
 
   export default {
+
+    mixins: [mylang],
 
     components: {
       myavatar,
@@ -74,11 +88,11 @@
     },
 
     methods: {
-      collapseSidebar() {
-        store.commit('SHOW_SIDEBAR', false);
-      },
       expandCollapse() {
         store.commit('SHOW_SIDEBAR', !this.showSidebar);
+      },
+      logout() {
+        store.dispatch('login/logout');
       },
     },
   };
