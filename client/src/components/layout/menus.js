@@ -1,8 +1,15 @@
 export default [
   {
     name: 'Dashboard',
-    link: '/shipper/dashboard',
+    link: '/dashboard',
     icon: 'fa fa-tachometer',
+    child: [
+      {
+        name: 'Dashboard',
+        link: '/dashboard',
+        icon: 'fa fa-building',
+      },
+    ],
   },
   {
     name: 'Catalogs',
@@ -17,6 +24,11 @@ export default [
       {
         name: 'Customers',
         link: '/customers',
+        icon: 'fa fa-user',
+      },
+      {
+        name: 'Warehouses',
+        link: '/warehouses',
         icon: 'fa fa-user',
       },
     ],
