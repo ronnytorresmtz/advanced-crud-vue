@@ -57,7 +57,7 @@
               <h3> {{ ts['companyList']}}
               <!--Spin Icon-->
               <span v-if="loading">
-                <i class="fa fa-spinner fa-spin"></i>
+                <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
               </span>
               </h3>
             </div>
@@ -218,7 +218,6 @@
 
 <script>
 // vuex store
-// import store from '../store/Companies/Store';
 import store from '../store/Store';
 // my components
 import mypopup from '../components/messages/Popup';
@@ -309,9 +308,6 @@ export default {
     searchTextFilter() {
       return store.getters[`${this.moduleName}/getSearchText`];
     },
-    // filterSelected() {
-    //   return store.getters[`${this.moduleName}/getFilterSelected`];
-    // },
     fieldOrderBy() {
       return store.getters[`${this.moduleName}/getFieldOrderBy`];
     },
@@ -378,14 +374,12 @@ export default {
           this.closeModalAfterAction();
         }
       });
-      this.displayPopUpMessage();
     },
     updateItem() {
       this.input.deleted_at = null;
       store.dispatch(`${this.moduleName}/updateItem`, createObj(this.input));
       this.resetForm();
       this.closeModal();
-      this.displayPopUpMessage();
     },
     deleteItem() {
       const id = this.input.id;
@@ -394,7 +388,6 @@ export default {
         this.resetForm();
       }
       this.closeModal();
-      this.displayPopUpMessage();
     },
     getExportUrl() {
       return `${store.getters[`${this.moduleName}/getPagination`].path}/export?
@@ -431,9 +424,6 @@ export default {
       const isEmptyFields = (emptyFields.length !== 0);
       store.commit(`${this.moduleName}/SHOW_BTN_ADD_DISABLE`, isEmptyFields);
       store.commit(`${this.moduleName}/SHOW_BTN_UPDATE_DISABLE`, isEmptyFields);
-    },
-    displayPopUpMessage() {
-      this.showPopUpMessage = store.getters[`${this.moduleName}/getShowMessage`];
     },
     showAddForm() {
       store.commit(`${this.moduleName}/SHOW_MODAL`, true);
