@@ -51,7 +51,7 @@ class CompanyController extends Controller
   public function index(Request $request)
   {
     $companies = $this->companyRepository->getByPageWithFilters($request);
-
+\Log::info('entre');
     //Event::fire(new RegisterTransactionAccessEvent($this->baseRoute . '.index'));
 
     return response()->json($companies);
