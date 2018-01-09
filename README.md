@@ -21,6 +21,7 @@
 13. Integrate Gravatar Service
 14. Location Searcheable Field
 15. Language Traslations
+16. Laravel Passport 
 
 
 
@@ -50,12 +51,11 @@ To use/play with application you need to runs npm run dev in the client director
 
 ## TODO
 
-1. Add a Login with Laravel Passport to uses JWT Authentications (In Process)
-2. Allow to add an image as avatar if the email does not exit in gravatar service
-3. Test spec's
-4. Upgrate to Laravel 5.5 or lastest releases
-5. Upgrate to  Vue 2.5 or last releases or lastest releases
-6. Review Security 
+1. Allow to add an image as avatar if the email does not exit in gravatar service
+2. Test spec's
+3. Upgrate to Laravel 5.5 or lastest releases
+4. Upgrate to  Vue 2.5 or last releases or lastest releases
+5. Review Security 
 
 
 ## Build Setup
